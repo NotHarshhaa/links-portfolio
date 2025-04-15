@@ -8,12 +8,13 @@ import { TelegramIcon } from '@/components/icons/telegram'
 import { WebIcon } from '@/components/icons/web'
 import { WhatsappIcon } from '@/components/icons/whatsapp'
 import { XIcon } from '@/components/icons/x'
+import { BlogIcon } from '@/components/icons/blog'
 
 export const SOCIAL_DATA = {
   name: 'Harshhaa Vardhan Reddy',
   initials: 'HR',
   avatar: '/assets/avatar.jpg',
-  about: `DevOps Engineer, a passionate DevOps Engineer on a mission to automate everything and scale cloud infrastructures efficiently with a love for technology and a knack for problem-solving. I thrive on challenges and enjoy collaborating with teams to deliver innovative solutions that drive success. Let's connect and explore the world of DevOps together!. Based in Hyderabad, India`,
+  about: 'DevOps Engineer, a passionate DevOps Engineer on a mission to automate everything and scale cloud infrastructures efficiently with a love for technology and a knack for problem-solving. I thrive on challenges and enjoy collaborating with teams to deliver innovative solutions that drive success. Let\'s connect and explore the world of DevOps together!. Based in Hyderabad, India',
   contacts: [
     {
       title: 'Portfolio',
@@ -29,6 +30,11 @@ export const SOCIAL_DATA = {
       title: 'Email',
       url: 'mailto:harshhaa03@gmail.com',
       icon: MailIcon
+    },
+    {
+      title: 'Blog',
+      url: 'https://blog.notharshhaa.site',
+      icon: BlogIcon
     },
     {
       title: 'WhatsApp',
