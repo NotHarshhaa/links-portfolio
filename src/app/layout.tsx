@@ -35,12 +35,7 @@ export default function RootLayout({
           description: 'Links to my social media'
         }}
       />
-      <body className="relative flex flex-col min-h-screen w-full overflow-x-hidden">
-        {/* Background grid */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 -z-10 h-full w-full bg-[radial-gradient(circle,theme(colors.border/30)_1px,transparent_1px)] [background-size:16px_16px] dark:bg-[radial-gradient(circle,theme(colors.border/15)_1px,transparent_1px)]"
-        />
+      <body className="relative flex flex-col min-h-screen w-full overflow-x-hidden bg-gradient-to-b from-white via-neutral-50 to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-black">
 
         <ThemeProvider
           attribute="class"
@@ -50,11 +45,22 @@ export default function RootLayout({
         >
           <ThemeTransitionWrapper>
             <TooltipProvider>
-              <Header />
-              <main className="flex-grow">{children}</main>
-              <Footer />
+              <div className="relative flex flex-col min-h-screen">
+                <Header />
+                <main className="flex-grow relative z-10">
+                  <div className="absolute inset-0 from-white/50 via-transparent to-white/50 dark:from-black/50 dark:to-black/50 pointer-events-none" />
+                  {children}
+                </main>
+                <Footer />
+              </div>
             </TooltipProvider>
-            <Toaster />
+            <Toaster 
+              position="bottom-right"
+              toastOptions={{
+                className: 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800',
+                duration: 3000,
+              }}
+            />
           </ThemeTransitionWrapper>
         </ThemeProvider>
       </body>
