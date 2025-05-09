@@ -38,7 +38,7 @@ export function CardLink({ title, url, icon, variant = 'default' }: CardLinkProp
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center w-full p-4 rounded-xl gap-4"
+        className="flex items-center w-full p-4 rounded-xl gap-4 overflow-hidden"
       >
         {/* Icon container */}
         <motion.div
@@ -60,7 +60,7 @@ export function CardLink({ title, url, icon, variant = 'default' }: CardLinkProp
         </motion.div>
 
         {/* Text container */}
-        <div className="flex flex-col">
+        <div className="flex flex-col max-w-full overflow-hidden">
           <h2 className={cn(
             'font-medium font-mono text-base transition-colors duration-300',
             variant === 'gradient'
@@ -69,12 +69,15 @@ export function CardLink({ title, url, icon, variant = 'default' }: CardLinkProp
           )}>
             {title}
           </h2>
-          <span className={cn(
-            'text-sm truncate transition-colors duration-300',
-            variant === 'gradient'
-              ? 'text-indigo-700/70 dark:text-indigo-300/70'
-              : 'text-neutral-500 dark:text-neutral-400'
-          )}>
+          <span
+            title={url}
+            className={cn(
+              'text-sm truncate transition-colors duration-300 w-full',
+              variant === 'gradient'
+                ? 'text-indigo-700/70 dark:text-indigo-300/70'
+                : 'text-neutral-500 dark:text-neutral-400'
+            )}
+          >
             {url}
           </span>
         </div>
