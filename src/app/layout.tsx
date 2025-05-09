@@ -23,7 +23,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={cn(
-        'min-h-screen bg-background font-sans antialiased',
+        'h-full bg-background font-sans antialiased',
         GeistSans.variable,
         GeistMono.variable
       )}
@@ -35,8 +35,7 @@ export default function RootLayout({
           description: 'Links to my social media'
         }}
       />
-      <body className="relative flex flex-col min-h-screen w-full overflow-x-hidden bg-gradient-to-b from-white via-neutral-50 to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-black">
-
+      <body className="flex min-h-screen flex-col bg-gradient-to-b from-white via-neutral-50 to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-black overflow-x-hidden">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -45,14 +44,11 @@ export default function RootLayout({
         >
           <ThemeTransitionWrapper>
             <TooltipProvider>
-              <div className="relative flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-grow relative z-10">
-                  <div className="absolute inset-0 from-white/50 via-transparent to-white/50 dark:from-black/50 dark:to-black/50 pointer-events-none" />
-                  {children}
-                </main>
-                <Footer />
-              </div>
+              <Header />
+              <main className="flex-grow">
+                {children}
+              </main>
+              <Footer />
             </TooltipProvider>
             <Toaster 
               position="bottom-right"
@@ -79,7 +75,7 @@ function ThemeTransitionWrapper({ children }: { children: React.ReactNode }) {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0.5, scale: 0.98 }}
         transition={{ duration: 0.4, ease: 'easeInOut' }}
-        className="transition-colors duration-500"
+        className="transition-colors duration-500 overflow-x-hidden"
       >
         {children}
       </motion.div>
