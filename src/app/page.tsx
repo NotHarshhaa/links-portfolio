@@ -12,7 +12,7 @@ const MotionSection = motion.section
 
 export default function HomePage() {
   return (
-    <div className="relative w-full min-h-screen overflow-hidden bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-black">
+    <div className="relative w-full min-h-screen bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-black">
 
       {/* Main Content */}
       <main className="relative z-10 flex flex-col items-center justify-center w-full px-4 sm:px-8 pt-28 pb-16 lg:pb-8">

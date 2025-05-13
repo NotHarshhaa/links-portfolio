@@ -35,7 +35,7 @@ export default function RootLayout({
           description: 'Links to my social media'
         }}
       />
-      <body className="flex min-h-screen flex-col bg-gradient-to-b from-white via-neutral-50 to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-black overflow-x-hidden">
+      <body className="flex min-h-screen flex-col bg-gradient-to-b from-white via-neutral-50 to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-black">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -75,7 +75,7 @@ function ThemeTransitionWrapper({ children }: { children: React.ReactNode }) {
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0.5, scale: 0.98 }}
         transition={{ duration: 0.4, ease: 'easeInOut' }}
-        className="transition-colors duration-500 overflow-x-hidden"
+        className="transition-colors duration-500"
       >
         {children}
       </motion.div>
