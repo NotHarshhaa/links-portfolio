@@ -9,6 +9,7 @@ import { WebIcon } from '@/components/icons/web'
 import { WhatsappIcon } from '@/components/icons/whatsapp'
 import { XIcon } from '@/components/icons/x'
 import { BlogIcon } from '@/components/icons/blog'
+import { WebResourceIcon } from '@/components/icons/web-resource'
 
 export const SOCIAL_DATA = {
   name: 'Harshhaa Vardhan Reddy',
@@ -79,6 +80,48 @@ export const SOCIAL_DATA = {
       title: 'Best DevOps & Cloud Blogs & Articles',
       url: 'https://hashnode.com/@prodevopsguy',
       icon: HashnodeIcon
+    }
+  ],
+  resources: [
+    {
+      title: 'Real-Time Projects Hub',
+      url: 'https://projects.prodevopsguytech.com',
+      icon: WebResourceIcon
+    },
+    {
+      title: 'Ultimate Docs Portal',
+      url: 'https://docs.prodevopsguytech.com',
+      icon: WebResourceIcon
+    },
+    {
+      title: 'GitHub Repositories Central',
+      url: 'https://repos.prodevopsguytech.com',
+      icon: GithubIcon
+    },
+    {
+      title: 'DevOps/Cloud Jobs Portal',
+      url: 'https://jobs.prodevopsguytech.com',
+      icon: WebResourceIcon
+    },
+    {
+      title: 'DevOps Blogs',
+      url: 'https://blog.prodevopsguytech.com',
+      icon: BlogIcon
+    },
+    {
+      title: 'Cloud Blogs',
+      url: 'https://cloud.prodevopsguytech.com',
+      icon: BlogIcon
+    },
+    {
+      title: 'DevOps Tools Setup/Guides',
+      url: 'https://devopsguides.site',
+      icon: WebResourceIcon
+    },
+    {
+      title: 'DevOps Cheatsheet Hub',
+      url: 'https://cheatsheet.prodevopsguytech.com',
+      icon: WebResourceIcon
     }
   ]
 }

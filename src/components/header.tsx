@@ -25,12 +25,14 @@ export function Header() {
       transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
       className={`
         fixed top-6 left-1/2 transform -translate-x-1/2 
-        w-[92%] max-w-4xl z-50 rounded-full border 
+        w-[92%] max-w-4xl z-50 rounded-full
         flex items-center justify-between 
-        bg-white/70 dark:bg-zinc-900/70 
-        border-zinc-200/50 dark:border-zinc-700/50 
-        shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.2)]
-        hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.3)]
+        bg-gradient-to-r from-white/80 via-white/90 to-white/80 
+        dark:from-zinc-900/80 dark:via-zinc-900/90 dark:to-zinc-900/80 
+        border border-zinc-100/70 dark:border-zinc-800/70 
+        shadow-[0_8px_30px_rgb(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.15)]
+        hover:shadow-[0_8px_30px_rgb(0,0,0,0.1)] dark:hover:shadow-[0_8px_30px_rgb(0,0,0,0.25)]
+        hover:border-blue-300/30 dark:hover:border-blue-700/30
         transition-all duration-300
       `}
     >
@@ -42,20 +44,20 @@ export function Header() {
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
           className="relative"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full blur-xl group-hover:blur-2xl group-hover:scale-110 transition-all duration-500" />
           <Image 
             src="/logo.svg" 
             alt="Logo" 
-            width={36} 
-            height={36} 
-            className="relative z-10 group-hover:opacity-90 transition-opacity duration-300" 
+            width={38} 
+            height={38} 
+            className="relative z-10 group-hover:opacity-90 transition-opacity duration-300 drop-shadow-md" 
           />
         </motion.div>
         <motion.span 
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="text-base font-medium tracking-wide text-zinc-800 dark:text-zinc-200 hidden sm:inline"
+          className="text-base font-semibold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-zinc-800 to-zinc-600 dark:from-zinc-200 dark:to-zinc-400 hidden sm:inline"
         >
           H A R S H H A A
         </motion.span>
@@ -66,7 +68,9 @@ export function Header() {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.3, duration: 0.5 }}
+        className="relative"
       >
+        <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-blue-500/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         <ModeToggle />
       </motion.div>
     </motion.header>

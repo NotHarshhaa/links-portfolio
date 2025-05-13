@@ -1,96 +1,76 @@
-import { CopyToClipboard } from '@/components/copy-to-clipboard'
-import { type Links } from '@/types'
-import { motion } from 'framer-motion'
+import { forwardRef } from 'react'
+import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { motion } from 'framer-motion'
 
-type CardLinkVariant = 'default' | 'glass' | 'gradient' | 'minimal'
+import type { Links } from '@/types'
 
 interface CardLinkProps extends Links {
-  variant?: CardLinkVariant
+  className?: string
+  Icon?: React.FC<React.SVGProps<SVGSVGElement>>
 }
 
-export function CardLink({ title, url, icon, variant = 'default' }: CardLinkProps) {
-  const variants = {
-    default: 'border border-neutral-200 dark:border-neutral-800 shadow-sm hover:shadow-md dark:bg-black/90 bg-white/10 hover:bg-white dark:hover:bg-neutral-800/50',
-    glass: 'border border-white/20 dark:border-neutral-800/20 bg-white/10 dark:bg-black/10 backdrop-blur-md hover:bg-white/20 dark:hover:bg-black/20',
-    gradient: 'bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 hover:from-indigo-500/20 hover:via-purple-500/20 hover:to-pink-500/20 border-transparent',
-    minimal: 'border-0 shadow-none hover:bg-neutral-100 dark:hover:bg-neutral-800/50'
-  }
-
-  const iconVariants = {
-    default: 'bg-neutral-100 dark:bg-neutral-800/50 group-hover:bg-neutral-200 dark:group-hover:bg-neutral-700/50',
-    glass: 'bg-white/20 dark:bg-black/20 group-hover:bg-white/30 dark:group-hover:bg-black/30',
-    gradient: 'bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-pink-500/20 group-hover:from-indigo-500/30 group-hover:via-purple-500/30 group-hover:to-pink-500/30',
-    minimal: 'bg-transparent group-hover:bg-neutral-100 dark:group-hover:bg-neutral-800/50'
-  }
-
-  return (
-    <motion.div
-      whileHover={{ scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-      className={cn(
-        'group relative flex items-center justify-between w-full rounded-xl',
-        'transition-all ease-in-out duration-300 cursor-pointer',
-        variants[variant]
-      )}
-    >
-      <a
+const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
+  ({ className, icon: Icon, title, url, ...props }, ref) => {
+    return (
+      <Link
+        ref={ref}
         href={url}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex items-center w-full p-4 rounded-xl gap-4 overflow-hidden"
+        className={cn(
+          'group relative flex items-center justify-between rounded-xl border border-neutral-200 bg-white/80 p-4 text-sm font-medium shadow-sm transition-all hover:border-blue-300 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900/80 dark:hover:border-blue-700 backdrop-blur-sm',
+          className
+        )}
+        {...props}
       >
-        {/* Icon container */}
-        <motion.div
-          whileHover={{ rotate: 5 }}
-          className={cn(
-            'shrink-0 flex items-center justify-center w-10 h-10 rounded-lg',
-            'transition-colors duration-300',
-            iconVariants[variant]
+        <div className="flex items-center gap-4">
+          {Icon && (
+            <div className="flex items-center justify-center size-10 rounded-lg bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-gray-900 shadow-sm border border-gray-100 dark:border-gray-800">
+              <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            </div>
           )}
-        >
-          {icon({ 
-            className: cn(
-              'size-5 transition-colors duration-300',
-              variant === 'gradient' 
-                ? 'text-indigo-600 dark:text-indigo-400' 
-                : 'text-neutral-700 dark:text-neutral-300'
-            )
-          })}
-        </motion.div>
-
-        {/* Text container */}
-        <div className="flex flex-col max-w-full overflow-hidden">
-          <h2 className={cn(
-            'font-medium font-mono text-base transition-colors duration-300',
-            variant === 'gradient'
-              ? 'text-indigo-900 dark:text-indigo-100'
-              : 'text-neutral-800 dark:text-neutral-100 group-hover:text-neutral-900 dark:group-hover:text-white'
-          )}>
-            {title}
-          </h2>
-          <span
-            title={url}
-            className={cn(
-              'text-sm truncate transition-colors duration-300 w-full',
-              variant === 'gradient'
-                ? 'text-indigo-700/70 dark:text-indigo-300/70'
-                : 'text-neutral-500 dark:text-neutral-400'
-            )}
-          >
-            {url}
-          </span>
+          <div className="flex flex-col">
+            <span className="font-medium text-neutral-700 dark:text-neutral-300 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">{title}</span>
+            <span className="text-xs text-neutral-500 dark:text-neutral-500 truncate max-w-[200px] group-hover:text-blue-500/70 dark:group-hover:text-blue-500/70 transition-colors">
+              {url.replace(/^https?:\/\//, '')}
+            </span>
+          </div>
         </div>
-      </a>
+        
+        <motion.div 
+          className="rounded-md p-1.5 text-neutral-700 opacity-60 transition-opacity group-hover:opacity-100 dark:text-neutral-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" 
+          whileHover={{ scale: 1.2, rotate: 45 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            className="h-4 w-4"
+          >
+            <path
+              fillRule="evenodd"
+              d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </motion.div>
+        
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-100/0 via-blue-200/0 to-blue-300/10 dark:from-blue-900/0 dark:via-blue-800/0 dark:to-blue-700/20 opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300"></div>
+        
+        {/* Animated border effect */}
+        <div className="absolute -z-10 inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+          <div className="absolute inset-x-0 -bottom-px h-px w-full bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+          <div className="absolute inset-y-0 -right-px w-px h-full bg-gradient-to-b from-transparent via-blue-500 to-transparent" />
+          <div className="absolute inset-x-0 -top-px h-px w-full bg-gradient-to-r from-transparent via-blue-500 to-transparent" />
+          <div className="absolute inset-y-0 -left-px w-px h-full bg-gradient-to-b from-transparent via-blue-500 to-transparent" />
+        </div>
+      </Link>
+    )
+  }
+)
 
-      {/* Copy icon */}
-      <motion.div
-        initial={{ opacity: 0, x: 10 }}
-        whileHover={{ opacity: 1, x: 0 }}
-        className="absolute right-4 top-1/2 -translate-y-1/2 items-center hidden group-hover:flex"
-      >
-        <CopyToClipboard url={url} />
-      </motion.div>
-    </motion.div>
-  )
-}
+CardLink.displayName = 'CardLink'
+
+export { CardLink }

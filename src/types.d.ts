@@ -6,6 +6,7 @@ export interface Data {
   contacts: Links[]
   socials: Links[]
   communities: Links[]
+  resources: Links[]
 }
 
 export interface Links {
