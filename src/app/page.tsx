@@ -8,11 +8,20 @@ import TypingRole from '@/components/TypingRole'
 import { motion, type HTMLMotionProps } from 'framer-motion'
 import ParticleBackground from '@/components/particle-background'
 import SkipAnimation from '@/components/skip-animation'
+import { ChevronDown } from 'lucide-react'
+import { MouseEvent, MouseEventHandler } from 'react'
 
 const MotionDiv = motion.div
 const MotionSection = motion.section
 
 export default function HomePage() {
+  const scrollToContent: MouseEventHandler<HTMLButtonElement> = () => {
+    const personalNetwork = document.getElementById('personal-network')
+    if (personalNetwork) {
+      personalNetwork.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   return (
     <div className="relative w-full min-h-screen bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-black">
       {/* Background decoration */}
@@ -82,7 +91,7 @@ export default function HomePage() {
 
         <MotionSection 
           data-skip-animation
-          className="flex items-center gap-4 my-8 flex-wrap justify-center"
+          className="flex items-center gap-4 my-8 flex-wrap justify-center relative"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4 }}
@@ -99,11 +108,31 @@ export default function HomePage() {
             </motion.div>
           ))}
         </MotionSection>
+          
+        {/* Scroll indicator - moved outside to be more visible */}
+        <motion.button
+          onClick={scrollToContent}
+          className="flex flex-col items-center justify-center cursor-pointer mb-12 text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+        >
+          <span className="text-base font-medium mb-2">Explore</span>
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop" }}
+          >
+            <ChevronDown size={28} />
+          </motion.div>
+        </motion.button>
 
         <SectionContainer
           title="Personal Network"
           delay={0.6}
           items={data.socials}
+          id="personal-network"
         />
 
         <SectionContainer
@@ -128,11 +157,13 @@ type SectionContainerProps = {
   delay: number
   items: any[]
   special?: boolean
+  id?: string
 }
 
-function SectionContainer({ title, delay, items, special }: SectionContainerProps) {
+function SectionContainer({ title, delay, items, special, id }: SectionContainerProps) {
   return (
     <MotionSection 
+      id={id}
       data-skip-animation
       className={`w-full max-w-md lg:max-w-2xl mt-8 rounded-3xl p-6 shadow-xl backdrop-blur-md border border-neutral-200/50 dark:border-neutral-800/50 ${
         special 
