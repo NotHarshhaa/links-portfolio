@@ -168,7 +168,9 @@ function SectionContainer({ title, delay, items, special, id }: SectionContainer
       className={`w-full max-w-md lg:max-w-2xl mt-8 rounded-3xl p-6 shadow-xl backdrop-blur-md border border-neutral-200/50 dark:border-neutral-800/50 ${
         special 
           ? 'bg-gradient-to-br from-white/90 via-white/95 to-blue-50/90 dark:from-zinc-900/90 dark:via-zinc-800/90 dark:to-blue-950/80' 
-          : 'bg-gradient-to-br from-white/95 via-white/90 to-neutral-50/95 dark:from-zinc-900/95 dark:via-zinc-900/90 dark:to-neutral-900/95'
+          : id === 'personal-network'
+            ? 'bg-gradient-to-br from-white/90 via-white/95 to-purple-50/80 dark:from-zinc-900/90 dark:via-zinc-800/90 dark:to-purple-950/80'
+            : 'bg-gradient-to-br from-white/90 via-white/95 to-green-50/80 dark:from-zinc-900/90 dark:via-zinc-800/90 dark:to-green-950/80'
       }`}
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
@@ -185,14 +187,18 @@ function SectionContainer({ title, delay, items, special, id }: SectionContainer
           <h3 className={`font-semibold text-2xl ${
             special 
               ? 'bg-clip-text text-transparent bg-gradient-to-r from-blue-700 via-purple-700 to-blue-700 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400' 
-              : 'bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-500 dark:from-blue-300 dark:to-purple-300'
+              : id === 'personal-network'
+                ? 'bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 dark:from-purple-400 dark:via-indigo-400 dark:to-purple-400'
+                : 'bg-clip-text text-transparent bg-gradient-to-r from-green-600 via-emerald-600 to-green-600 dark:from-green-400 dark:via-emerald-400 dark:to-green-400'
           } text-center`}>
             {title}
           </h3>
           <div className={`w-full h-0.5 mt-2 bg-gradient-to-r from-transparent ${
             special 
               ? 'via-blue-500/50' 
-              : 'via-purple-400/30'
+              : id === 'personal-network'
+                ? 'via-purple-500/50'
+                : 'via-green-500/50'
           } to-transparent rounded-full`}></div>
         </div>
       </motion.div>
@@ -209,7 +215,7 @@ function SectionContainer({ title, delay, items, special, id }: SectionContainer
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <CardLink {...item} />
+            <CardLink {...item} special={special} sectionId={id} />
           </MotionDiv>
         ))}
       </div>
