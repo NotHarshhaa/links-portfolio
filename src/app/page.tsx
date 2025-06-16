@@ -23,18 +23,18 @@ export default function HomePage() {
   }
 
   return (
-    <div className="relative w-full min-h-screen bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-black">
+    <div className="relative w-full min-h-screen overflow-x-hidden bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-black">
       {/* Background decoration */}
       <ParticleBackground />
       <div className="absolute top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-blue-50/50 via-purple-50/30 to-transparent dark:from-blue-950/20 dark:via-purple-950/10 dark:to-transparent -z-10"></div>
-      <div className="absolute top-20 left-10 w-96 h-96 bg-purple-200/30 dark:bg-purple-900/20 rounded-full blur-3xl animate-pulse -z-10"></div>
-      <div className="absolute top-40 right-10 w-96 h-96 bg-blue-200/30 dark:bg-blue-900/20 rounded-full blur-3xl animate-pulse -z-10"></div>
+      <div className="absolute top-20 -left-10 md:left-10 w-72 md:w-96 h-72 md:h-96 bg-purple-200/30 dark:bg-purple-900/20 rounded-full blur-3xl animate-pulse -z-10"></div>
+      <div className="absolute top-40 -right-10 md:right-10 w-72 md:w-96 h-72 md:h-96 bg-blue-200/30 dark:bg-blue-900/20 rounded-full blur-3xl animate-pulse -z-10"></div>
 
       {/* Skip Animation Button */}
       <SkipAnimation />
 
       {/* Main Content */}
-      <main className="relative z-10 flex flex-col items-center justify-center w-full px-4 sm:px-8 pt-28 sm:pt-32 md:pt-36 lg:pt-40 pb-16 lg:pb-8">
+      <main className="relative z-10 flex flex-col items-center justify-center w-full px-4 sm:px-8 pt-28 sm:pt-32 md:pt-36 lg:pt-40 pb-16 lg:pb-8 overflow-x-hidden">
         <MotionDiv
           data-skip-animation
           initial={{ opacity: 0, y: 20 }}
@@ -154,7 +154,7 @@ function SectionContainer({ title, delay, items, special, id }: SectionContainer
     <MotionSection 
       id={id}
       data-skip-animation
-      className={`w-full max-w-md lg:max-w-2xl mt-8 rounded-3xl p-6 shadow-2xl backdrop-blur-lg border border-neutral-200/50 dark:border-neutral-800/50 transition-all duration-300 hover:shadow-3xl hover:scale-[1.01] ${
+      className={`w-full max-w-[95vw] md:max-w-md lg:max-w-2xl mt-8 rounded-3xl p-4 sm:p-6 shadow-2xl backdrop-blur-lg border border-neutral-200/50 dark:border-neutral-800/50 transition-all duration-300 hover:shadow-3xl hover:scale-[1.01] ${
         special 
           ? 'bg-gradient-to-br from-white/80 via-white/90 to-blue-50/80 dark:from-zinc-900/80 dark:via-zinc-800/80 dark:to-blue-950/70' 
           : id === 'personal-network'
