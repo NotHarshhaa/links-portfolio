@@ -14,7 +14,7 @@ import { WebResourceIcon } from '@/components/icons/web-resource'
 export const SOCIAL_DATA = {
   name: 'Harshhaa Vardhan Reddy',
   initials: 'HR',
-  avatar: '/assets/avatar.jpg',
+  avatar: '/assets/avatar.png',
   about: 'DevOps Engineer, a passionate DevOps Engineer on a mission to automate everything and scale cloud infrastructures efficiently with a love for technology and a knack for problem-solving. I thrive on challenges and enjoy collaborating with teams to deliver innovative solutions that drive success. Let\'s connect and explore the world of DevOps together!. Based in Hyderabad, India',
   contacts: [
     {

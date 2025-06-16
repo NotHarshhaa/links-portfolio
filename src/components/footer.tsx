@@ -46,7 +46,7 @@ export function Footer() {
           <div className="relative size-8 flex items-center justify-center">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300" />
             <Image
-              src="/assets/avatar.jpg"
+              src="/assets/avatar.png"
               alt="Logo"
               width={32}
               height={32}

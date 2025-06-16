@@ -43,7 +43,7 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
-          'group relative flex items-center justify-between rounded-xl border border-neutral-200 bg-white/80 p-4 text-sm font-medium shadow-sm transition-all hover:border-blue-300 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900/80 dark:hover:border-blue-700 backdrop-blur-sm',
+          'group relative flex items-center justify-between rounded-xl border border-neutral-200 bg-white/80 p-4 text-sm font-medium shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-800 dark:bg-neutral-900/80 dark:hover:border-blue-700 backdrop-blur-sm',
           special ? 'hover:border-blue-300 dark:hover:border-blue-700' : 
                    sectionId === 'personal-network' ? 'hover:border-purple-300 dark:hover:border-purple-700' : 
                    'hover:border-green-300 dark:hover:border-green-700',
@@ -51,19 +51,22 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
         )}
         {...props}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 z-10">
           {Icon && (
-            <div className={`flex items-center justify-center size-10 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 ${
+            <motion.div 
+              whileHover={{ rotate: 5, scale: 1.1 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              className={`flex items-center justify-center size-10 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 ${
               special ? 'bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-gray-900' :
                         sectionId === 'personal-network' ? 'bg-gradient-to-br from-purple-50 to-white dark:from-purple-900/20 dark:to-gray-900' :
                         'bg-gradient-to-br from-green-50 to-white dark:from-green-900/20 dark:to-gray-900'
             }`}>
-              <Icon className={`h-5 w-5 ${
+              <Icon className={`h-5 w-5 transition-transform duration-300 group-hover:scale-110 ${
                 special ? 'text-blue-600 dark:text-blue-400' :
                           sectionId === 'personal-network' ? 'text-purple-600 dark:text-purple-400' :
                           'text-green-600 dark:text-green-400'
               }`} />
-            </div>
+            </motion.div>
           )}
           <div className="flex flex-col">
             <span className={`font-medium text-neutral-700 dark:text-neutral-300 ${
@@ -81,7 +84,10 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
           </div>
         </div>
         
-        <div className={`rounded-md p-1.5 text-neutral-700 opacity-60 group-hover:opacity-100 dark:text-neutral-300 ${
+        <motion.div 
+          whileHover={{ x: 3 }}
+          transition={{ type: "spring", stiffness: 400, damping: 10 }}
+          className={`rounded-md p-1.5 text-neutral-700 opacity-60 group-hover:opacity-100 dark:text-neutral-300 z-10 ${
           special ? 'group-hover:text-blue-600 dark:group-hover:text-blue-400' :
                     sectionId === 'personal-network' ? 'group-hover:text-purple-600 dark:group-hover:text-purple-400' :
                     'group-hover:text-green-600 dark:group-hover:text-green-400'
@@ -90,7 +96,7 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
-            className="h-4 w-4"
+            className="h-4 w-4 transition-transform duration-300 group-hover:scale-110"
           >
             <path
               fillRule="evenodd"
@@ -98,7 +104,7 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
               clipRule="evenodd"
             />
           </svg>
-        </div>
+        </motion.div>
         
         <div className={`absolute inset-0 ${gradients.hover} opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300`}></div>
         
