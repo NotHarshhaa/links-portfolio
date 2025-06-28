@@ -1,11 +1,21 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import { motion } from 'framer-motion'
 
 export default function SkipAnimation() {
   const [showSkip, setShowSkip] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
   
   const handleSkip = () => {
     // Find all animated elements and set them to their final state
@@ -25,7 +35,8 @@ export default function SkipAnimation() {
     sessionStorage.setItem('animations-skipped', 'true')
   }
   
-  if (!showSkip) return null
+  // Don't show on mobile or if skip was clicked
+  if (!showSkip || isMobile) return null
   
   return (
     <motion.div 

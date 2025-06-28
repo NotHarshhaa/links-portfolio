@@ -109,17 +109,17 @@ export const SOCIAL_DATA = {
       icon: BlogIcon
     },
     {
-      title: 'Cloud Blogs',
+      title: 'AWS/Azure/GCPCloud Blogs',
       url: 'https://cloud.prodevopsguytech.com',
       icon: BlogIcon
     },
     {
-      title: 'DevOps Tools Setup/Guides',
-      url: 'https://devopsguides.site',
+      title: 'Ultimate DevOps Tools Setup & Installation Guides',
+      url: 'https://tools-setup.prodevopsguytech.com',
       icon: WebResourceIcon
     },
     {
-      title: 'DevOps Cheatsheet Hub',
+      title: 'Ultimate DevOps Tools Cheatsheet',
       url: 'https://cheatsheet.prodevopsguytech.com',
       icon: WebResourceIcon
     }

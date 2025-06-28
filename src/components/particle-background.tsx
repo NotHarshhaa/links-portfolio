@@ -1,13 +1,21 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTheme } from 'next-themes'
 
 export default function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { resolvedTheme } = useTheme()
+  const [isMobile, setIsMobile] = useState(false)
   
   useEffect(() => {
+    // Check if device is mobile
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
     const canvas = canvasRef.current
     if (!canvas) return
     
@@ -26,13 +34,17 @@ export default function ParticleBackground() {
     
     // Simple decorative dots in the background - no animation for better performance
     const drawParticles = () => {
-      const particleCount = Math.min(window.innerWidth / 20, 50) // Fewer particles for better performance
+      // Significantly reduce particles on mobile
+      const particleCount = isMobile 
+        ? Math.min(window.innerWidth / 60, 15) // Much fewer particles for mobile
+        : Math.min(window.innerWidth / 20, 50)
+      
       const isDark = resolvedTheme === 'dark'
       
       for (let i = 0; i < particleCount; i++) {
         const x = Math.random() * canvas.width
         const y = Math.random() * canvas.height
-        const size = Math.random() * 3 + 1
+        const size = Math.random() * (isMobile ? 2 : 3) + 1 // Smaller particles on mobile
         
         ctx.beginPath()
         ctx.arc(x, y, size, 0, Math.PI * 2)
@@ -54,8 +66,8 @@ export default function ParticleBackground() {
         
         ctx.fill()
         
-        // Draw some connecting lines for decoration
-        if (i > 0 && i % 4 === 0) {
+        // Draw connecting lines only on desktop
+        if (!isMobile && i > 0 && i % 4 === 0) {
           const prevX = Math.random() * canvas.width
           const prevY = Math.random() * canvas.height
           
@@ -83,8 +95,9 @@ export default function ParticleBackground() {
     return () => {
       window.removeEventListener('resize', resizeCanvas)
       window.removeEventListener('resize', handleResize)
+      window.removeEventListener('resize', checkMobile)
     }
-  }, [resolvedTheme])
+  }, [resolvedTheme, isMobile])
   
   return (
     <canvas 
