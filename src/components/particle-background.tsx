@@ -24,8 +24,9 @@ export default function ParticleBackground() {
     
     // Set canvas to full window size
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
+      const container = document.documentElement
+      canvas.width = container.clientWidth
+      canvas.height = container.clientHeight
     }
     
     // Initialize
@@ -102,7 +103,8 @@ export default function ParticleBackground() {
   return (
     <canvas 
       ref={canvasRef} 
-      className="fixed inset-0 pointer-events-none -z-20 opacity-30"
+      className="fixed inset-0 pointer-events-none -z-20 opacity-30 w-full h-full"
+      style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0 }}
     />
   )
 } 
