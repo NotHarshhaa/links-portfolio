@@ -11,9 +11,16 @@ export function ModeToggle() {
   const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const [ripple, setRipple] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
     setMounted(true)
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
   if (!mounted) return null
@@ -23,8 +30,10 @@ export function ModeToggle() {
 
   const handleToggle = () => {
     setTheme(isDark ? 'light' : 'dark')
-    setRipple(true)
-    setTimeout(() => setRipple(false), 300) // Reset ripple after animation
+    if (!isMobile) {
+      setRipple(true)
+      setTimeout(() => setRipple(false), 300) // Reset ripple after animation
+    }
   }
 
   return (
@@ -37,8 +46,8 @@ export function ModeToggle() {
             onClick={handleToggle}
             className="relative size-9 overflow-hidden rounded-lg transition-colors duration-300"
           >
-            {/* Ripple effect */}
-            {ripple && (
+            {/* Ripple effect - only on desktop */}
+            {ripple && !isMobile && (
               <motion.div
                 initial={{ scale: 0, opacity: 0.4 }}
                 animate={{ scale: 2.5, opacity: 0 }}
@@ -47,22 +56,34 @@ export function ModeToggle() {
               />
             )}
 
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={isDark ? 'moon' : 'sun'}
-                initial={{ opacity: 0, y: -8, rotate: -15 }}
-                animate={{ opacity: 1, y: 0, rotate: 0 }}
-                exit={{ opacity: 0, y: 8, rotate: 15 }}
-                transition={{ duration: 0.25, ease: 'easeInOut' }}
-                className="absolute flex items-center justify-center inset-0"
-              >
+            {isMobile ? (
+              // Simple icon swap for mobile
+              <div className="absolute flex items-center justify-center inset-0">
                 {isDark ? (
                   <Moon className="h-[1.5rem] w-[1.5rem] stroke-[1.5]" />
                 ) : (
                   <Sun className="h-[1.5rem] w-[1.5rem] stroke-[1.5]" />
                 )}
-              </motion.div>
-            </AnimatePresence>
+              </div>
+            ) : (
+              // Animated version for desktop
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={isDark ? 'moon' : 'sun'}
+                  initial={{ opacity: 0, y: -8, rotate: -15 }}
+                  animate={{ opacity: 1, y: 0, rotate: 0 }}
+                  exit={{ opacity: 0, y: 8, rotate: 15 }}
+                  transition={{ duration: 0.25, ease: 'easeInOut' }}
+                  className="absolute flex items-center justify-center inset-0"
+                >
+                  {isDark ? (
+                    <Moon className="h-[1.5rem] w-[1.5rem] stroke-[1.5]" />
+                  ) : (
+                    <Sun className="h-[1.5rem] w-[1.5rem] stroke-[1.5]" />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            )}
 
             <span className="sr-only">Toggle theme</span>
           </Button>

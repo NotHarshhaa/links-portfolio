@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
 
 export default function RootLayout({
   children
@@ -66,6 +67,20 @@ export default function RootLayout({
 
 function ThemeTransitionWrapper({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme()
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  if (isMobile) {
+    return <div>{children}</div>
+  }
 
   return (
     <AnimatePresence mode="wait">
