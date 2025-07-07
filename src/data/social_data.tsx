@@ -1,15 +1,25 @@
-import { DevtoIcon } from '@/components/icons/devto'
-import { HashnodeIcon } from '@/components/icons/hashnode'
-import { GithubIcon } from '@/components/icons/github'
-import { LinkedinIcon } from '@/components/icons/linkedin'
-import { MailIcon } from '@/components/icons/mail'
-import { ResumeIcon } from '@/components/icons/resume'
-import { TelegramIcon } from '@/components/icons/telegram'
-import { WebIcon } from '@/components/icons/web'
-import { WhatsappIcon } from '@/components/icons/whatsapp'
-import { XIcon } from '@/components/icons/x'
-import { BlogIcon } from '@/components/icons/blog'
-import { WebResourceIcon } from '@/components/icons/web-resource'
+import {
+  IconWorld,
+  IconFileText,
+  IconMail,
+  IconBrandBlogger,
+  IconBrandWhatsapp,
+  IconBrandGithub,
+  IconBrandLinkedin,
+  IconBrandX,
+  IconBrandDeviantart,
+  IconBrandTelegram,
+  IconBrandHexo,
+  IconFileTypeDoc,
+  IconBrandDocker,
+  IconBriefcase,
+  IconCloud,
+  IconFileSpreadsheet,
+  IconDeviceImacQuestion,
+  IconBuildingCommunity,
+  IconSettingsCog,
+  IconPresentationAnalytics
+} from '@tabler/icons-react'
 
 export const SOCIAL_DATA = {
   name: 'Harshhaa Vardhan Reddy',
@@ -20,123 +30,123 @@ export const SOCIAL_DATA = {
     {
       title: 'Portfolio',
       url: 'https://notharshhaa.site',
-      icon: WebIcon
+      icon: IconWorld
     },
     {
       title: 'Resume',
       url: 'https://cv.notharshhaa.site',
-      icon: ResumeIcon
+      icon: IconFileText
     },
     {
       title: 'Email',
       url: 'mailto:harshhaa03@gmail.com',
-      icon: MailIcon
+      icon: IconMail
     },
     {
       title: 'Blog',
       url: 'https://blog.notharshhaa.site',
-      icon: BlogIcon
+      icon: IconBrandBlogger
     },
     {
       title: 'WhatsApp',
       url: 'https://wa.me/+917995905634',
-      icon: WhatsappIcon
+      icon: IconBrandWhatsapp
     }
   ],
   socials: [
     {
       title: 'GitHub',
       url: 'https://github.com/NotHarshhaa',
-      icon: GithubIcon
+      icon: IconBrandGithub
     },
     {
       title: 'LinkedIn',
       url: 'https://www.linkedin.com/in/harshhaa-vardhan-reddy',
-      icon: LinkedinIcon
+      icon: IconBrandLinkedin
     },
     {
       title: 'The everything app',
       url: 'https://x.com/NotHarshhaa',
-      icon: XIcon
+      icon: IconBrandX
     },
     {
       title: 'Dev Community',
       url: 'https://dev.to/NotHarshhaa',
-      icon: DevtoIcon
+      icon: IconBrandDeviantart
     },
     {
       title: 'Telegram',
       url: 'https://t.me/NotHarshhaa',
-      icon: TelegramIcon
+      icon: IconBrandTelegram
     }
   ],
   communities: [
     {
       title: 'Free DevOps & Cloud Community Learning',
       url: 'https://t.me/prodevopsguy',
-      icon: TelegramIcon
+      icon: IconBrandTelegram
     },
     {
       title: 'Best DevOps & Cloud Blogs & Articles',
       url: 'https://hashnode.com/@prodevopsguy',
-      icon: HashnodeIcon
+      icon: IconBrandHexo
     }
   ],
   resources: [
     {
-      title: 'Real-Time Projects Hub',
+      title: 'Real-Time DevOps/Cloud Projects Hub',
       url: 'https://projects.prodevopsguytech.com',
-      icon: WebResourceIcon
+      icon: IconPresentationAnalytics
     },
     {
-      title: 'Ultimate Docs Portal',
+      title: 'Ultimate 1200+ DevOps/Cloud Docs Resources Portal',
       url: 'https://docs.prodevopsguytech.com',
-      icon: WebResourceIcon
+      icon: IconFileTypeDoc
     },
     {
       title: 'GitHub Repositories Central',
       url: 'https://repos.prodevopsguytech.com',
-      icon: GithubIcon
+      icon: IconBrandGithub
     },
     {
       title: 'DevOps/Cloud Jobs Portal',
       url: 'https://jobs.prodevopsguytech.com',
-      icon: WebResourceIcon
+      icon: IconBriefcase
     },
     {
       title: 'DevOps Blogs',
       url: 'https://blog.prodevopsguytech.com',
-      icon: BlogIcon
+      icon: IconBrandBlogger
     },
     {
       title: 'AWS/Azure/GCPCloud Blogs',
       url: 'https://cloud.prodevopsguytech.com',
-      icon: BlogIcon
+      icon: IconCloud
     },
     {
       title: 'Ultimate DevOps Tools Setup & Installation Guides',
       url: 'https://tools-setup.prodevopsguytech.com',
-      icon: WebResourceIcon
+      icon: IconSettingsCog
     },
     {
       title: 'Ultimate DevOps Tools Cheatsheet',
       url: 'https://cheatsheet.prodevopsguytech.com',
-      icon: WebResourceIcon
+      icon: IconFileSpreadsheet
     },
     {
       title: '1000+ DevOps/Cloud Interview Questions & Answers',
       url: 'https://interviews.prodevopsguytech.com',
-      icon: WebResourceIcon
+      icon: IconDeviceImacQuestion
     },
     {
       title: 'From Docker to Kubernetes Learning Platform',
       url: 'https://dockertokubernetes.live',
-      icon: WebResourceIcon
+      icon: IconBrandDocker
     },
     {
       title: 'ProDevOpsGuy Tech Community Home',
       url: 'https://prodevopsguytech.com',
-      icon: WebResourceIcon
+      icon: IconBuildingCommunity
     }
   ]
 }

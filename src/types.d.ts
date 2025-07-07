@@ -1,3 +1,5 @@
+import { Icon } from '@tabler/icons-react'
+
 export interface Data {
   name: string
   initials: string
@@ -12,5 +14,5 @@ export interface Data {
 export interface Links {
   title: string
   url: string
-  icon: React.FC<React.SVGProps<SVGSVGElement>>
+  icon: typeof Icon
 }
