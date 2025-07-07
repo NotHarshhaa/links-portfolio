@@ -122,6 +122,21 @@ export const SOCIAL_DATA = {
       title: 'Ultimate DevOps Tools Cheatsheet',
       url: 'https://cheatsheet.prodevopsguytech.com',
       icon: WebResourceIcon
+    },
+    {
+      title: '1000+ DevOps/Cloud Interview Questions & Answers',
+      url: 'https://interviews.prodevopsguytech.com',
+      icon: WebResourceIcon
+    },
+    {
+      title: 'From Docker to Kubernetes Learning Platform',
+      url: 'https://dockertokubernetes.live',
+      icon: WebResourceIcon
+    },
+    {
+      title: 'ProDevOpsGuy Tech Community Home',
+      url: 'https://prodevopsguytech.com',
+      icon: WebResourceIcon
     }
   ]
 }
