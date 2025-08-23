@@ -70,7 +70,6 @@
     padding: 0;
     width: 100%;
     scroll-behavior: smooth;
-    overflow-x: hidden;
     /* Optimize for performance */
     will-change: scroll-position;
   }
@@ -99,6 +98,12 @@
   /* Smooth scrolling for anchor links */
   html {
     scroll-padding-top: 100px;
+  }
+
+  /* Ensure proper scroll behavior */
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   /* Optimize animations for users who prefer reduced motion */

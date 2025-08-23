@@ -42,7 +42,7 @@ export default function RootLayout({
           keywords: 'DevOps Engineer, Cloud Infrastructure, Automation, AWS, Azure, GCP, Kubernetes, Docker, CI/CD, Hyderabad, India'
         }}
       />
-      <body className="flex min-h-screen flex-col bg-gradient-to-b from-white via-neutral-50 to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-black relative overflow-x-hidden">
+      <body className="flex min-h-screen flex-col bg-gradient-to-b from-white via-neutral-50 to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-black relative">
         <PerformanceMonitor />
         <SEOOptimizer />
         <ThemeProvider
@@ -92,7 +92,7 @@ function ThemeTransitionWrapper({ children }: { children: React.ReactNode }) {
 
   // Prevent hydration mismatch
   if (!mounted) {
-    return <div className="min-h-screen bg-background overflow-x-hidden">{children}</div>
+    return <div className="min-h-screen bg-background">{children}</div>
   }
 
   if (isMobile) {

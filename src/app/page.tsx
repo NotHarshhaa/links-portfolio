@@ -39,7 +39,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="relative w-full bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-black overflow-x-hidden">
+    <div className="relative w-full bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-black">
       {/* Progress bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-neutral-200 dark:bg-neutral-800 z-50">
         <motion.div 
