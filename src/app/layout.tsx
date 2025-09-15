@@ -37,8 +37,8 @@ export default function RootLayout({
     >
       <Head
         metadata={{
-          title: 'Harshhaa Vardhan Reddy | DevOps Engineer & Cloud Specialist',
-          description: 'DevOps Engineer passionate about automation, cloud infrastructure, and scalable solutions. Based in Hyderabad, India. Connect with me for collaboration and innovation.',
+          title: 'Links | HARSHHAA',
+          description: 'A curated collection of links to all my social media profiles, professional networks, portfolio, and ways to connect with me online. Stay updated with my latest projects, blog posts, and DevOps insights.',
           keywords: 'DevOps Engineer, Cloud Infrastructure, Automation, AWS, Azure, GCP, Kubernetes, Docker, CI/CD, Hyderabad, India'
         }}
       />
