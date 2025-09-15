@@ -7,14 +7,29 @@ import { motion } from 'framer-motion'
 export default function SkipAnimation() {
   const [showSkip, setShowSkip] = useState(true)
   const [isMobile, setIsMobile] = useState(false)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768)
     }
+    
+    // Check for reduced motion preference
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setPrefersReducedMotion(mediaQuery.matches)
+    
+    const handleChange = (e: MediaQueryListEvent) => {
+      setPrefersReducedMotion(e.matches)
+    }
+    
+    mediaQuery.addEventListener('change', handleChange)
     checkMobile()
     window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile)
+      mediaQuery.removeEventListener('change', handleChange)
+    }
   }, [])
   
   const handleSkip = () => {
@@ -35,8 +50,8 @@ export default function SkipAnimation() {
     sessionStorage.setItem('animations-skipped', 'true')
   }
   
-  // Don't show on mobile or if skip was clicked
-  if (!showSkip || isMobile) return null
+  // Don't show on mobile, if skip was clicked, or if user prefers reduced motion
+  if (!showSkip || isMobile || prefersReducedMotion) return null
   
   return (
     <motion.div 

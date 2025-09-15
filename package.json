@@ -1,9 +1,9 @@
 {
-  "name": "link",
-  "version": "0.1.0",
-  "author": "Emanuel Peire",
+  "name": "harshhaa-portfolio-links",
+  "version": "1.0.0",
+  "author": "Harshhaa Vardhan Reddy",
   "license": "MIT",
-  "description": "Links to my social media",
+  "description": "A modern portfolio links page showcasing social media profiles and professional networks",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

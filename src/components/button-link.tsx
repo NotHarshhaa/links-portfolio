@@ -18,7 +18,7 @@ const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
         target="_blank"
         rel="noopener noreferrer"
                   className={cn(
-            'group relative inline-flex items-center justify-center rounded-full border border-neutral-200 bg-white/80 px-3 sm:px-4 py-2 text-sm font-medium shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-md hover:scale-105 dark:border-neutral-800 dark:bg-neutral-900/80 dark:hover:border-blue-700 backdrop-blur-sm focus-ring',
+            'group relative inline-flex items-center justify-center rounded-full border border-neutral-200 bg-white/80 px-3 sm:px-4 py-2 text-sm font-medium shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-md hover:scale-105 dark:border-neutral-800 dark:bg-neutral-900/80 dark:hover:border-blue-700 backdrop-blur-sm focus-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 active:scale-95 touch-manipulation',
             className
           )}
         aria-label={`Visit ${title}`}

@@ -59,7 +59,7 @@ export default function HomePage() {
       <SkipAnimation />
 
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center w-full px-3 sm:px-8 pt-24 sm:pt-32 md:pt-36 lg:pt-40 pb-20 sm:pb-32">
+      <main id="main-content" className="relative z-10 flex flex-col items-center justify-center w-full px-3 sm:px-8 pt-24 sm:pt-32 md:pt-36 lg:pt-40 pb-20 sm:pb-32">
         <MotionDiv
           data-skip-animation
           initial={{ opacity: 0, y: 20 }}
@@ -175,7 +175,7 @@ export default function HomePage() {
           special
           icon={<Sparkles className="h-5 w-5" />}
         />
-      </div>
+      </main>
     </div>
   )
 }

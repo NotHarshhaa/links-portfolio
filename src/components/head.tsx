@@ -19,11 +19,12 @@ export function Head({ metadata }: { metadata: Metadata }) {
 
       {/* General */}
       <meta charSet="utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
+      <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       <meta name="author" content={author} />
       <meta name="robots" content="index, follow" />
       <meta name="theme-color" content="#000000" />
       <meta name="color-scheme" content="dark light" />
+      <meta name="format-detection" content="telephone=no" />
 
       {/* Open Graph */}
       <meta property="og:type" content="website" />

@@ -85,10 +85,14 @@ export function SEOOptimizer({
       jobTitle: 'DevOps Engineer',
       description: description,
       url: url,
+      image: ogImage,
+      email: 'harshhaa03@gmail.com',
       sameAs: [
         'https://github.com/NotHarshhaa',
         'https://www.linkedin.com/in/harshhaa-vardhan-reddy',
-        'https://x.com/NotHarshhaa'
+        'https://x.com/NotHarshhaa',
+        'https://notharshhaa.site',
+        'https://blog.notharshhaa.site'
       ],
       worksFor: {
         '@type': 'Organization',
@@ -98,6 +102,22 @@ export function SEOOptimizer({
         '@type': 'PostalAddress',
         addressLocality: 'Hyderabad',
         addressCountry: 'India'
+      },
+      knowsAbout: [
+        'DevOps',
+        'Cloud Infrastructure',
+        'AWS',
+        'Azure',
+        'GCP',
+        'Kubernetes',
+        'Docker',
+        'CI/CD',
+        'Automation',
+        'Infrastructure as Code'
+      ],
+      alumniOf: {
+        '@type': 'EducationalOrganization',
+        name: 'Engineering College'
       }
     }
 

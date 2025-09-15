@@ -68,7 +68,7 @@ export default function RootLayout({
               }}
             />
           </ThemeTransitionWrapper>
-                        <Footer />
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

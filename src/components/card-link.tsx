@@ -56,10 +56,10 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
         target="_blank"
         rel="noopener noreferrer"
         className={cn(
-          'group relative flex items-center sm:items-start justify-between rounded-xl border border-neutral-200 bg-white/80 p-3 sm:p-4 text-sm font-medium shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-800 dark:bg-neutral-900/80 dark:hover:border-blue-700 backdrop-blur-sm',
-          special ? 'hover:border-blue-300 dark:hover:border-blue-700' : 
-                   sectionId === 'personal-network' ? 'hover:border-purple-300 dark:hover:border-purple-700' : 
-                   'hover:border-green-300 dark:hover:border-green-700',
+          'group relative flex items-center sm:items-start justify-between rounded-xl border border-neutral-200 bg-white/80 p-3 sm:p-4 text-sm font-medium shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-800 dark:bg-neutral-900/80 dark:hover:border-blue-700 backdrop-blur-sm focus-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.98] touch-manipulation',
+          special ? 'hover:border-blue-300 dark:hover:border-blue-700 focus-visible:ring-blue-500' : 
+                   sectionId === 'personal-network' ? 'hover:border-purple-300 dark:hover:border-purple-700 focus-visible:ring-purple-500' : 
+                   'hover:border-green-300 dark:hover:border-green-700 focus-visible:ring-green-500',
           isHovered && gradients.glow,
           className
         )}
