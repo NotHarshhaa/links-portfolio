@@ -147,6 +147,31 @@ export const SOCIAL_DATA = {
       title: 'ProDevOpsGuy Tech Community Home',
       url: 'https://prodevopsguytech.com',
       icon: IconBuildingCommunity
+    },
+    {
+      title: 'Certified Kubernetes Administrator (CKA)',
+      url: 'https://k8s-learning.live',
+      icon: IconBrandDocker
+    },
+    {
+      title: 'Local setup your DevOps learning journey',
+      url: 'https://devops-environment-toolkit.vercel.app',
+      icon: IconSettingsCog
+    },
+    {
+      title: 'Collection of essential DevOps tools',
+      url: 'https://tools.prodevopsguytech.com',
+      icon: IconSettingsCog
+    },
+    {
+      title: 'Advanced monitoring platform in a box',
+      url: 'https://devops-monitoring-in-a-box.vercel.app',
+      icon: IconPresentationAnalytics
+    },
+    {
+      title: 'Awesome DevOps',
+      url: 'https://awesomedevopsui.site',
+      icon: IconWorld
     }
   ]
 }
