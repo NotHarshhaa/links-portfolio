@@ -68,13 +68,12 @@ export function Header() {
           >
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/40 to-purple-500/40 rounded-full blur-xl group-hover:blur-2xl group-hover:scale-125 transition-all duration-500 animate-pulse-subtle" />
             <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-md group-hover:blur-xl group-hover:scale-110 transition-all duration-300" />
-            <Image
+            <img
               src="/logo.svg"
               alt="Harshhaa Logo"
               width={36}
               height={36}
               className="relative z-10 group-hover:opacity-90 transition-all duration-300 drop-shadow-lg sm:w-[42px] sm:h-[42px]"
-              priority
             />
           </motion.div>
           <motion.span
