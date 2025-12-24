@@ -22,6 +22,7 @@ const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
             className
           )}
         aria-label={`Visit ${title}`}
+        prefetch={false}
         {...props}
       >
         <motion.div

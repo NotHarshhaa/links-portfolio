@@ -11,6 +11,7 @@ import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
 import { PerformanceMonitor } from '@/components/performance-monitor'
 import { SEOOptimizer } from '@/components/seo-optimizer'
+import { ErrorBoundary } from '@/components/error-boundary'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -45,31 +46,33 @@ export default function RootLayout({
       <body className="flex min-h-screen flex-col bg-gradient-to-b from-white via-neutral-50 to-neutral-100 dark:from-neutral-950 dark:via-neutral-900 dark:to-black relative">
         <PerformanceMonitor />
         <SEOOptimizer />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <ThemeTransitionWrapper>
-            <TooltipProvider>
-              <Suspense fallback={<div className="h-14 sm:h-16" />}>
-                <LazyHeader />
-              </Suspense>
-              <main className="flex-grow">
-                {children}
-              </main>
-            </TooltipProvider>
-            <Toaster 
-              position="bottom-right"
-              toastOptions={{
-                className: 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-sm sm:text-base',
-                duration: 3000,
-              }}
-            />
-          </ThemeTransitionWrapper>
-          <Footer />
-        </ThemeProvider>
+        <ErrorBoundary>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <ThemeTransitionWrapper>
+              <TooltipProvider>
+                <Suspense fallback={<div className="h-14 sm:h-16" />}>
+                  <LazyHeader />
+                </Suspense>
+                <main id="main-content" className="flex-grow" tabIndex={-1}>
+                  {children}
+                </main>
+              </TooltipProvider>
+              <Toaster 
+                position="bottom-right"
+                toastOptions={{
+                  className: 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-sm sm:text-base',
+                  duration: 3000,
+                }}
+              />
+            </ThemeTransitionWrapper>
+            <Footer />
+          </ThemeProvider>
+        </ErrorBoundary>
       </body>
     </html>
   )

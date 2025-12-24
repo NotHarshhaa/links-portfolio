@@ -55,6 +55,7 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
         href={url}
         target="_blank"
         rel="noopener noreferrer"
+        prefetch={false}
         className={cn(
           'group relative flex items-center sm:items-start justify-between rounded-xl border border-neutral-200 bg-white/80 p-3 sm:p-4 text-sm font-medium shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-800 dark:bg-neutral-900/80 dark:hover:border-blue-700 backdrop-blur-sm focus-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.98] touch-manipulation',
           special ? 'hover:border-blue-300 dark:hover:border-blue-700 focus-visible:ring-blue-500' : 
@@ -67,6 +68,7 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleClick}
         aria-label={`Visit ${title}`}
+        tabIndex={0}
         {...props}
       >
         <div className="flex items-center sm:items-start gap-2 sm:gap-4 z-10">

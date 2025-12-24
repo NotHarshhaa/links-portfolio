@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useState, useEffect } from "react";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
+import { handleAnchorClick } from "@/lib/scroll-utils";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -25,6 +25,28 @@ export function Header() {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+
+  // Close mobile menu on escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (isMobileMenuOpen) {
+      document.addEventListener('keydown', handleEscape);
+      // Prevent body scroll when menu is open
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
 
   // Prevent hydration mismatch
   if (!mounted) {
@@ -71,9 +93,9 @@ export function Header() {
             <img
               src="/logo.svg"
               alt="Harshhaa Logo"
-              width={36}
-              height={36}
-              className="relative z-10 group-hover:opacity-90 transition-all duration-300 drop-shadow-lg sm:w-[42px] sm:h-[42px]"
+              width={42}
+              height={42}
+              className="relative z-10 group-hover:opacity-90 transition-all duration-300 drop-shadow-lg w-9 h-9 sm:w-[42px] sm:h-[42px]"
             />
           </motion.div>
           <motion.span
@@ -88,24 +110,27 @@ export function Header() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6">
-          <nav className="flex items-center space-x-3 lg:space-x-4">
+          <nav className="flex items-center space-x-3 lg:space-x-4" role="navigation" aria-label="Main navigation">
             <a
               href="#personal-network"
-              className="text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+              onClick={(e) => handleAnchorClick(e, "#personal-network")}
+              className="text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors focus-ring rounded-md px-2 py-1"
               aria-label="Go to personal network section"
             >
               Personal
             </a>
             <a
               href="#community-network"
-              className="text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
+              onClick={(e) => handleAnchorClick(e, "#community-network")}
+              className="text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors focus-ring rounded-md px-2 py-1"
               aria-label="Go to community network section"
             >
               Community
             </a>
             <a
               href="#resources"
-              className="text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-green-600 dark:hover:text-green-400 transition-colors"
+              onClick={(e) => handleAnchorClick(e, "#resources")}
+              className="text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-green-600 dark:hover:text-green-400 transition-colors focus-ring rounded-md px-2 py-1"
               aria-label="Go to resources section"
             >
               Resources
@@ -134,11 +159,13 @@ export function Header() {
 
           {/* Mobile Menu Button */}
           <motion.button
-            className="md:hidden p-1.5 sm:p-2 rounded-lg bg-white/50 dark:bg-neutral-800/50 border border-neutral-200/50 dark:border-neutral-700/50 hover:bg-white/80 dark:hover:bg-neutral-800/80 transition-colors"
+            className="md:hidden p-1.5 sm:p-2 rounded-lg bg-white/50 dark:bg-neutral-800/50 border border-neutral-200/50 dark:border-neutral-700/50 hover:bg-white/80 dark:hover:bg-neutral-800/80 transition-colors focus-ring"
             onClick={toggleMobileMenu}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            aria-label="Toggle mobile menu"
+            aria-label={isMobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-menu"
           >
             {isMobileMenuOpen ? (
               <X className="h-4 w-4 sm:h-5 sm:w-5 text-neutral-600 dark:text-neutral-400" />
@@ -153,18 +180,25 @@ export function Header() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
+            id="mobile-menu"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
             className="fixed top-24 sm:top-24 left-4 right-4 sm:left-1/2 sm:transform sm:-translate-x-1/2 sm:w-[92%] sm:max-w-sm z-40 md:hidden"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile navigation menu"
           >
             <div className="bg-gradient-to-r from-white/95 via-white/98 to-white/95 dark:from-neutral-900/95 dark:via-neutral-800/98 dark:to-neutral-900/95 backdrop-blur-[16px] border border-neutral-200/60 dark:border-neutral-700/60 rounded-2xl shadow-[0_10px_30px_rgb(0,0,0,0.1)] dark:shadow-[0_10px_30px_rgb(0,0,0,0.3)] p-3 sm:p-4">
-              <nav className="flex flex-col space-y-2 sm:space-y-3">
+              <nav className="flex flex-col space-y-2 sm:space-y-3" role="navigation" aria-label="Mobile navigation">
                 <a
                   href="#personal-network"
-                  className="group relative flex items-center justify-between rounded-xl border border-neutral-200/60 bg-white/80 p-3 text-sm font-medium shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-700/60 dark:bg-neutral-800/80 dark:hover:border-blue-600 backdrop-blur-sm"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={(e) => {
+                    handleAnchorClick(e, "#personal-network")
+                    setIsMobileMenuOpen(false)
+                  }}
+                  className="group relative flex items-center justify-between rounded-xl border border-neutral-200/60 bg-white/80 p-3 text-sm font-medium shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-700/60 dark:bg-neutral-800/80 dark:hover:border-blue-600 backdrop-blur-sm focus-ring"
                 >
                   <span className="text-neutral-700 dark:text-neutral-300 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
                     Personal Network
@@ -173,8 +207,11 @@ export function Header() {
                 </a>
                 <a
                   href="#community-network"
-                  className="group relative flex items-center justify-between rounded-xl border border-neutral-200/60 bg-white/80 p-3 text-sm font-medium shadow-sm transition-all duration-300 hover:border-purple-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-700/60 dark:bg-neutral-800/80 dark:hover:border-purple-600 backdrop-blur-sm"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={(e) => {
+                    handleAnchorClick(e, "#community-network")
+                    setIsMobileMenuOpen(false)
+                  }}
+                  className="group relative flex items-center justify-between rounded-xl border border-neutral-200/60 bg-white/80 p-3 text-sm font-medium shadow-sm transition-all duration-300 hover:border-purple-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-700/60 dark:bg-neutral-800/80 dark:hover:border-purple-600 backdrop-blur-sm focus-ring"
                 >
                   <span className="text-neutral-700 dark:text-neutral-300 group-hover:text-purple-700 dark:group-hover:text-purple-400 transition-colors">
                     Community Network
@@ -183,8 +220,11 @@ export function Header() {
                 </a>
                 <a
                   href="#resources"
-                  className="group relative flex items-center justify-between rounded-xl border border-neutral-200/60 bg-white/80 p-3 text-sm font-medium shadow-sm transition-all duration-300 hover:border-green-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-700/60 dark:bg-neutral-800/80 dark:hover:border-green-600 backdrop-blur-sm"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={(e) => {
+                    handleAnchorClick(e, "#resources")
+                    setIsMobileMenuOpen(false)
+                  }}
+                  className="group relative flex items-center justify-between rounded-xl border border-neutral-200/60 bg-white/80 p-3 text-sm font-medium shadow-sm transition-all duration-300 hover:border-green-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-700/60 dark:bg-neutral-800/80 dark:hover:border-green-600 backdrop-blur-sm focus-ring"
                 >
                   <span className="text-neutral-700 dark:text-neutral-300 group-hover:text-green-700 dark:group-hover:text-green-400 transition-colors">
                     Resources

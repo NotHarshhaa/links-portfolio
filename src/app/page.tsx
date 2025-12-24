@@ -10,6 +10,8 @@ import ParticleBackground from '@/components/particle-background'
 import SkipAnimation from '@/components/skip-animation'
 import { ChevronDown, Sparkles, TrendingUp, Users } from 'lucide-react'
 import { MouseEvent, MouseEventHandler, useState, useEffect } from 'react'
+import { scrollToElement } from '@/lib/scroll-utils'
+import { IntersectionObserverWrapper } from '@/components/intersection-observer-wrapper'
 
 const MotionDiv = motion.div
 const MotionSection = motion.section
@@ -32,10 +34,7 @@ export default function HomePage() {
   }, [])
 
   const scrollToContent: MouseEventHandler<HTMLButtonElement> = () => {
-    const personalNetwork = document.getElementById('personal-network')
-    if (personalNetwork) {
-      personalNetwork.scrollIntoView({ behavior: 'smooth' })
-    }
+    scrollToElement('personal-network', { offset: 100, behavior: 'smooth', focus: true })
   }
 
   return (
@@ -59,7 +58,7 @@ export default function HomePage() {
       <SkipAnimation />
 
       {/* Main Content */}
-      <main id="main-content" className="relative z-10 flex flex-col items-center justify-center w-full px-3 sm:px-8 pt-24 sm:pt-32 md:pt-36 lg:pt-40 pb-20 sm:pb-32">
+      <div className="relative z-10 flex flex-col items-center justify-center w-full px-3 sm:px-8 pt-24 sm:pt-32 md:pt-36 lg:pt-40 pb-20 sm:pb-32">
         <MotionDiv
           data-skip-animation
           initial={{ opacity: 0, y: 20 }}
@@ -151,31 +150,50 @@ export default function HomePage() {
           </motion.div>
         </motion.button>
 
-        <SectionContainer
-          title="Personal Network"
-          delay={0.6}
-          items={data.socials}
-          id="personal-network"
-          icon={<TrendingUp className="h-5 w-5" />}
-        />
+        {/* Sections with lazy loading for better performance */}
+        <IntersectionObserverWrapper
+          rootMargin="100px"
+          threshold={0.05}
+          triggerOnce={true}
+        >
+          <SectionContainer
+            title="Personal Network"
+            delay={0.6}
+            items={data.socials}
+            id="personal-network"
+            icon={<TrendingUp className="h-5 w-5" />}
+          />
+        </IntersectionObserverWrapper>
 
-        <SectionContainer
-          title="Community Network"
-          delay={0.8}
-          items={data.communities}
-          id="community-network"
-          icon={<Users className="h-5 w-5" />}
-        />
+        <IntersectionObserverWrapper
+          rootMargin="100px"
+          threshold={0.05}
+          triggerOnce={true}
+        >
+          <SectionContainer
+            title="Community Network"
+            delay={0.8}
+            items={data.communities}
+            id="community-network"
+            icon={<Users className="h-5 w-5" />}
+          />
+        </IntersectionObserverWrapper>
 
-        <SectionContainer
-          title="One Resource at a Time"
-          delay={1.0}
-          items={data.resources}
-          id="resources"
-          special
-          icon={<Sparkles className="h-5 w-5" />}
-        />
-      </main>
+        <IntersectionObserverWrapper
+          rootMargin="100px"
+          threshold={0.05}
+          triggerOnce={true}
+        >
+          <SectionContainer
+            title="One Resource at a Time"
+            delay={1.0}
+            items={data.resources}
+            id="resources"
+            special
+            icon={<Sparkles className="h-5 w-5" />}
+          />
+        </IntersectionObserverWrapper>
+      </div>
     </div>
   )
 }
