@@ -15,7 +15,11 @@ interface ShareLinkProps {
 export function ShareLink({ url, title, className }: ShareLinkProps) {
   const [isShared, setIsShared] = useState(false)
 
-  const handleShare = async () => {
+  const handleShare = async (e?: React.MouseEvent | React.TouchEvent) => {
+    if (e) {
+      e.preventDefault()
+      e.stopPropagation()
+    }
     const shareData = {
       title: title,
       url: url,
@@ -62,7 +66,20 @@ export function ShareLink({ url, title, className }: ShareLinkProps) {
 
   return (
     <motion.button
-      onClick={handleShare}
+      onClick={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        handleShare(e)
+      }}
+      onTouchStart={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+      }}
+      onTouchEnd={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        handleShare(e)
+      }}
       className={cn(
         'p-1.5 sm:p-2 rounded-lg',
         'bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm',
@@ -71,6 +88,7 @@ export function ShareLink({ url, title, className }: ShareLinkProps) {
         'hover:border-blue-300/50 dark:hover:border-blue-700/50',
         'transition-all duration-200',
         'focus-ring',
+        'touch-manipulation',
         className
       )}
       aria-label={`Share ${title}`}

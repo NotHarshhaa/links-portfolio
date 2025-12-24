@@ -54,9 +54,11 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
       setTimeout(() => setIsLoading(false), 1000)
     }
 
-    const handleCopy = async (e: React.MouseEvent) => {
-      e.preventDefault()
-      e.stopPropagation()
+    const handleCopy = async (e: React.MouseEvent | React.TouchEvent) => {
+      if (e) {
+        e.preventDefault()
+        e.stopPropagation()
+      }
       try {
         await navigator.clipboard.writeText(url)
         setIsCopied(true)
@@ -128,12 +130,29 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
           </div>
         </div>
         
-        <div className="flex items-center gap-1 sm:gap-1.5 z-10 sm:mt-1">
+        <div 
+          className="flex items-center gap-1 sm:gap-1.5 z-10 sm:mt-1" 
+          onClick={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+        >
           <motion.button
-            onClick={handleCopy}
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              handleCopy(e)
+            }}
+            onTouchStart={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+            }}
+            onTouchEnd={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              handleCopy(e)
+            }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
-            className={`p-1.5 sm:p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm ${
+            className={`p-1.5 sm:p-1.5 rounded-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm touch-manipulation ${
               special ? 'hover:bg-blue-100/80 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-800/50' :
                         sectionId === 'personal-network' ? 'hover:bg-purple-100/80 dark:hover:bg-purple-900/30 text-purple-600 dark:text-purple-400 border border-purple-200/50 dark:border-purple-800/50' :
                         'hover:bg-green-100/80 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200/50 dark:border-green-800/50'
