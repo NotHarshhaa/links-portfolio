@@ -2,7 +2,9 @@ import { forwardRef, useState } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
-import { ExternalLink, Loader2 } from 'lucide-react'
+import { ExternalLink, Loader2, Copy, Check } from 'lucide-react'
+import { toast } from 'sonner'
+import { ShareLink } from './share-link'
 
 import type { Links } from '@/types'
 
@@ -11,12 +13,14 @@ interface CardLinkProps extends Links {
   Icon?: React.FC<React.SVGProps<SVGSVGElement>>
   special?: boolean
   sectionId?: string
+  onTrackClick?: () => void
 }
 
 const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
-  ({ className, icon: Icon, title, url, special, sectionId, ...props }, ref) => {
+  ({ className, icon: Icon, title, url, special, sectionId, onTrackClick, ...props }, ref) => {
     const [isLoading, setIsLoading] = useState(false)
     const [isHovered, setIsHovered] = useState(false)
+    const [isCopied, setIsCopied] = useState(false)
 
     // Determine gradient colors based on section
     const getGradientClasses = () => {
@@ -45,8 +49,28 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
 
     const handleClick = () => {
       setIsLoading(true)
+      onTrackClick?.()
       // Reset loading state after a short delay
       setTimeout(() => setIsLoading(false), 1000)
+    }
+
+    const handleCopy = async (e: React.MouseEvent) => {
+      e.preventDefault()
+      e.stopPropagation()
+      try {
+        await navigator.clipboard.writeText(url)
+        setIsCopied(true)
+        toast.success('Link copied!', {
+          description: url,
+          duration: 2000,
+        })
+        setTimeout(() => setIsCopied(false), 2000)
+      } catch (error) {
+        toast.error('Failed to copy', {
+          description: 'Please try again',
+          duration: 2000,
+        })
+      }
     }
 
     return (
@@ -104,20 +128,43 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
           </div>
         </div>
         
-        <motion.div 
-          whileHover={{ x: 3 }}
-          transition={{ type: "spring", stiffness: 400, damping: 10 }}
-          className={`rounded-md p-0.5 sm:p-1.5 text-neutral-700 opacity-60 group-hover:opacity-100 dark:text-neutral-300 z-10 sm:mt-1 ${
-          special ? 'group-hover:text-blue-600 dark:group-hover:text-blue-400' :
-                    sectionId === 'personal-network' ? 'group-hover:text-purple-600 dark:group-hover:text-purple-400' :
-                    'group-hover:text-green-600 dark:group-hover:text-green-400'
-        } transition-colors`}>
-          {isLoading ? (
-            <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
-          ) : (
-            <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-300 group-hover:scale-110" />
-          )}
-        </motion.div>
+        <div className="flex items-center gap-1 sm:gap-1.5 z-10 sm:mt-1">
+          <motion.button
+            onClick={handleCopy}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className={`p-1.5 sm:p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm ${
+              special ? 'hover:bg-blue-100/80 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-800/50' :
+                        sectionId === 'personal-network' ? 'hover:bg-purple-100/80 dark:hover:bg-purple-900/30 text-purple-600 dark:text-purple-400 border border-purple-200/50 dark:border-purple-800/50' :
+                        'hover:bg-green-100/80 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200/50 dark:border-green-800/50'
+            }`}
+            aria-label="Copy link"
+            title="Copy link"
+          >
+            {isCopied ? (
+              <Check className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            ) : (
+              <Copy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            )}
+          </motion.button>
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <ShareLink url={url} title={title} />
+          </div>
+          <motion.div 
+            whileHover={{ x: 3 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            className={`rounded-md p-0.5 sm:p-1.5 text-neutral-700 opacity-60 group-hover:opacity-100 dark:text-neutral-300 ${
+            special ? 'group-hover:text-blue-600 dark:group-hover:text-blue-400' :
+                      sectionId === 'personal-network' ? 'group-hover:text-purple-600 dark:group-hover:text-purple-400' :
+                      'group-hover:text-green-600 dark:group-hover:text-green-400'
+          } transition-colors`}>
+            {isLoading ? (
+              <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
+            ) : (
+              <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-300 group-hover:scale-110" />
+            )}
+          </motion.div>
+        </div>
         
         <div className={`absolute inset-0 ${gradients.hover} opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300`}></div>
         

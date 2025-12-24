@@ -9,9 +9,11 @@ import { motion, type HTMLMotionProps } from 'framer-motion'
 import ParticleBackground from '@/components/particle-background'
 import SkipAnimation from '@/components/skip-animation'
 import { ChevronDown, Sparkles, TrendingUp, Users } from 'lucide-react'
-import { MouseEvent, MouseEventHandler, useState, useEffect } from 'react'
+import { MouseEvent, MouseEventHandler, useState, useEffect, useMemo } from 'react'
 import { scrollToElement } from '@/lib/scroll-utils'
 import { IntersectionObserverWrapper } from '@/components/intersection-observer-wrapper'
+import { SearchBar } from '@/components/search-bar'
+import { useLinkTracker } from '@/hooks/use-link-tracker'
 
 const MotionDiv = motion.div
 const MotionSection = motion.section
@@ -19,6 +21,8 @@ const MotionSection = motion.section
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
+  const [searchQuery, setSearchQuery] = useState('')
+  const { trackClick } = useLinkTracker()
 
   useEffect(() => {
     setIsLoaded(true)
@@ -36,6 +40,32 @@ export default function HomePage() {
   const scrollToContent: MouseEventHandler<HTMLButtonElement> = () => {
     scrollToElement('personal-network', { offset: 100, behavior: 'smooth', focus: true })
   }
+
+  // Filter data based on search query
+  const filteredData = useMemo(() => {
+    if (!searchQuery.trim()) return data
+
+    const query = searchQuery.toLowerCase().trim()
+    return {
+      ...data,
+      contacts: data.contacts.filter(item => 
+        item.title.toLowerCase().includes(query) || 
+        item.url.toLowerCase().includes(query)
+      ),
+      socials: data.socials.filter(item => 
+        item.title.toLowerCase().includes(query) || 
+        item.url.toLowerCase().includes(query)
+      ),
+      communities: data.communities.filter(item => 
+        item.title.toLowerCase().includes(query) || 
+        item.url.toLowerCase().includes(query)
+      ),
+      resources: data.resources.filter(item => 
+        item.title.toLowerCase().includes(query) || 
+        item.url.toLowerCase().includes(query)
+      )
+    }
+  }, [searchQuery])
 
   return (
     <div className="relative w-full bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-black">
@@ -110,6 +140,17 @@ export default function HomePage() {
           </h2>
         </MotionSection>
 
+        {/* Search Bar */}
+        <MotionSection 
+          data-skip-animation
+          className="flex items-center justify-center my-4 sm:my-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.35 }}
+        >
+          <SearchBar onSearch={setSearchQuery} />
+        </MotionSection>
+
         <MotionSection 
           data-skip-animation
           className="flex items-center gap-3 sm:gap-4 my-6 sm:my-8 flex-wrap justify-center relative"
@@ -159,9 +200,10 @@ export default function HomePage() {
           <SectionContainer
             title="Personal Network"
             delay={0.6}
-            items={data.socials}
+            items={filteredData.socials}
             id="personal-network"
             icon={<TrendingUp className="h-5 w-5" />}
+            trackClick={trackClick}
           />
         </IntersectionObserverWrapper>
 
@@ -173,9 +215,10 @@ export default function HomePage() {
           <SectionContainer
             title="Community Network"
             delay={0.8}
-            items={data.communities}
+            items={filteredData.communities}
             id="community-network"
             icon={<Users className="h-5 w-5" />}
+            trackClick={trackClick}
           />
         </IntersectionObserverWrapper>
 
@@ -187,10 +230,11 @@ export default function HomePage() {
           <SectionContainer
             title="One Resource at a Time"
             delay={1.0}
-            items={data.resources}
+            items={filteredData.resources}
             id="resources"
             special
             icon={<Sparkles className="h-5 w-5" />}
+            trackClick={trackClick}
           />
         </IntersectionObserverWrapper>
       </div>
@@ -205,9 +249,10 @@ type SectionContainerProps = {
   special?: boolean
   id?: string
   icon?: React.ReactNode
+  trackClick?: (url: string, title: string) => void
 }
 
-function SectionContainer({ title, delay, items, special, id, icon }: SectionContainerProps) {
+function SectionContainer({ title, delay, items, special, id, icon, trackClick }: SectionContainerProps) {
   return (
     <MotionSection 
       id={id}
@@ -267,7 +312,7 @@ function SectionContainer({ title, delay, items, special, id, icon }: SectionCon
         </div>
       </motion.div>
 
-      <div className="flex flex-col gap-3 sm:gap-4 w-full max-w-lg mx-auto px-1 sm:px-0">
+          <div className="flex flex-col gap-3 sm:gap-4 w-full max-w-lg mx-auto px-1 sm:px-0">
         {items.map((item, index) => (
           <MotionDiv 
             data-skip-animation
@@ -279,7 +324,12 @@ function SectionContainer({ title, delay, items, special, id, icon }: SectionCon
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
-            <CardLink {...item} special={special} sectionId={id} />
+            <CardLink 
+              {...item} 
+              special={special} 
+              sectionId={id} 
+              onTrackClick={trackClick ? () => trackClick(item.url, item.title) : undefined}
+            />
           </MotionDiv>
         ))}
       </div>
