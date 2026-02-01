@@ -7,14 +7,21 @@ export default function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { resolvedTheme } = useTheme()
   const [isMobile, setIsMobile] = useState(false)
+  const [isDisabled, setIsDisabled] = useState(false)
   
   useEffect(() => {
-    // Check if device is mobile
+    // Check if device is mobile and disable particles on low-end devices
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
+      const mobile = window.innerWidth <= 768
+      setIsMobile(mobile)
+      // Disable particles completely on mobile for better performance
+      setIsDisabled(mobile)
     }
     checkMobile()
     window.addEventListener('resize', checkMobile)
+    
+    // Early return if disabled
+    if (isDisabled) return
     
     const canvas = canvasRef.current
     if (!canvas) return
@@ -98,7 +105,12 @@ export default function ParticleBackground() {
       window.removeEventListener('resize', handleResize)
       window.removeEventListener('resize', checkMobile)
     }
-  }, [resolvedTheme, isMobile])
+  }, [resolvedTheme, isMobile, isDisabled])
+  
+  // Return null if disabled for mobile performance
+  if (isDisabled) {
+    return null
+  }
   
   return (
     <canvas 

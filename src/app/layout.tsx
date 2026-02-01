@@ -98,6 +98,7 @@ function ThemeTransitionWrapper({ children }: { children: React.ReactNode }) {
     return <div className="min-h-screen bg-background">{children}</div>
   }
 
+  // Disable animations on mobile for better performance
   if (isMobile) {
     return <div>{children}</div>
   }

@@ -22,10 +22,20 @@ export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
+  const [isMobile, setIsMobile] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const { trackClick } = useLinkTracker()
 
   useEffect(() => {
+    setMounted(true)
     setIsLoaded(true)
+    
+    // Check if mobile for performance optimizations
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
     
     const handleScroll = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight
@@ -33,8 +43,23 @@ export default function HomePage() {
       setScrollProgress(Math.min(progress, 100))
     }
 
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    // Throttle scroll events on mobile for better performance
+    let scrollTimeout: NodeJS.Timeout
+    const throttledHandleScroll = () => {
+      if (isMobile) {
+        clearTimeout(scrollTimeout)
+        scrollTimeout = setTimeout(handleScroll, 16) // ~60fps
+      } else {
+        handleScroll()
+      }
+    }
+
+    window.addEventListener('scroll', throttledHandleScroll)
+    return () => {
+      window.removeEventListener('scroll', throttledHandleScroll)
+      window.removeEventListener('resize', checkMobile)
+      clearTimeout(scrollTimeout)
+    }
   }, [])
 
   const scrollToContent: MouseEventHandler<HTMLButtonElement> = () => {
@@ -91,9 +116,9 @@ export default function HomePage() {
       <div className="relative z-10 flex flex-col items-center justify-center w-full px-3 sm:px-8 pt-24 sm:pt-32 md:pt-36 lg:pt-40 pb-20 sm:pb-32">
         <MotionDiv
           data-skip-animation
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial={mounted && !isMobile ? { opacity: 0, y: 20 } : {}}
+          animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
+          transition={mounted && !isMobile ? { duration: 0.5 } : {}}
           className="relative mt-6 sm:mt-8"
         >
           <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
@@ -116,9 +141,9 @@ export default function HomePage() {
         <MotionSection 
           data-skip-animation
           className="flex flex-col items-center justify-center mt-2 sm:mt-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          initial={mounted && !isMobile ? { opacity: 0, y: 20 } : {}}
+          animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
+          transition={mounted && !isMobile ? { duration: 0.5, delay: 0.2 } : {}}
         >
           <div className="flex gap-4 justify-center items-center mt-4 sm:mt-8 mb-2">
             <h1 className="font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 text-center">
@@ -144,9 +169,9 @@ export default function HomePage() {
         <MotionSection 
           data-skip-animation
           className="flex items-center justify-center my-4 sm:my-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.35 }}
+          initial={mounted && !isMobile ? { opacity: 0, y: 20 } : {}}
+          animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
+          transition={mounted && !isMobile ? { duration: 0.5, delay: 0.35 } : {}}
         >
           <SearchBar onSearch={setSearchQuery} />
         </MotionSection>
@@ -154,17 +179,17 @@ export default function HomePage() {
         <MotionSection 
           data-skip-animation
           className="flex items-center gap-3 sm:gap-4 my-6 sm:my-8 flex-wrap justify-center relative"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          initial={mounted && !isMobile ? { opacity: 0, y: 20 } : {}}
+          animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
+          transition={mounted && !isMobile ? { duration: 0.5, delay: 0.4 } : {}}
         >
           {data.contacts.map((contact, index) => (
             <motion.div
               key={contact.url}
               data-skip-animation
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.4 + index * 0.1 }}
+              initial={mounted && !isMobile ? { opacity: 0, y: 20 } : {}}
+              animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
+              transition={mounted && !isMobile ? { duration: 0.3, delay: 0.4 + index * 0.1 } : {}}
             >
               <ButtonLink {...contact} />
             </motion.div>
@@ -175,17 +200,17 @@ export default function HomePage() {
         <motion.button
           onClick={scrollToContent}
           className="flex flex-col items-center justify-center cursor-pointer mb-8 sm:mb-12 text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          initial={mounted && !isMobile ? { opacity: 0, y: -10 } : {}}
+          animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
+          transition={mounted && !isMobile ? { delay: 0.8, duration: 0.5 } : {}}
+          whileHover={mounted && !isMobile ? { scale: 1.1 } : {}}
+          whileTap={mounted && !isMobile ? { scale: 0.9 } : {}}
           aria-label="Scroll to explore more content"
         >
           <span className="text-base font-medium mb-2">Explore</span>
           <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, repeatType: "loop" }}
+            animate={mounted && !isMobile ? { y: [0, 8, 0] } : {}}
+            transition={mounted && !isMobile ? { duration: 1.5, repeat: Infinity, repeatType: "loop" } : {}}
           >
             <ChevronDown size={28} />
           </motion.div>
@@ -193,8 +218,8 @@ export default function HomePage() {
 
         {/* Sections with lazy loading for better performance */}
         <IntersectionObserverWrapper
-          rootMargin="100px"
-          threshold={0.05}
+          rootMargin="50px"
+          threshold={0.1}
           triggerOnce={true}
         >
           <SectionContainer
@@ -208,8 +233,8 @@ export default function HomePage() {
         </IntersectionObserverWrapper>
 
         <IntersectionObserverWrapper
-          rootMargin="100px"
-          threshold={0.05}
+          rootMargin="50px"
+          threshold={0.1}
           triggerOnce={true}
         >
           <SectionContainer
@@ -223,8 +248,8 @@ export default function HomePage() {
         </IntersectionObserverWrapper>
 
         <IntersectionObserverWrapper
-          rootMargin="100px"
-          threshold={0.05}
+          rootMargin="50px"
+          threshold={0.1}
           triggerOnce={true}
         >
           <SectionContainer
@@ -253,6 +278,19 @@ type SectionContainerProps = {
 }
 
 function SectionContainer({ title, delay, items, special, id, icon, trackClick }: SectionContainerProps) {
+  const [isMobile, setIsMobile] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  
+  useEffect(() => {
+    setMounted(true)
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
   return (
     <MotionSection 
       id={id}
@@ -264,23 +302,23 @@ function SectionContainer({ title, delay, items, special, id, icon, trackClick }
             ? 'bg-gradient-to-br from-white/80 via-white/90 to-purple-50/70 dark:from-zinc-900/80 dark:via-zinc-800/80 dark:to-purple-950/70'
             : 'bg-gradient-to-br from-white/80 via-white/90 to-green-50/70 dark:from-zinc-900/80 dark:via-zinc-800/80 dark:to-green-950/70'
       }`}
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.7, delay }}
+      initial={mounted && !isMobile ? { opacity: 0, y: 40 } : {}}
+      animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
+      transition={mounted && !isMobile ? { duration: 0.7, delay } : {}}
     >
       <motion.div 
         data-skip-animation
         className="flex flex-col items-center"
-        initial={{ y: 20 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5, delay: delay + 0.2 }}
+        initial={mounted && !isMobile ? { y: 20 } : {}}
+        animate={mounted && !isMobile ? { y: 0 } : {}}
+        transition={mounted && !isMobile ? { duration: 0.5, delay: delay + 0.2 } : {}}
       >
         <div className="relative mb-6 sm:mb-8">
           <div className="flex items-center gap-2 mb-2">
             {icon && (
               <motion.div
-                animate={{ rotate: [0, 360] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                animate={mounted && !isMobile ? { rotate: [0, 360] } : {}}
+                transition={mounted && !isMobile ? { duration: 3, repeat: Infinity, ease: "linear" } : {}}
                 className={`${
                   special 
                     ? 'text-blue-600 dark:text-blue-400' 
@@ -318,11 +356,11 @@ function SectionContainer({ title, delay, items, special, id, icon, trackClick }
             data-skip-animation
             key={item.url} 
             className="w-full max-w-[600px] mx-auto px-0"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: delay + 0.3 + (index * 0.1) }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            initial={mounted && !isMobile ? { opacity: 0, x: -20 } : {}}
+            animate={mounted && !isMobile ? { opacity: 1, x: 0 } : {}}
+            transition={mounted && !isMobile ? { duration: 0.3, delay: delay + 0.3 + (index * 0.1) } : {}}
+            whileHover={mounted && !isMobile ? { scale: 1.02 } : {}}
+            whileTap={mounted && !isMobile ? { scale: 0.98 } : {}}
           >
             <CardLink 
               {...item} 
