@@ -129,7 +129,7 @@ export default function HomePage() {
             className="block rounded-full transition-transform hover:scale-105 relative group"
             aria-label={`View ${data.name}'s GitHub profile`}
           >
-            <Avatar className="size-24 sm:size-32 shadow-xl border-2 border-neutral-200 dark:border-neutral-800 transition-transform duration-300 group-hover:rotate-6">
+            <Avatar className="size-32 sm:size-36 md:size-44 lg:size-52 shadow-xl border-2 border-neutral-200 dark:border-neutral-800 transition-transform duration-300 group-hover:rotate-6">
               <AvatarImage alt={data.name} src={data.avatar} />
               <AvatarFallback className="font-mono font-bold text-xl">
                 {data.initials}
