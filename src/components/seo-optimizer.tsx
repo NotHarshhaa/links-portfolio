@@ -28,10 +28,10 @@ export function SEOOptimizer({
       let meta = document.querySelector(`meta[name="${name}"]`)!
       if (!meta) {
         meta = document.createElement('meta')
-        meta.name = name
+        meta.setAttribute('name', name)
         document.head.appendChild(meta)
       }
-      meta.content = content
+      meta.setAttribute('content', content)
     }
 
     const updatePropertyTag = (property: string, content: string) => {
@@ -41,7 +41,7 @@ export function SEOOptimizer({
         meta.setAttribute('property', property)
         document.head.appendChild(meta)
       }
-      meta.content = content
+      meta.setAttribute('content', content)
     }
 
     // Update basic meta tags
@@ -72,10 +72,10 @@ export function SEOOptimizer({
     let canonical = document.querySelector('link[rel="canonical"]')!
     if (!canonical) {
       canonical = document.createElement('link')
-      canonical.rel = 'canonical'
+      canonical.setAttribute('rel', 'canonical')
       document.head.appendChild(canonical)
     }
-    canonical.href = url
+    canonical.setAttribute('href', url)
 
     // Add structured data
     const structuredData = {
@@ -129,8 +129,8 @@ export function SEOOptimizer({
 
     // Add new structured data
     const script = document.createElement('script')
-    script.type = 'application/ld+json'
-    script.text = JSON.stringify(structuredData)
+    script.setAttribute('type', 'application/ld+json')
+    script.textContent = JSON.stringify(structuredData)
     document.head.appendChild(script)
   }, [title, description, keywords, ogImage, twitterImage, url, type])
 

@@ -8,9 +8,6 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
-  eslint: {
-    ignoreDuringBuilds: true
-  },
   experimental: {
     optimizePackageImports: ['lucide-react', '@tabler/icons-react']
   },
@@ -21,7 +18,6 @@ const nextConfig = {
   compress: true,
   generateEtags: false,
   reactStrictMode: true,
-  swcMinify: true,
   // Performance optimizations
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
