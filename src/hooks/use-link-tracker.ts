@@ -38,7 +38,7 @@ export function useLinkTracker() {
     }
 
     const updated = [newClick, ...recentClicks]
-      .filter((click, index, self) => 
+      .filter((click, index, self) =>
         index === self.findIndex((c) => c.url === click.url)
       )
       .slice(0, MAX_STORED_CLICKS)
@@ -57,4 +57,3 @@ export function useLinkTracker() {
     getClickCount
   }
 }
-

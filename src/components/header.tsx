@@ -1,56 +1,55 @@
-"use client";
+'use client'
 
-import Link from "next/link";
-import { ModeToggle } from "@/components/mode-toggle";
-import { useState, useEffect } from "react";
-import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { Menu, X } from "lucide-react";
-import { AnimatePresence } from "framer-motion";
-import { handleAnchorClick } from "@/lib/scroll-utils";
+import Link from 'next/link'
+import { ModeToggle } from '@/components/mode-toggle'
+import { useState, useEffect } from 'react'
+import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion'
+import { Menu, X } from 'lucide-react'
+import { handleAnchorClick } from '@/lib/scroll-utils'
 
 export function Header() {
-  const [scrolled, setScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const { scrollY } = useScroll();
+  const [scrolled, setScrolled] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const { scrollY } = useScroll()
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    setScrolled(latest > 10);
-  });
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    setScrolled(latest > 10)
+  })
 
   const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+    setIsMobileMenuOpen(!isMobileMenuOpen)
+  }
 
   // Close mobile menu on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isMobileMenuOpen) {
-        setIsMobileMenuOpen(false);
+        setIsMobileMenuOpen(false)
       }
-    };
+    }
 
     if (isMobileMenuOpen) {
-      document.addEventListener('keydown', handleEscape);
+      document.addEventListener('keydown', handleEscape)
       // Prevent body scroll when menu is open
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden'
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = ''
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = '';
-    };
-  }, [isMobileMenuOpen]);
+      document.removeEventListener('keydown', handleEscape)
+      document.body.style.overflow = ''
+    }
+  }, [isMobileMenuOpen])
 
   // Prevent hydration mismatch
   if (!mounted) {
-    return <div className="h-16" />;
+    return <div className="h-16" />
   }
 
   return (
@@ -58,12 +57,12 @@ export function Header() {
       <motion.header
         initial={false}
         animate={{
-          padding: scrolled ? "0.5rem 1rem" : "1rem 1.5rem",
-          backdropFilter: scrolled ? "blur(16px)" : "blur(8px)",
-          WebkitBackdropFilter: scrolled ? "blur(16px)" : "blur(8px)",
+          padding: scrolled ? '0.5rem 1rem' : '1rem 1.5rem',
+          backdropFilter: scrolled ? 'blur(16px)' : 'blur(8px)',
+          WebkitBackdropFilter: scrolled ? 'blur(16px)' : 'blur(8px)',
           boxShadow: scrolled
-            ? "0 10px 30px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03)"
-            : "0 8px 30px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.02)",
+            ? '0 10px 30px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03)'
+            : '0 8px 30px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.02)'
         }}
         transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
         className={`
@@ -85,7 +84,7 @@ export function Header() {
           <motion.div
             whileHover={{ scale: 1.1, rotate: 5 }}
             whileTap={{ scale: 0.9, rotate: -5 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
             className="relative"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/40 to-purple-500/40 rounded-full blur-xl group-hover:blur-2xl group-hover:scale-125 transition-all duration-500 animate-pulse-subtle" />
@@ -113,7 +112,7 @@ export function Header() {
           <nav className="flex items-center space-x-3 lg:space-x-4" role="navigation" aria-label="Main navigation">
             <a
               href="#personal-network"
-              onClick={(e) => handleAnchorClick(e, "#personal-network")}
+              onClick={(e) => { handleAnchorClick(e, '#personal-network') }}
               className="text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors focus-ring rounded-md px-2 py-1"
               aria-label="Go to personal network section"
             >
@@ -121,7 +120,7 @@ export function Header() {
             </a>
             <a
               href="#community-network"
-              onClick={(e) => handleAnchorClick(e, "#community-network")}
+              onClick={(e) => { handleAnchorClick(e, '#community-network') }}
               className="text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors focus-ring rounded-md px-2 py-1"
               aria-label="Go to community network section"
             >
@@ -129,7 +128,7 @@ export function Header() {
             </a>
             <a
               href="#resources"
-              onClick={(e) => handleAnchorClick(e, "#resources")}
+              onClick={(e) => { handleAnchorClick(e, '#resources') }}
               className="text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-green-600 dark:hover:text-green-400 transition-colors focus-ring rounded-md px-2 py-1"
               aria-label="Go to resources section"
             >
@@ -151,7 +150,7 @@ export function Header() {
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
             >
               <ModeToggle />
             </motion.div>
@@ -163,7 +162,7 @@ export function Header() {
             onClick={toggleMobileMenu}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            aria-label={isMobileMenuOpen ? "Close mobile menu" : "Open mobile menu"}
+            aria-label={isMobileMenuOpen ? 'Close mobile menu' : 'Open mobile menu'}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-menu"
           >
@@ -195,7 +194,7 @@ export function Header() {
                 <a
                   href="#personal-network"
                   onClick={(e) => {
-                    handleAnchorClick(e, "#personal-network")
+                    handleAnchorClick(e, '#personal-network')
                     setIsMobileMenuOpen(false)
                   }}
                   className="group relative flex items-center justify-between rounded-xl border border-neutral-200/60 bg-white/80 p-3 text-sm font-medium shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-700/60 dark:bg-neutral-800/80 dark:hover:border-blue-600 backdrop-blur-sm focus-ring"
@@ -208,7 +207,7 @@ export function Header() {
                 <a
                   href="#community-network"
                   onClick={(e) => {
-                    handleAnchorClick(e, "#community-network")
+                    handleAnchorClick(e, '#community-network')
                     setIsMobileMenuOpen(false)
                   }}
                   className="group relative flex items-center justify-between rounded-xl border border-neutral-200/60 bg-white/80 p-3 text-sm font-medium shadow-sm transition-all duration-300 hover:border-purple-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-700/60 dark:bg-neutral-800/80 dark:hover:border-purple-600 backdrop-blur-sm focus-ring"
@@ -221,7 +220,7 @@ export function Header() {
                 <a
                   href="#resources"
                   onClick={(e) => {
-                    handleAnchorClick(e, "#resources")
+                    handleAnchorClick(e, '#resources')
                     setIsMobileMenuOpen(false)
                   }}
                   className="group relative flex items-center justify-between rounded-xl border border-neutral-200/60 bg-white/80 p-3 text-sm font-medium shadow-sm transition-all duration-300 hover:border-green-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-700/60 dark:bg-neutral-800/80 dark:hover:border-green-600 backdrop-blur-sm focus-ring"
@@ -237,5 +236,5 @@ export function Header() {
         )}
       </AnimatePresence>
     </>
-  );
+  )
 }

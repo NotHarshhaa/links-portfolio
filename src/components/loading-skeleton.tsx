@@ -7,11 +7,11 @@ interface LoadingSkeletonProps {
   rounded?: string
 }
 
-export function LoadingSkeleton({ 
-  className = '', 
-  width = 'w-full', 
-  height = 'h-4', 
-  rounded = 'rounded' 
+export function LoadingSkeleton({
+  className = '',
+  width = 'w-full',
+  height = 'h-4',
+  rounded = 'rounded'
 }: LoadingSkeletonProps) {
   return (
     <motion.div

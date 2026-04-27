@@ -17,7 +17,7 @@ export const scrollToElement = (
   } = options
 
   const element = document.getElementById(elementId)
-  
+
   if (!element) {
     console.warn(`Element with id "${elementId}" not found`)
     return
@@ -56,4 +56,3 @@ export const handleAnchorClick = (
     scrollToElement(elementId)
   }
 }
-

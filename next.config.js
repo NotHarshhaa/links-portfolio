@@ -6,16 +6,16 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60,
     dangerouslyAllowSVG: true,
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: true
   },
   experimental: {
-    optimizePackageImports: ['lucide-react', '@tabler/icons-react'],
+    optimizePackageImports: ['lucide-react', '@tabler/icons-react']
   },
   compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
+    removeConsole: process.env.NODE_ENV === 'production'
   },
   poweredByHeader: false,
   compress: true,
@@ -25,7 +25,7 @@ const nextConfig = {
   // Performance optimizations
   onDemandEntries: {
     maxInactiveAge: 25 * 1000,
-    pagesBufferLength: 2,
+    pagesBufferLength: 2
   },
   // Security headers
   async headers() {
@@ -35,24 +35,24 @@ const nextConfig = {
         headers: [
           {
             key: 'X-Frame-Options',
-            value: 'DENY',
+            value: 'DENY'
           },
           {
             key: 'X-Content-Type-Options',
-            value: 'nosniff',
+            value: 'nosniff'
           },
           {
             key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
+            value: 'origin-when-cross-origin'
           },
           {
             key: 'Permissions-Policy',
-            value: 'camera=(), microphone=(), geolocation=()',
-          },
-        ],
-      },
+            value: 'camera=(), microphone=(), geolocation=()'
+          }
+        ]
+      }
     ]
-  },
+  }
 }
 
 module.exports = nextConfig

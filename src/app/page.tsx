@@ -9,7 +9,7 @@ import { motion, type HTMLMotionProps } from 'framer-motion'
 import ParticleBackground from '@/components/particle-background'
 import SkipAnimation from '@/components/skip-animation'
 import { ChevronDown, Sparkles, TrendingUp, Users } from 'lucide-react'
-import { MouseEvent, MouseEventHandler, useState, useEffect, useMemo } from 'react'
+import { MouseEvent, type MouseEventHandler, useState, useEffect, useMemo } from 'react'
 import { scrollToElement } from '@/lib/scroll-utils'
 import { IntersectionObserverWrapper } from '@/components/intersection-observer-wrapper'
 import { SearchBar } from '@/components/search-bar'
@@ -28,7 +28,7 @@ export default function HomePage() {
 
   useEffect(() => {
     setIsLoaded(true)
-    
+
     const handleScroll = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight
       const progress = (window.scrollY / totalHeight) * 100
@@ -65,20 +65,20 @@ export default function HomePage() {
     const query = searchQuery.toLowerCase().trim()
     return {
       ...data,
-      contacts: data.contacts.filter(item => 
-        item.title.toLowerCase().includes(query) || 
+      contacts: data.contacts.filter(item =>
+        item.title.toLowerCase().includes(query) ||
         item.url.toLowerCase().includes(query)
       ),
-      socials: data.socials.filter(item => 
-        item.title.toLowerCase().includes(query) || 
+      socials: data.socials.filter(item =>
+        item.title.toLowerCase().includes(query) ||
         item.url.toLowerCase().includes(query)
       ),
-      communities: data.communities.filter(item => 
-        item.title.toLowerCase().includes(query) || 
+      communities: data.communities.filter(item =>
+        item.title.toLowerCase().includes(query) ||
         item.url.toLowerCase().includes(query)
       ),
-      resources: data.resources.filter(item => 
-        item.title.toLowerCase().includes(query) || 
+      resources: data.resources.filter(item =>
+        item.title.toLowerCase().includes(query) ||
         item.url.toLowerCase().includes(query)
       )
     }
@@ -88,7 +88,7 @@ export default function HomePage() {
     <div className="relative w-full bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-black">
       {/* Progress bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-neutral-200 dark:bg-neutral-800 z-50">
-        <motion.div 
+        <motion.div
           className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500"
           style={{ width: `${scrollProgress}%` }}
           transition={{ duration: 0.1 }}
@@ -130,7 +130,7 @@ export default function HomePage() {
           </a>
         </MotionDiv>
 
-        <MotionSection 
+        <MotionSection
           data-skip-animation
           className="flex flex-col items-center justify-center mt-2 sm:mt-4"
           initial={mounted && !isMobile ? { opacity: 0, y: 20 } : {}}
@@ -158,7 +158,7 @@ export default function HomePage() {
         </MotionSection>
 
         {/* Search Bar */}
-        <MotionSection 
+        <MotionSection
           data-skip-animation
           className="flex items-center justify-center my-4 sm:my-6"
           initial={mounted && !isMobile ? { opacity: 0, y: 20 } : {}}
@@ -168,7 +168,7 @@ export default function HomePage() {
           <SearchBar onSearch={setSearchQuery} />
         </MotionSection>
 
-        <MotionSection 
+        <MotionSection
           data-skip-animation
           className="flex items-center gap-3 sm:gap-4 my-6 sm:my-8 flex-wrap justify-center relative"
           initial={mounted && !isMobile ? { opacity: 0, y: 20 } : {}}
@@ -187,7 +187,7 @@ export default function HomePage() {
             </motion.div>
           ))}
         </MotionSection>
-          
+
         {/* Scroll indicator - moved outside to be more visible */}
         <motion.button
           onClick={scrollToContent}
@@ -202,7 +202,7 @@ export default function HomePage() {
           <span className="text-base font-medium mb-2">Explore</span>
           <motion.div
             animate={mounted && !isMobile ? { y: [0, 8, 0] } : {}}
-            transition={mounted && !isMobile ? { duration: 1.5, repeat: Infinity, repeatType: "loop" } : {}}
+            transition={mounted && !isMobile ? { duration: 1.5, repeat: Infinity, repeatType: 'loop' } : {}}
           >
             <ChevronDown size={28} />
           </motion.div>
@@ -259,10 +259,10 @@ export default function HomePage() {
   )
 }
 
-type SectionContainerProps = {
+interface SectionContainerProps {
   title: string
   delay: number
-  items: any[]
+  items: Array<{ title: string; url: string; icon: React.FC<React.SVGProps<SVGSVGElement>> }>
   special?: boolean
   id?: string
   icon?: React.ReactNode
@@ -273,12 +273,12 @@ function SectionContainer({ title, delay, items, special, id, icon, trackClick }
   const { isMobile, mounted } = useMobile()
 
   return (
-    <MotionSection 
+    <MotionSection
       id={id}
       data-skip-animation
       className={`w-full max-w-[98vw] sm:max-w-[95vw] md:max-w-md lg:max-w-2xl mt-6 sm:mt-8 rounded-3xl p-3 sm:p-6 backdrop-blur-lg border border-neutral-200/50 dark:border-neutral-800/50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.01] ${
-        special 
-          ? 'bg-gradient-to-br from-white/80 via-white/90 to-blue-50/80 dark:from-zinc-900/80 dark:via-zinc-800/80 dark:to-blue-950/70' 
+        special
+          ? 'bg-gradient-to-br from-white/80 via-white/90 to-blue-50/80 dark:from-zinc-900/80 dark:via-zinc-800/80 dark:to-blue-950/70'
           : id === 'personal-network'
             ? 'bg-gradient-to-br from-white/80 via-white/90 to-purple-50/70 dark:from-zinc-900/80 dark:via-zinc-800/80 dark:to-purple-950/70'
             : 'bg-gradient-to-br from-white/80 via-white/90 to-green-50/70 dark:from-zinc-900/80 dark:via-zinc-800/80 dark:to-green-950/70'
@@ -287,7 +287,7 @@ function SectionContainer({ title, delay, items, special, id, icon, trackClick }
       animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
       transition={mounted && !isMobile ? { duration: 0.7, delay } : {}}
     >
-      <motion.div 
+      <motion.div
         data-skip-animation
         className="flex flex-col items-center"
         initial={mounted && !isMobile ? { y: 20 } : {}}
@@ -299,10 +299,10 @@ function SectionContainer({ title, delay, items, special, id, icon, trackClick }
             {icon && (
               <motion.div
                 animate={mounted && !isMobile ? { rotate: [0, 360] } : {}}
-                transition={mounted && !isMobile ? { duration: 3, repeat: Infinity, ease: "linear" } : {}}
+                transition={mounted && !isMobile ? { duration: 3, repeat: Infinity, ease: 'linear' } : {}}
                 className={`${
-                  special 
-                    ? 'text-blue-600 dark:text-blue-400' 
+                  special
+                    ? 'text-blue-600 dark:text-blue-400'
                     : id === 'personal-network'
                       ? 'text-purple-600 dark:text-purple-400'
                       : 'text-green-600 dark:text-green-400'
@@ -312,8 +312,8 @@ function SectionContainer({ title, delay, items, special, id, icon, trackClick }
               </motion.div>
             )}
             <h3 className={`font-semibold text-2xl ${
-              special 
-                ? 'bg-clip-text text-transparent bg-gradient-to-r from-blue-700 via-purple-700 to-blue-700 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400' 
+              special
+                ? 'bg-clip-text text-transparent bg-gradient-to-r from-blue-700 via-purple-700 to-blue-700 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400'
                 : id === 'personal-network'
                   ? 'bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 dark:from-purple-400 dark:via-indigo-400 dark:to-purple-400'
                   : 'bg-clip-text text-transparent bg-gradient-to-r from-green-600 via-emerald-600 to-green-600 dark:from-green-400 dark:via-emerald-400 dark:to-green-400'
@@ -322,8 +322,8 @@ function SectionContainer({ title, delay, items, special, id, icon, trackClick }
             </h3>
           </div>
           <div className={`w-full h-0.5 mt-2 bg-gradient-to-r from-transparent ${
-            special 
-              ? 'via-blue-500/50' 
+            special
+              ? 'via-blue-500/50'
               : id === 'personal-network'
                 ? 'via-purple-500/50'
                 : 'via-green-500/50'
@@ -333,9 +333,9 @@ function SectionContainer({ title, delay, items, special, id, icon, trackClick }
 
           <div className="flex flex-col gap-3 sm:gap-4 w-full max-w-lg mx-auto px-1 sm:px-0">
         {items.map((item, index) => (
-          <MotionDiv 
+          <MotionDiv
             data-skip-animation
-            key={item.url} 
+            key={item.url}
             className="w-full max-w-[600px] mx-auto px-0"
             initial={mounted && !isMobile ? { opacity: 0, x: -20 } : {}}
             animate={mounted && !isMobile ? { opacity: 1, x: 0 } : {}}
@@ -343,11 +343,11 @@ function SectionContainer({ title, delay, items, special, id, icon, trackClick }
             whileHover={mounted && !isMobile ? { scale: 1.02 } : {}}
             whileTap={mounted && !isMobile ? { scale: 0.98 } : {}}
           >
-            <CardLink 
-              {...item} 
-              special={special} 
-              sectionId={id} 
-              onTrackClick={trackClick ? () => trackClick(item.url, item.title) : undefined}
+            <CardLink
+              {...item}
+              special={special}
+              sectionId={id}
+              onTrackClick={trackClick ? () => { trackClick(item.url, item.title) } : undefined}
             />
           </MotionDiv>
         ))}

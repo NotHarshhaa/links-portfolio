@@ -27,7 +27,7 @@ export function ModeToggle() {
     setTheme(isDark ? 'light' : 'dark')
     if (!isMobile) {
       setRipple(true)
-      setTimeout(() => setRipple(false), 300) // Reset ripple after animation
+      setTimeout(() => { setRipple(false) }, 300) // Reset ripple after animation
     }
   }
 

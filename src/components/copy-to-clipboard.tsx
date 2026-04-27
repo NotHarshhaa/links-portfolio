@@ -20,18 +20,20 @@ export function CopyToClipboard({ url }: { url: Links['url'] }) {
         toast.success('Copied to clipboard!', {
           description: url,
           duration: 2000,
-          className: 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800',
+          className: 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800'
         })
         setTimeout(() => {
           setCopied(false)
         }, 2000)
       })
       .catch((error) => {
-        if (error) toast.error('Failed to copy to clipboard', {
+        if (error) {
+ toast.error('Failed to copy to clipboard', {
           description: 'Please try again',
           duration: 2000,
-          className: 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800',
+          className: 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800'
         })
+}
       })
   }
 
@@ -77,8 +79,8 @@ export function CopyToClipboard({ url }: { url: Links['url'] }) {
           </AnimatePresence>
         </Button>
       </TooltipTrigger>
-      <TooltipContent 
-        side="bottom" 
+      <TooltipContent
+        side="bottom"
         className="bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 shadow-lg rounded-lg px-3 py-2 text-sm font-medium"
         sideOffset={5}
       >

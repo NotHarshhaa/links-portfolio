@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, RefObject } from 'react'
+import { useEffect, type RefObject } from 'react'
 
 /**
  * Hook to enhance keyboard navigation
@@ -36,4 +36,3 @@ export function useKeyboardNavigation(containerRef?: RefObject<HTMLElement>) {
 
   return null
 }
-

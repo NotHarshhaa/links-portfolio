@@ -50,13 +50,13 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
       }
     }
 
-    const gradients = getGradientClasses();
+    const gradients = getGradientClasses()
 
     const handleClick = () => {
       setIsLoading(true)
       onTrackClick?.()
       // Reset loading state after a short delay
-      setTimeout(() => setIsLoading(false), 1000)
+      setTimeout(() => { setIsLoading(false) }, 1000)
     }
 
     const handleCopy = async (e: React.MouseEvent | React.TouchEvent) => {
@@ -65,7 +65,7 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
         e.stopPropagation()
       }
       try {
-        await navigator.clipboard.writeText(url)
+        void navigator.clipboard.writeText(url)
         setIsCopied(true)
         toast.success('Link copied!', {
           description: url,
@@ -89,14 +89,14 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
         prefetch={false}
         className={cn(
           'group relative flex items-center sm:items-start justify-between rounded-xl border border-neutral-200 bg-white/80 p-3 sm:p-4 text-sm font-medium shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-800 dark:bg-neutral-900/80 dark:hover:border-blue-700 backdrop-blur-sm focus-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.98] touch-manipulation',
-          special ? 'hover:border-blue-300 dark:hover:border-blue-700 focus-visible:ring-blue-500' : 
-                   sectionId === 'personal-network' ? 'hover:border-purple-300 dark:hover:border-purple-700 focus-visible:ring-purple-500' : 
-                   'hover:border-green-300 dark:hover:border-green-700 focus-visible:ring-green-500',
+          special ? 'hover:border-blue-300 dark:hover:border-blue-700 focus-visible:ring-blue-500'
+                   : sectionId === 'personal-network' ? 'hover:border-purple-300 dark:hover:border-purple-700 focus-visible:ring-purple-500'
+                   : 'hover:border-green-300 dark:hover:border-green-700 focus-visible:ring-green-500',
           isHovered && gradients.glow,
           className
         )}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onMouseEnter={() => { setIsHovered(true) }}
+        onMouseLeave={() => { setIsHovered(false) }}
         onClick={handleClick}
         aria-label={`Visit ${title}`}
         tabIndex={0}
@@ -104,41 +104,41 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
       >
         <div className="flex items-center sm:items-start gap-2 sm:gap-4 z-10">
           {Icon && (
-            <motion.div 
+            <motion.div
               whileHover={{ rotate: 5, scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
               className={`flex items-center justify-center size-8 sm:size-12 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 ${
-              special ? 'bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-gray-900' :
-                        sectionId === 'personal-network' ? 'bg-gradient-to-br from-purple-50 to-white dark:from-purple-900/20 dark:to-gray-900' :
-                        'bg-gradient-to-br from-green-50 to-white dark:from-green-900/20 dark:to-gray-900'
+              special ? 'bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-gray-900'
+                        : sectionId === 'personal-network' ? 'bg-gradient-to-br from-purple-50 to-white dark:from-purple-900/20 dark:to-gray-900'
+                        : 'bg-gradient-to-br from-green-50 to-white dark:from-green-900/20 dark:to-gray-900'
             }`}>
               <Icon className={`h-4 w-4 sm:h-6 sm:w-6 transition-transform duration-300 group-hover:scale-110 ${
-                special ? 'text-blue-600 dark:text-blue-400' :
-                          sectionId === 'personal-network' ? 'text-purple-600 dark:text-purple-400' :
-                          'text-green-600 dark:text-green-400'
+                special ? 'text-blue-600 dark:text-blue-400'
+                          : sectionId === 'personal-network' ? 'text-purple-600 dark:text-purple-400'
+                          : 'text-green-600 dark:text-green-400'
               }`} />
             </motion.div>
           )}
           <div className="flex flex-col min-w-0 flex-1 pr-2 sm:pr-0 space-y-0 sm:space-y-1">
             <span className={`font-medium text-neutral-700 dark:text-neutral-300 ${
-              special ? 'group-hover:text-blue-700 dark:group-hover:text-blue-400' :
-                        sectionId === 'personal-network' ? 'group-hover:text-purple-700 dark:group-hover:text-purple-400' :
-                        'group-hover:text-green-700 dark:group-hover:text-green-400'
+              special ? 'group-hover:text-blue-700 dark:group-hover:text-blue-400'
+                        : sectionId === 'personal-network' ? 'group-hover:text-purple-700 dark:group-hover:text-purple-400'
+                        : 'group-hover:text-green-700 dark:group-hover:text-green-400'
             } transition-colors break-words text-sm sm:text-base leading-relaxed`}>{title}</span>
             <span className={`text-xs text-neutral-500 dark:text-neutral-500 break-all max-w-[160px] sm:max-w-[280px] leading-relaxed hidden sm:block ${
-              special ? 'group-hover:text-blue-500/70 dark:group-hover:text-blue-500/70' :
-                        sectionId === 'personal-network' ? 'group-hover:text-purple-500/70 dark:group-hover:text-purple-500/70' :
-                        'group-hover:text-green-500/70 dark:group-hover:text-green-500/70'
+              special ? 'group-hover:text-blue-500/70 dark:group-hover:text-blue-500/70'
+                        : sectionId === 'personal-network' ? 'group-hover:text-purple-500/70 dark:group-hover:text-purple-500/70'
+                        : 'group-hover:text-green-500/70 dark:group-hover:text-green-500/70'
             } transition-colors`}>
               {url.replace(/^https?:\/\//, '')}
             </span>
           </div>
         </div>
-        
-        <div 
-          className="flex items-center gap-1 sm:gap-1.5 z-10 sm:mt-1" 
-          onClick={(e) => e.stopPropagation()}
-          onTouchStart={(e) => e.stopPropagation()}
+
+        <div
+          className="flex items-center gap-1 sm:gap-1.5 z-10 sm:mt-1"
+          onClick={(e) => { e.stopPropagation() }}
+          onTouchStart={(e) => { e.stopPropagation() }}
         >
           <motion.button
             onClick={(e) => {
@@ -156,9 +156,9 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             className={`p-1.5 sm:p-1.5 rounded-lg opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm touch-manipulation ${
-              special ? 'hover:bg-blue-100/80 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-800/50' :
-                        sectionId === 'personal-network' ? 'hover:bg-purple-100/80 dark:hover:bg-purple-900/30 text-purple-600 dark:text-purple-400 border border-purple-200/50 dark:border-purple-800/50' :
-                        'hover:bg-green-100/80 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200/50 dark:border-green-800/50'
+              special ? 'hover:bg-blue-100/80 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200/50 dark:border-blue-800/50'
+                        : sectionId === 'personal-network' ? 'hover:bg-purple-100/80 dark:hover:bg-purple-900/30 text-purple-600 dark:text-purple-400 border border-purple-200/50 dark:border-purple-800/50'
+                        : 'hover:bg-green-100/80 dark:hover:bg-green-900/30 text-green-600 dark:text-green-400 border border-green-200/50 dark:border-green-800/50'
             }`}
             aria-label="Copy link"
             title="Copy link"
@@ -172,13 +172,13 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <ShareLink url={url} title={title} />
           </div>
-          <motion.div 
+          <motion.div
             whileHover={{ x: 3 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 10 }}
             className={`rounded-md p-0.5 sm:p-1.5 text-neutral-700 opacity-60 group-hover:opacity-100 dark:text-neutral-300 ${
-            special ? 'group-hover:text-blue-600 dark:group-hover:text-blue-400' :
-                      sectionId === 'personal-network' ? 'group-hover:text-purple-600 dark:group-hover:text-purple-400' :
-                      'group-hover:text-green-600 dark:group-hover:text-green-400'
+            special ? 'group-hover:text-blue-600 dark:group-hover:text-blue-400'
+                      : sectionId === 'personal-network' ? 'group-hover:text-purple-600 dark:group-hover:text-purple-400'
+                      : 'group-hover:text-green-600 dark:group-hover:text-green-400'
           } transition-colors`}>
             {isLoading ? (
               <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
@@ -187,9 +187,9 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
             )}
           </motion.div>
         </div>
-        
+
         <div className={`absolute inset-0 ${gradients.hover} opacity-0 group-hover:opacity-100 rounded-xl transition-opacity duration-300`}></div>
-        
+
         {/* Border effect */}
         <div className="absolute -z-10 inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500">
           <div className={`absolute inset-x-0 -bottom-px h-px w-full bg-gradient-to-r ${gradients.border}`} />

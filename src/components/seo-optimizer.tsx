@@ -25,7 +25,7 @@ export function SEOOptimizer({
   useEffect(() => {
     // Update meta tags dynamically
     const updateMetaTag = (name: string, content: string) => {
-      let meta = document.querySelector(`meta[name="${name}"]`) as HTMLMetaElement
+      let meta = document.querySelector(`meta[name="${name}"]`)!
       if (!meta) {
         meta = document.createElement('meta')
         meta.name = name
@@ -35,7 +35,7 @@ export function SEOOptimizer({
     }
 
     const updatePropertyTag = (property: string, content: string) => {
-      let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement
+      let meta = document.querySelector(`meta[property="${property}"]`)!
       if (!meta) {
         meta = document.createElement('meta')
         meta.setAttribute('property', property)
@@ -69,7 +69,7 @@ export function SEOOptimizer({
     updatePropertyTag('twitter:creator', '@NotHarshhaa')
 
     // Update canonical URL
-    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement
+    let canonical = document.querySelector('link[rel="canonical"]')!
     if (!canonical) {
       canonical = document.createElement('link')
       canonical.rel = 'canonical'
@@ -83,8 +83,8 @@ export function SEOOptimizer({
       '@type': 'Person',
       name: 'Harshhaa Vardhan Reddy',
       jobTitle: 'DevOps Engineer',
-      description: description,
-      url: url,
+      description,
+      url,
       image: ogImage,
       email: 'harshhaa03@gmail.com',
       sameAs: [
@@ -141,7 +141,7 @@ export function SEOOptimizer({
       <meta name="keywords" content={keywords} />
       <meta name="author" content="Harshhaa Vardhan Reddy" />
       <meta name="robots" content="index, follow" />
-      
+
       {/* Open Graph */}
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
@@ -150,7 +150,7 @@ export function SEOOptimizer({
       <meta property="og:type" content={type} />
       <meta property="og:site_name" content="Harshhaa Portfolio" />
       <meta property="og:locale" content="en_US" />
-      
+
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
@@ -158,15 +158,15 @@ export function SEOOptimizer({
       <meta name="twitter:image" content={twitterImage} />
       <meta name="twitter:site" content="@NotHarshhaa" />
       <meta name="twitter:creator" content="@NotHarshhaa" />
-      
+
       {/* Canonical URL */}
       <link rel="canonical" href={url} />
-      
+
       {/* Favicon and app icons */}
       <link rel="icon" href="/favicon.ico" />
       <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       <link rel="manifest" href="/site.webmanifest" />
-      
+
       {/* Preconnect to external domains for performance */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

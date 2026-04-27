@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, Suspense } from 'react'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import { Head } from '@/components/head'
@@ -16,11 +16,11 @@ import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
-import { useEffect, Suspense } from 'react'
+
 import { useMobile } from '@/hooks/use-mobile'
 
 // Lazy load header only, keep footer direct for reliable display
-const LazyHeader = React.lazy(() => import('@/components/header').then(mod => ({ default: mod.Header })))
+const LazyHeader = React.lazy(async () => await import('@/components/header').then(mod => ({ default: mod.Header })))
 
 export default function RootLayout({
   children
@@ -63,11 +63,11 @@ export default function RootLayout({
                   {children}
                 </main>
               </TooltipProvider>
-              <Toaster 
+              <Toaster
                 position="bottom-right"
                 toastOptions={{
                   className: 'bg-white dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 text-sm sm:text-base',
-                  duration: 3000,
+                  duration: 3000
                 }}
               />
             </ThemeTransitionWrapper>

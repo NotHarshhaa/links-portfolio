@@ -1,20 +1,20 @@
-"use client";
+'use client'
 
-import { useRef, useCallback, useMemo } from "react";
-import { motion, useInView } from "framer-motion";
-import Image from "next/image";
-import { ArrowUp, Heart, Github, ExternalLink } from "lucide-react";
+import { useRef, useCallback, useMemo } from 'react'
+import { motion, useInView } from 'framer-motion'
+import Image from 'next/image'
+import { ArrowUp, Heart, Github, ExternalLink } from 'lucide-react'
 
 // Reusable animation variants
 const containerVariants = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0 }
-};
+}
 
 const itemVariants = {
   hidden: { opacity: 0, y: 10 },
   visible: { opacity: 1, y: 0 }
-};
+}
 
 // Reusable button styles
 const actionButtonStyles = `
@@ -28,26 +28,26 @@ const actionButtonStyles = `
   group flex items-center justify-center
   focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-2 dark:focus:ring-offset-zinc-900
   active:scale-95
-`;
+`
 
 export function Footer() {
-  const ref = useRef<HTMLElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const ref = useRef<HTMLElement>(null)
+  const isInView = useInView(ref, { once: true, amount: 0.2 })
 
   // Memoize year calculation
-  const year = useMemo(() => new Date().getFullYear(), []);
+  const year = useMemo(() => new Date().getFullYear(), [])
 
   // Memoize scroll function
   const scrollToTop = useCallback(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
 
   return (
     <motion.footer
       ref={ref}
       variants={containerVariants}
       initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
+      animate={isInView ? 'visible' : 'hidden'}
       transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}
       className="w-full mt-16 sm:mt-24 mb-6 sm:mb-8 px-3 sm:px-4 flex flex-col items-center relative"
     >
@@ -75,12 +75,12 @@ export function Footer() {
             <motion.div
               animate={{
                 scale: [1, 1.1, 1],
-                opacity: [0.5, 0.7, 0.5],
+                opacity: [0.5, 0.7, 0.5]
               }}
               transition={{
                 duration: 3,
                 repeat: Infinity,
-                repeatType: "loop",
+                repeatType: 'loop'
               }}
               className="absolute inset-0 bg-gradient-to-r from-blue-500/40 to-purple-500/40 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300"
             />
@@ -93,7 +93,7 @@ export function Footer() {
               priority
             />
           </div>
-          
+
           <div className="flex flex-col space-y-1 sm:space-y-2">
             <p className="text-sm tracking-wide font-medium">
               © {year}
@@ -103,10 +103,10 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="
-                  text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-500 
-                  dark:from-blue-400 dark:to-purple-400 
-                  hover:from-purple-500 hover:to-blue-600 
-                  dark:hover:from-purple-400 dark:hover:to-blue-400 
+                  text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-500
+                  dark:from-blue-400 dark:to-purple-400
+                  hover:from-purple-500 hover:to-blue-600
+                  dark:hover:from-purple-400 dark:hover:to-blue-400
                   transition-all duration-300 font-bold
                   inline-flex items-center gap-1
                   focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:ring-offset-1 dark:focus:ring-offset-zinc-900 rounded
@@ -116,7 +116,7 @@ export function Footer() {
                 <ExternalLink className="w-3 h-3 opacity-70 group-hover:opacity-100 transition-opacity" />
               </a>
             </p>
-            
+
             <div className="flex items-center justify-center lg:justify-start text-zinc-600 dark:text-zinc-400 text-xs">
               <span>Crafted with</span>
               <motion.div
@@ -135,7 +135,7 @@ export function Footer() {
           </div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           variants={itemVariants}
           transition={{ delay: 0.3, duration: 0.5 }}
           className="flex items-center space-x-3"
@@ -164,5 +164,5 @@ export function Footer() {
         </motion.div>
       </div>
     </motion.footer>
-  );
+  )
 }

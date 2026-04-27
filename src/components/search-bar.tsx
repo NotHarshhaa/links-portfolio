@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, KeyboardEvent, useCallback } from 'react'
+import { useState, useEffect, useRef, KeyboardEvent } from 'react'
 import { Search, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
@@ -43,7 +43,7 @@ export function SearchBar({ onSearch, placeholder = 'Search links...', className
     }
 
     window.addEventListener('keydown', handleKeyDown as unknown as EventListener)
-    return () => window.removeEventListener('keydown', handleKeyDown as unknown as EventListener)
+    return () => { window.removeEventListener('keydown', handleKeyDown as unknown as EventListener) }
   }, []) // Empty dependency array - listener only added once
 
   // Update search when query changes
@@ -97,7 +97,7 @@ export function SearchBar({ onSearch, placeholder = 'Search links...', className
             ref={inputRef}
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => { setQuery(e.target.value) }}
             placeholder={placeholder}
             className={cn(
               'w-full pl-10 pr-10 py-2.5 sm:py-2.5 rounded-xl',
@@ -128,4 +128,3 @@ export function SearchBar({ onSearch, placeholder = 'Search links...', className
     </AnimatePresence>
   )
 }
-

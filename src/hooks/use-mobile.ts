@@ -14,22 +14,22 @@ export function useMobile() {
 
   useEffect(() => {
     setMounted(true)
-    
+
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= MOBILE_BREAKPOINT)
     }
-    
+
     checkMobile()
-    
+
     // Debounce resize event for better performance
     let resizeTimeout: NodeJS.Timeout
     const debouncedCheckMobile = () => {
       clearTimeout(resizeTimeout)
       resizeTimeout = setTimeout(checkMobile, 150)
     }
-    
+
     window.addEventListener('resize', debouncedCheckMobile)
-    
+
     return () => {
       window.removeEventListener('resize', debouncedCheckMobile)
       clearTimeout(resizeTimeout)

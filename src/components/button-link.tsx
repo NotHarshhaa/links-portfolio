@@ -28,13 +28,13 @@ const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
         <motion.div
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          transition={{ type: "spring", stiffness: 400, damping: 17 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 17 }}
           className="flex items-center gap-2"
         >
           {Icon && (
             <motion.div
               whileHover={{ rotate: 5 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
               className="flex items-center justify-center"
             >
               <Icon className="h-4 w-4 text-blue-600 dark:text-blue-400 transition-colors group-hover:text-blue-700 dark:group-hover:text-blue-300" />
@@ -44,10 +44,10 @@ const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
             {title}
           </span>
         </motion.div>
-        
+
         {/* Hover background effect */}
         <div className="absolute inset-0 bg-gradient-to-r from-blue-100/0 via-blue-200/0 to-blue-300/10 dark:from-blue-900/0 dark:via-blue-800/0 dark:to-blue-700/20 opacity-0 group-hover:opacity-100 rounded-full transition-opacity duration-300" />
-        
+
         {/* Border glow effect */}
         <div className="absolute -z-10 inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500">
           <div className="absolute inset-x-0 -bottom-px h-px w-full bg-gradient-to-r from-transparent via-blue-500 to-transparent" />

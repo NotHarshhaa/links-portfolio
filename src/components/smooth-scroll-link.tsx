@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode, MouseEvent } from 'react'
+import { type ReactNode, type MouseEvent } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
@@ -16,12 +16,12 @@ interface SmoothScrollLinkProps {
  * Smooth scroll link component that handles both internal anchor links
  * and external links with smooth scrolling behavior
  */
-export function SmoothScrollLink({ 
-  href, 
-  children, 
+export function SmoothScrollLink({
+  href,
+  children,
   className,
   onClick,
-  ...props 
+  ...props
 }: SmoothScrollLinkProps) {
   const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
     // Check if it's an internal anchor link
@@ -29,7 +29,7 @@ export function SmoothScrollLink({
       e.preventDefault()
       const targetId = href.substring(1)
       const targetElement = document.getElementById(targetId)
-      
+
       if (targetElement) {
         const headerOffset = 100 // Account for fixed header
         const elementPosition = targetElement.getBoundingClientRect().top
@@ -42,7 +42,7 @@ export function SmoothScrollLink({
 
         // Update URL without triggering scroll
         window.history.pushState(null, '', href)
-        
+
         // Focus the element for accessibility
         targetElement.focus({ preventScroll: true })
         targetElement.setAttribute('tabindex', '-1')
@@ -79,4 +79,3 @@ export function SmoothScrollLink({
     </a>
   )
 }
-

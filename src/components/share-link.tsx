@@ -21,8 +21,8 @@ export function ShareLink({ url, title, className }: ShareLinkProps) {
       e.stopPropagation()
     }
     const shareData = {
-      title: title,
-      url: url,
+      title,
+      url,
       text: `Check out ${title}`
     }
 
@@ -31,16 +31,16 @@ export function ShareLink({ url, title, className }: ShareLinkProps) {
       if (navigator.share) {
         await navigator.share(shareData)
         setIsShared(true)
-        setTimeout(() => setIsShared(false), 2000)
+        setTimeout(() => { setIsShared(false) }, 2000)
       } else {
         // Fallback: Copy to clipboard
         await navigator.clipboard.writeText(url)
         toast.success('Link copied to clipboard!', {
           description: url,
-          duration: 2000,
+          duration: 2000
         })
         setIsShared(true)
-        setTimeout(() => setIsShared(false), 2000)
+        setTimeout(() => { setIsShared(false) }, 2000)
       }
     } catch (error) {
       // User cancelled or error occurred
@@ -50,14 +50,14 @@ export function ShareLink({ url, title, className }: ShareLinkProps) {
           await navigator.clipboard.writeText(url)
           toast.success('Link copied to clipboard!', {
             description: url,
-            duration: 2000,
+            duration: 2000
           })
           setIsShared(true)
-          setTimeout(() => setIsShared(false), 2000)
+          setTimeout(() => { setIsShared(false) }, 2000)
         } catch (copyError) {
           toast.error('Failed to share link', {
             description: 'Please try again',
-            duration: 2000,
+            duration: 2000
           })
         }
       }
@@ -121,4 +121,3 @@ export function ShareLink({ url, title, className }: ShareLinkProps) {
     </motion.button>
   )
 }
-

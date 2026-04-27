@@ -1,6 +1,8 @@
 'use client'
 
-import React, { Component, ReactNode } from 'react'
+import { type ReactNode } from 'react'
+import type React from 'react'
+import { Component } from 'react'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
 import { motion } from 'framer-motion'
 
@@ -65,7 +67,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                 <div className="absolute inset-0 bg-gradient-to-r from-red-500/20 to-orange-500/20 rounded-full blur-xl"></div>
                 <AlertTriangle className="w-12 h-12 sm:w-16 sm:h-16 text-red-500 dark:text-red-400 relative z-10" />
               </motion.div>
-              
+
               <div className="space-y-2">
                 <h2 className="text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-red-600 via-orange-600 to-red-600 dark:from-red-400 dark:via-orange-400 dark:to-red-400">
                   Something went wrong
@@ -104,4 +106,3 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     return this.props.children
   }
 }
-

@@ -11,7 +11,7 @@ export default function TypingRole() {
     'DevOps Engineer',
     'Cloud Enthusiast',
     'Automation Fanatic',
-    'Open-Source Contributor',
+    'Open-Source Contributor'
   ]
 
   if (isMobile) {
@@ -26,7 +26,7 @@ export default function TypingRole() {
   }
 
   return (
-    <motion.div 
+    <motion.div
       className="h-8 md:h-10 relative p-1"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}

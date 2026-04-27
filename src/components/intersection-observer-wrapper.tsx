@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactNode, useRef } from 'react'
 import { useInView } from 'framer-motion'
 
 interface IntersectionObserverWrapperProps {
@@ -25,7 +25,7 @@ export function IntersectionObserverWrapper({
   triggerOnce = true
 }: IntersectionObserverWrapperProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { 
+  const isInView = useInView(ref, {
     once: triggerOnce,
     margin: rootMargin as any,
     amount: threshold
@@ -39,4 +39,3 @@ export function IntersectionObserverWrapper({
     </div>
   )
 }
-
