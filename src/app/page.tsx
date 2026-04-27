@@ -14,6 +14,7 @@ import { scrollToElement } from '@/lib/scroll-utils'
 import { IntersectionObserverWrapper } from '@/components/intersection-observer-wrapper'
 import { SearchBar } from '@/components/search-bar'
 import { useLinkTracker } from '@/hooks/use-link-tracker'
+import { useMobile } from '@/hooks/use-mobile'
 
 const MotionDiv = motion.div
 const MotionSection = motion.section
@@ -22,20 +23,11 @@ export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
-  const [isMobile, setIsMobile] = useState(false)
-  const [mounted, setMounted] = useState(false)
+  const { isMobile, mounted } = useMobile()
   const { trackClick } = useLinkTracker()
 
   useEffect(() => {
-    setMounted(true)
     setIsLoaded(true)
-    
-    // Check if mobile for performance optimizations
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
     
     const handleScroll = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight
@@ -46,7 +38,8 @@ export default function HomePage() {
     // Throttle scroll events on mobile for better performance
     let scrollTimeout: NodeJS.Timeout
     const throttledHandleScroll = () => {
-      if (isMobile) {
+      const mobile = window.innerWidth <= 768
+      if (mobile) {
         clearTimeout(scrollTimeout)
         scrollTimeout = setTimeout(handleScroll, 16) // ~60fps
       } else {
@@ -57,7 +50,6 @@ export default function HomePage() {
     window.addEventListener('scroll', throttledHandleScroll)
     return () => {
       window.removeEventListener('scroll', throttledHandleScroll)
-      window.removeEventListener('resize', checkMobile)
       clearTimeout(scrollTimeout)
     }
   }, [])
@@ -278,18 +270,7 @@ type SectionContainerProps = {
 }
 
 function SectionContainer({ title, delay, items, special, id, icon, trackClick }: SectionContainerProps) {
-  const [isMobile, setIsMobile] = useState(false)
-  const [mounted, setMounted] = useState(false)
-  
-  useEffect(() => {
-    setMounted(true)
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+  const { isMobile, mounted } = useMobile()
 
   return (
     <MotionSection 

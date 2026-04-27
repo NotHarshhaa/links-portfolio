@@ -6,21 +6,16 @@ import { Moon, Sun } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useMobile } from '@/hooks/use-mobile'
 
 export function ModeToggle() {
   const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const [ripple, setRipple] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const { isMobile } = useMobile()
 
   useEffect(() => {
     setMounted(true)
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
   if (!mounted) return null

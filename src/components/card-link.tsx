@@ -1,4 +1,4 @@
-import { forwardRef, useState } from 'react'
+import { forwardRef, useState, useRef, useEffect } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { motion } from 'framer-motion'
@@ -21,6 +21,11 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
     const [isLoading, setIsLoading] = useState(false)
     const [isHovered, setIsHovered] = useState(false)
     const [isCopied, setIsCopied] = useState(false)
+    const isTouchDevice = useRef(false)
+
+    useEffect(() => {
+      isTouchDevice.current = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    }, [])
 
     // Determine gradient colors based on section
     const getGradientClasses = () => {
@@ -137,13 +142,11 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
         >
           <motion.button
             onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              handleCopy(e)
-            }}
-            onTouchStart={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
+              if (!isTouchDevice.current) {
+                e.preventDefault()
+                e.stopPropagation()
+                handleCopy(e)
+              }
             }}
             onTouchEnd={(e) => {
               e.preventDefault()

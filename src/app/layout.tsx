@@ -16,7 +16,8 @@ import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTheme } from 'next-themes'
-import { useEffect, useState, Suspense } from 'react'
+import { useEffect, Suspense } from 'react'
+import { useMobile } from '@/hooks/use-mobile'
 
 // Lazy load header only, keep footer direct for reliable display
 const LazyHeader = React.lazy(() => import('@/components/header').then(mod => ({ default: mod.Header })))
@@ -80,18 +81,7 @@ export default function RootLayout({
 
 function ThemeTransitionWrapper({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme()
-  const [isMobile, setIsMobile] = useState(false)
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+  const { isMobile, mounted } = useMobile()
 
   // Prevent hydration mismatch
   if (!mounted) {

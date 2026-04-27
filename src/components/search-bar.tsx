@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, KeyboardEvent } from 'react'
+import { useState, useEffect, useRef, KeyboardEvent, useCallback } from 'react'
 import { Search, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
@@ -15,6 +15,17 @@ export function SearchBar({ onSearch, placeholder = 'Search links...', className
   const [isOpen, setIsOpen] = useState(false)
   const [query, setQuery] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
+  const isOpenRef = useRef(isOpen)
+  const onSearchRef = useRef(onSearch)
+
+  // Keep refs in sync with state
+  useEffect(() => {
+    isOpenRef.current = isOpen
+  }, [isOpen])
+
+  useEffect(() => {
+    onSearchRef.current = onSearch
+  }, [onSearch])
 
   // Handle keyboard shortcut (Ctrl/Cmd + K)
   useEffect(() => {
@@ -24,16 +35,16 @@ export function SearchBar({ onSearch, placeholder = 'Search links...', className
         setIsOpen(true)
         setTimeout(() => inputRef.current?.focus(), 0)
       }
-      if (e.key === 'Escape' && isOpen) {
+      if (e.key === 'Escape' && isOpenRef.current) {
         setIsOpen(false)
         setQuery('')
-        onSearch('')
+        onSearchRef.current('')
       }
     }
 
     window.addEventListener('keydown', handleKeyDown as unknown as EventListener)
     return () => window.removeEventListener('keydown', handleKeyDown as unknown as EventListener)
-  }, [isOpen, onSearch])
+  }, []) // Empty dependency array - listener only added once
 
   // Update search when query changes
   useEffect(() => {

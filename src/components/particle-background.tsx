@@ -2,24 +2,20 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useTheme } from 'next-themes'
+import { useMobile } from '@/hooks/use-mobile'
 
 export default function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { resolvedTheme } = useTheme()
-  const [isMobile, setIsMobile] = useState(false)
+  const { isMobile, mounted } = useMobile()
   const [isDisabled, setIsDisabled] = useState(false)
   
   useEffect(() => {
-    // Check if device is mobile and disable particles on low-end devices
-    const checkMobile = () => {
-      const mobile = window.innerWidth <= 768
-      setIsMobile(mobile)
-      // Disable particles completely on mobile for better performance
-      setIsDisabled(mobile)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    
+    // Disable particles completely on mobile for better performance
+    setIsDisabled(isMobile)
+  }, [isMobile])
+
+  useEffect(() => {
     // Early return if disabled
     if (isDisabled) return
     
@@ -103,7 +99,6 @@ export default function ParticleBackground() {
     return () => {
       window.removeEventListener('resize', resizeCanvas)
       window.removeEventListener('resize', handleResize)
-      window.removeEventListener('resize', checkMobile)
     }
   }, [resolvedTheme, isMobile, isDisabled])
   

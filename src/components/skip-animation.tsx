@@ -3,17 +3,14 @@
 import { useState, useEffect } from 'react'
 import { Button } from './ui/button'
 import { motion } from 'framer-motion'
+import { useMobile } from '@/hooks/use-mobile'
 
 export default function SkipAnimation() {
   const [showSkip, setShowSkip] = useState(true)
-  const [isMobile, setIsMobile] = useState(false)
+  const { isMobile } = useMobile()
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
-    }
-    
     // Check for reduced motion preference
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
     setPrefersReducedMotion(mediaQuery.matches)
@@ -23,11 +20,8 @@ export default function SkipAnimation() {
     }
     
     mediaQuery.addEventListener('change', handleChange)
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
     
     return () => {
-      window.removeEventListener('resize', checkMobile)
       mediaQuery.removeEventListener('change', handleChange)
     }
   }, [])
