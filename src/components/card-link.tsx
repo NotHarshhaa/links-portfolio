@@ -111,7 +111,8 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
               special ? 'bg-gradient-to-br from-blue-50 to-white dark:from-blue-900/20 dark:to-gray-900'
                         : sectionId === 'personal-network' ? 'bg-gradient-to-br from-purple-50 to-white dark:from-purple-900/20 dark:to-gray-900'
                         : 'bg-gradient-to-br from-green-50 to-white dark:from-green-900/20 dark:to-gray-900'
-            }`}>
+            }`}
+              style={{ transform: 'translateZ(0)' }}>
               <Icon className={`h-4 w-4 sm:h-6 sm:w-6 transition-transform duration-300 group-hover:scale-110 ${
                 special ? 'text-blue-600 dark:text-blue-400'
                           : sectionId === 'personal-network' ? 'text-purple-600 dark:text-purple-400'

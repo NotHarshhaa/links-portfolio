@@ -70,8 +70,8 @@
     padding: 0;
     width: 100%;
     scroll-behavior: smooth;
-    /* Optimize for performance */
-    will-change: scroll-position;
+    /* Use CSS containment for better performance */
+    contain: layout style paint;
   }
     
   body {
@@ -151,6 +151,12 @@
     }
   }
 
+  /* Content visibility optimization for off-screen content */
+  .content-visibility-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px;
+  }
+
   /* Mobile-specific optimizations */
   @media (max-width: 768px) {
     /* Improve touch targets */
@@ -158,22 +164,39 @@
       min-height: 44px;
       min-width: 44px;
     }
-    
+
     /* Better mobile spacing */
     .mobile-spacing {
       padding: 1rem;
     }
-    
+
     /* Optimize mobile scrolling */
     body {
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
     }
-    
+
     /* Improve mobile text rendering */
     body {
       -webkit-text-size-adjust: 100%;
       text-size-adjust: 100%;
+    }
+
+    /* Reduce expensive backdrop-blur on mobile */
+    .backdrop-blur-lg,
+    .backdrop-blur-xl {
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
+    }
+
+    /* Disable expensive blur animations on mobile */
+    .animate-pulse {
+      animation-duration: 3s !important;
+    }
+
+    /* Reduce blur effects on mobile */
+    .blur-3xl {
+      filter: blur(40px) !important;
     }
   }
 }
@@ -298,9 +321,9 @@
 
 /* Performance optimizations */
 .performance-optimized {
-  will-change: transform, opacity;
   transform: translateZ(0);
   backface-visibility: hidden;
+  contain: layout paint;
 }
 
 /* Dark mode transitions */

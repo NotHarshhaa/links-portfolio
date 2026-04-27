@@ -29,28 +29,28 @@ export default function HomePage() {
   useEffect(() => {
     setIsLoaded(true)
 
+    let ticking = false
+    let lastScrollY = 0
+
     const handleScroll = () => {
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight
       const progress = (window.scrollY / totalHeight) * 100
       setScrollProgress(Math.min(progress, 100))
+      lastScrollY = window.scrollY
+      ticking = false
     }
 
-    // Throttle scroll events on mobile for better performance
-    let scrollTimeout: NodeJS.Timeout
-    const throttledHandleScroll = () => {
-      const mobile = window.innerWidth <= 768
-      if (mobile) {
-        clearTimeout(scrollTimeout)
-        scrollTimeout = setTimeout(handleScroll, 16) // ~60fps
-      } else {
-        handleScroll()
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(handleScroll)
+        ticking = true
       }
     }
 
-    window.addEventListener('scroll', throttledHandleScroll)
+    // Use passive listener for better scroll performance
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
-      window.removeEventListener('scroll', throttledHandleScroll)
-      clearTimeout(scrollTimeout)
+      window.removeEventListener('scroll', onScroll)
     }
   }, [])
 
@@ -87,19 +87,18 @@ export default function HomePage() {
   return (
     <div className="relative w-full bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-black">
       {/* Progress bar */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-neutral-200 dark:bg-neutral-800 z-50">
-        <motion.div
-          className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500"
-          style={{ width: `${scrollProgress}%` }}
-          transition={{ duration: 0.1 }}
+      <div className="fixed top-0 left-0 w-full h-1 bg-neutral-200 dark:bg-neutral-800 z-50 will-change-transform">
+        <div
+          className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 transition-transform duration-75 ease-out"
+          style={{ width: `${scrollProgress}%`, transform: 'translateZ(0)' }}
         />
       </div>
 
       {/* Background decoration */}
       <ParticleBackground />
-      <div className="fixed top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-blue-50/50 via-purple-50/30 to-transparent dark:from-blue-950/20 dark:via-purple-950/10 dark:to-transparent -z-10"></div>
-      <div className="fixed top-20 -left-5 sm:-left-10 md:left-10 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-purple-200/30 dark:bg-purple-900/20 rounded-full blur-3xl animate-pulse -z-10"></div>
-      <div className="fixed top-40 -right-5 sm:-right-10 md:right-10 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-blue-200/30 dark:bg-blue-900/20 rounded-full blur-3xl animate-pulse -z-10"></div>
+      <div className="fixed top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-blue-50/50 via-purple-50/30 to-transparent dark:from-blue-950/20 dark:via-purple-950/10 dark:to-transparent -z-10 will-change-transform" style={{ transform: 'translateZ(0)' }}></div>
+      <div className="fixed top-20 -left-5 sm:-left-10 md:left-10 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-purple-200/30 dark:bg-purple-900/20 rounded-full blur-3xl animate-pulse -z-10 will-change-transform" style={{ transform: 'translateZ(0)' }}></div>
+      <div className="fixed top-40 -right-5 sm:-right-10 md:right-10 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-blue-200/30 dark:bg-blue-900/20 rounded-full blur-3xl animate-pulse -z-10 will-change-transform" style={{ transform: 'translateZ(0)' }}></div>
 
       {/* Skip Animation Button */}
       <SkipAnimation />
@@ -276,7 +275,7 @@ function SectionContainer({ title, delay, items, special, id, icon, trackClick }
     <MotionSection
       id={id}
       data-skip-animation
-      className={`w-full max-w-[98vw] sm:max-w-[95vw] md:max-w-md lg:max-w-2xl mt-6 sm:mt-8 rounded-3xl p-3 sm:p-6 backdrop-blur-lg border border-neutral-200/50 dark:border-neutral-800/50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.01] ${
+      className={`w-full max-w-[98vw] sm:max-w-[95vw] md:max-w-md lg:max-w-2xl mt-6 sm:mt-8 rounded-3xl p-3 sm:p-6 backdrop-blur-lg border border-neutral-200/50 dark:border-neutral-800/50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.01] content-visibility-auto ${
         special
           ? 'bg-gradient-to-br from-white/80 via-white/90 to-blue-50/80 dark:from-zinc-900/80 dark:via-zinc-800/80 dark:to-blue-950/70'
           : id === 'personal-network'
