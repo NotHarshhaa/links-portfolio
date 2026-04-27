@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useEffect, Suspense } from 'react'
-import { GeistSans } from 'geist/font/sans'
-import { GeistMono } from 'geist/font/mono'
+import { GeistSans } from 'geist/font'
+import { GeistMono } from 'geist/font'
 import { Head } from '@/components/head'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
