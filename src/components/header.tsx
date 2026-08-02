@@ -2,239 +2,154 @@
 
 import Link from 'next/link'
 import { ModeToggle } from '@/components/mode-toggle'
+import { Button } from '@/components/ui/button'
 import { useState, useEffect } from 'react'
-import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { ChevronRight, Menu, X } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { handleAnchorClick } from '@/lib/scroll-utils'
 
+const navItems = [
+  { href: '#personal-network', label: 'Personal' },
+  { href: '#community-network', label: 'Community' },
+  { href: '#resources', label: 'Resources' }
+]
+
+function Corners() {
+  return (
+    <>
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -top-px -left-px z-10 size-2.5 border-t-2 border-l-2 border-foreground/45 sm:size-3"
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -top-px -right-px z-10 size-2.5 border-t-2 border-r-2 border-foreground/45 sm:size-3"
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -bottom-px -left-px z-10 size-2.5 border-b-2 border-l-2 border-foreground/45 sm:size-3"
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -right-px -bottom-px z-10 size-2.5 border-b-2 border-r-2 border-foreground/45 sm:size-3"
+      />
+    </>
+  )
+}
+
 export function Header() {
-  const [scrolled, setScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [mounted, setMounted] = useState(false)
-  const { scrollY } = useScroll()
 
   useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  useMotionValueEvent(scrollY, 'change', (latest) => {
-    setScrolled(latest > 10)
-  })
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-  }
-
-  // Close mobile menu on escape key
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isMobileMenuOpen) {
-        setIsMobileMenuOpen(false)
-      }
-    }
-
-    if (isMobileMenuOpen) {
-      document.addEventListener('keydown', handleEscape)
-      // Prevent body scroll when menu is open
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
-
+    if (isMobileMenuOpen) document.body.style.overflow = 'hidden'
+    else document.body.style.overflow = ''
     return () => {
-      document.removeEventListener('keydown', handleEscape)
       document.body.style.overflow = ''
     }
   }, [isMobileMenuOpen])
 
-  // Prevent hydration mismatch
-  if (!mounted) {
-    return <div className="h-16" />
-  }
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMobileMenuOpen(false)
+    }
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [])
 
   return (
-    <>
-      <motion.header
-        initial={false}
-        animate={{
-          padding: scrolled ? '0.5rem 1rem' : '1rem 1.5rem',
-          backdropFilter: scrolled ? 'blur(16px)' : 'blur(8px)',
-          WebkitBackdropFilter: scrolled ? 'blur(16px)' : 'blur(8px)',
-          boxShadow: scrolled
-            ? '0 10px 30px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0, 0, 0, 0.03)'
-            : '0 8px 30px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(0, 0, 0, 0.02)'
-        }}
-        transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
-        className={`
-          fixed top-4 sm:top-6 left-1/2 transform -translate-x-1/2
-          w-[94%] sm:w-[92%] max-w-4xl z-50 rounded-full
-          flex items-center justify-between
-          bg-gradient-to-r from-white/80 via-white/95 to-white/80
-          dark:from-zinc-900/80 dark:via-zinc-900/95 dark:to-zinc-900/80
-          border border-zinc-100/80 dark:border-zinc-800/80
-          shadow-[0_8px_30px_rgb(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.15)]
-          hover:shadow-[0_10px_40px_rgb(0,0,0,0.1)] dark:hover:shadow-[0_10px_40px_rgb(0,0,0,0.25)]
-          hover:border-blue-300/40 dark:hover:border-blue-700/40
-          transition-all duration-500
-          glass-morphism
-        `}
-      >
-        {/* Logo */}
-        <Link href="/" className="flex items-center space-x-3 group" aria-label="Go to homepage">
-          <motion.div
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            whileTap={{ scale: 0.9, rotate: -5 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-            className="relative"
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/40 to-purple-500/40 rounded-full blur-xl group-hover:blur-2xl group-hover:scale-125 transition-all duration-500 animate-pulse-subtle" />
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 to-purple-400/20 rounded-full blur-md group-hover:blur-xl group-hover:scale-110 transition-all duration-300" />
-            <img
-              src="/logo.svg"
-              alt="Harshhaa Logo"
-              width={42}
-              height={42}
-              className="relative z-10 group-hover:opacity-90 transition-all duration-300 drop-shadow-lg w-9 h-9 sm:w-[42px] sm:h-[42px]"
-            />
-          </motion.div>
-          <motion.span
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="text-sm sm:text-base font-bold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-zinc-800 via-blue-800/80 to-zinc-600 dark:from-zinc-200 dark:via-blue-400/80 dark:to-zinc-400 hidden sm:inline group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:via-purple-600 group-hover:to-blue-600 dark:group-hover:from-blue-400 dark:group-hover:via-purple-400 dark:group-hover:to-blue-400 transition-all duration-300"
-          >
-            H A R S H H A A
-          </motion.span>
-        </Link>
+    <header className="fixed top-0 right-0 left-0 z-50 bg-background/80 backdrop-blur-md">
+      <div className="site-shell pt-3 sm:pt-4">
+        <div className="relative flex h-12 items-center justify-between border border-border bg-background/90 px-4 sm:h-14 sm:px-5">
+          <Corners />
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-6">
-          <nav className="flex items-center space-x-3 lg:space-x-4" role="navigation" aria-label="Main navigation">
-            <a
-              href="#personal-network"
-              onClick={(e) => { handleAnchorClick(e, '#personal-network') }}
-              className="text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors focus-ring rounded-md px-2 py-1"
-              aria-label="Go to personal network section"
-            >
-              Personal
-            </a>
-            <a
-              href="#community-network"
-              onClick={(e) => { handleAnchorClick(e, '#community-network') }}
-              className="text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors focus-ring rounded-md px-2 py-1"
-              aria-label="Go to community network section"
-            >
-              Community
-            </a>
-            <a
-              href="#resources"
-              onClick={(e) => { handleAnchorClick(e, '#resources') }}
-              className="text-sm font-medium text-neutral-600 dark:text-neutral-400 hover:text-green-600 dark:hover:text-green-400 transition-colors focus-ring rounded-md px-2 py-1"
-              aria-label="Go to resources section"
-            >
-              Resources
-            </a>
+          <Link
+            href="/"
+            className="text-sm font-semibold tracking-[0.18em] uppercase"
+            aria-label="Home"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Harshhaa
+          </Link>
+
+          <nav className="hidden items-center gap-6 md:flex" aria-label="Main">
+            {navItems.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                onClick={(e) => {
+                  handleAnchorClick(e, item.href)
+                }}
+                className="text-xs font-medium tracking-wide text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {item.label}
+              </a>
+            ))}
           </nav>
-        </div>
 
-        {/* Theme Toggle */}
-        <div className="flex items-center space-x-2 sm:space-x-3">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="relative group"
-          >
-            <div className="absolute -inset-2 bg-gradient-to-r from-blue-500/20 via-purple-500/30 to-blue-500/20 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="absolute -inset-1 bg-gradient-to-r from-blue-400/10 via-purple-400/10 to-blue-400/10 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 17 }}
+          <div className="flex items-center gap-2">
+            <ModeToggle />
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setIsMobileMenuOpen((v) => !v)}
+              aria-label="Toggle menu"
+              aria-expanded={isMobileMenuOpen}
             >
-              <ModeToggle />
-            </motion.div>
-          </motion.div>
-
-          {/* Mobile Menu Button */}
-          <motion.button
-            className="md:hidden p-1.5 sm:p-2 rounded-lg bg-white/50 dark:bg-neutral-800/50 border border-neutral-200/50 dark:border-neutral-700/50 hover:bg-white/80 dark:hover:bg-neutral-800/80 transition-colors focus-ring"
-            onClick={toggleMobileMenu}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            aria-label={isMobileMenuOpen ? 'Close mobile menu' : 'Open mobile menu'}
-            aria-expanded={isMobileMenuOpen}
-            aria-controls="mobile-menu"
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-4 w-4 sm:h-5 sm:w-5 text-neutral-600 dark:text-neutral-400" />
-            ) : (
-              <Menu className="h-4 w-4 sm:h-5 sm:w-5 text-neutral-600 dark:text-neutral-400" />
-            )}
-          </motion.button>
+              {isMobileMenuOpen ? (
+                <X className="size-4" />
+              ) : (
+                <Menu className="size-4" />
+              )}
+            </Button>
+          </div>
         </div>
-      </motion.header>
 
-      {/* Mobile Menu */}
-      <AnimatePresence>
         {isMobileMenuOpen && (
-          <motion.div
-            id="mobile-menu"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-            className="fixed top-24 sm:top-24 left-4 right-4 sm:left-1/2 sm:transform sm:-translate-x-1/2 sm:w-[92%] sm:max-w-sm z-40 md:hidden"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Mobile navigation menu"
+          <nav
+            className="relative -mt-px border border-t-0 border-border bg-background/95 md:hidden"
+            aria-label="Mobile"
           >
-            <div className="bg-gradient-to-r from-white/95 via-white/98 to-white/95 dark:from-neutral-900/95 dark:via-neutral-800/98 dark:to-neutral-900/95 backdrop-blur-[16px] border border-neutral-200/60 dark:border-neutral-700/60 rounded-2xl shadow-[0_10px_30px_rgb(0,0,0,0.1)] dark:shadow-[0_10px_30px_rgb(0,0,0,0.3)] p-3 sm:p-4">
-              <nav className="flex flex-col space-y-2 sm:space-y-3" role="navigation" aria-label="Mobile navigation">
-                <a
-                  href="#personal-network"
-                  onClick={(e) => {
-                    handleAnchorClick(e, '#personal-network')
-                    setIsMobileMenuOpen(false)
-                  }}
-                  className="group relative flex items-center justify-between rounded-xl border border-neutral-200/60 bg-white/80 p-3 text-sm font-medium shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-700/60 dark:bg-neutral-800/80 dark:hover:border-blue-600 backdrop-blur-sm focus-ring"
-                >
-                  <span className="text-neutral-700 dark:text-neutral-300 group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
-                    Personal Network
-                  </span>
-                  <div className="w-2 h-2 rounded-full bg-blue-500/60 group-hover:bg-blue-500 transition-colors"></div>
-                </a>
-                <a
-                  href="#community-network"
-                  onClick={(e) => {
-                    handleAnchorClick(e, '#community-network')
-                    setIsMobileMenuOpen(false)
-                  }}
-                  className="group relative flex items-center justify-between rounded-xl border border-neutral-200/60 bg-white/80 p-3 text-sm font-medium shadow-sm transition-all duration-300 hover:border-purple-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-700/60 dark:bg-neutral-800/80 dark:hover:border-purple-600 backdrop-blur-sm focus-ring"
-                >
-                  <span className="text-neutral-700 dark:text-neutral-300 group-hover:text-purple-700 dark:group-hover:text-purple-400 transition-colors">
-                    Community Network
-                  </span>
-                  <div className="w-2 h-2 rounded-full bg-purple-500/60 group-hover:bg-purple-500 transition-colors"></div>
-                </a>
-                <a
-                  href="#resources"
-                  onClick={(e) => {
-                    handleAnchorClick(e, '#resources')
-                    setIsMobileMenuOpen(false)
-                  }}
-                  className="group relative flex items-center justify-between rounded-xl border border-neutral-200/60 bg-white/80 p-3 text-sm font-medium shadow-sm transition-all duration-300 hover:border-green-300 hover:shadow-md hover:scale-[1.02] dark:border-neutral-700/60 dark:bg-neutral-800/80 dark:hover:border-green-600 backdrop-blur-sm focus-ring"
-                >
-                  <span className="text-neutral-700 dark:text-neutral-300 group-hover:text-green-700 dark:group-hover:text-green-400 transition-colors">
-                    Resources
-                  </span>
-                  <div className="w-2 h-2 rounded-full bg-green-500/60 group-hover:bg-green-500 transition-colors"></div>
-                </a>
-              </nav>
+            <Corners />
+            <div className="border-b border-border px-4 py-3">
+              <span className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+                Navigate
+              </span>
             </div>
-          </motion.div>
+            <ul className="flex flex-col">
+              {navItems.map((item, index) => (
+                <li
+                  key={item.href}
+                  className={
+                    index < navItems.length - 1
+                      ? 'border-b border-border'
+                      : undefined
+                  }
+                >
+                  <a
+                    href={item.href}
+                    onClick={(e) => {
+                      handleAnchorClick(e, item.href)
+                      setIsMobileMenuOpen(false)
+                    }}
+                    className={cn(
+                      'group flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left text-sm text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground'
+                    )}
+                  >
+                    <span className="flex items-center gap-3">
+                      <span className="font-mono text-[10px] tabular-nums tracking-wider text-muted-foreground/60">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      {item.label}
+                    </span>
+                    <ChevronRight className="size-3.5 shrink-0 opacity-40 transition-transform group-hover:translate-x-0.5" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
         )}
-      </AnimatePresence>
-    </>
+      </div>
+    </header>
   )
 }

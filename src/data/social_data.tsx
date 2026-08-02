@@ -25,11 +25,12 @@ export const SOCIAL_DATA = {
   name: 'Harshhaa Vardhan Reddy',
   initials: 'HR',
   avatar: '/assets/avatar.png',
-  about: 'DevOps Engineer, a passionate DevOps Engineer on a mission to automate everything and scale cloud infrastructures efficiently with a love for technology and a knack for problem-solving. I thrive on challenges and enjoy collaborating with teams to deliver innovative solutions that drive success. Let\'s connect and explore the world of DevOps together!. Based in Hyderabad, India',
+  about:
+    'Platforms, AI infrastructure, and agents that help teams ship faster. Based in Hyderabad, India.',
   contacts: [
     {
       title: 'Portfolio',
-      url: 'https://notharshhaa.site',
+      url: 'https://harshhaareddy.site',
       icon: IconWorld
     },
     {
@@ -44,7 +45,7 @@ export const SOCIAL_DATA = {
     },
     {
       title: 'Blog',
-      url: 'https://blog.notharshhaa.site',
+      url: 'https://blog.harshhaareddy.site',
       icon: IconBrandBlogger
     },
     {
@@ -65,7 +66,7 @@ export const SOCIAL_DATA = {
       icon: IconBrandLinkedin
     },
     {
-      title: 'The everything app',
+      title: 'X / Twitter',
       url: 'https://x.com/NotHarshhaa',
       icon: IconBrandX
     },
@@ -76,7 +77,7 @@ export const SOCIAL_DATA = {
     },
     {
       title: 'Telegram',
-      url: 'https://t.me/NotHarshhaa',
+      url: 'https://t.me/prodevopsguy',
       icon: IconBrandTelegram
     }
   ],
@@ -99,7 +100,7 @@ export const SOCIAL_DATA = {
       icon: IconPresentationAnalytics
     },
     {
-      title: 'Ultimate 1200+ DevOps/Cloud Docs Resources Portal',
+      title: 'Ultimate DevOps/Cloud Docs Resources Portal',
       url: 'https://docs.prodevopsguytech.com',
       icon: IconFileTypeDoc
     },
@@ -119,7 +120,7 @@ export const SOCIAL_DATA = {
       icon: IconBrandBlogger
     },
     {
-      title: 'AWS/Azure/GCPCloud Blogs',
+      title: 'AWS/Azure/GCP Cloud Blogs',
       url: 'https://cloud.prodevopsguytech.com',
       icon: IconCloud
     },

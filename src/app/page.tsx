@@ -5,352 +5,154 @@ import { ButtonLink } from '@/components/button-link'
 import { CardLink } from '@/components/card-link'
 import { data } from '@/constants'
 import TypingRole from '@/components/TypingRole'
-import { motion, type HTMLMotionProps } from 'framer-motion'
-import ParticleBackground from '@/components/particle-background'
-import SkipAnimation from '@/components/skip-animation'
-import { ChevronDown, Sparkles, TrendingUp, Users } from 'lucide-react'
-import { MouseEvent, type MouseEventHandler, useState, useEffect, useMemo } from 'react'
-import { scrollToElement } from '@/lib/scroll-utils'
-import { IntersectionObserverWrapper } from '@/components/intersection-observer-wrapper'
+import { useState, useMemo } from 'react'
 import { SearchBar } from '@/components/search-bar'
 import { useLinkTracker } from '@/hooks/use-link-tracker'
-import { useMobile } from '@/hooks/use-mobile'
-
-const MotionDiv = motion.div
-const MotionSection = motion.section
+import { Frame, FrameBody, FrameHeader } from '@/components/frame'
 
 export default function HomePage() {
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [scrollProgress, setScrollProgress] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
-  const { isMobile, mounted } = useMobile()
   const { trackClick } = useLinkTracker()
 
-  useEffect(() => {
-    setIsLoaded(true)
-
-    let ticking = false
-    let lastScrollY = 0
-
-    const handleScroll = () => {
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight
-      const progress = (window.scrollY / totalHeight) * 100
-      setScrollProgress(Math.min(progress, 100))
-      lastScrollY = window.scrollY
-      ticking = false
-    }
-
-    const onScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(handleScroll)
-        ticking = true
-      }
-    }
-
-    // Use passive listener for better scroll performance
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', onScroll)
-    }
-  }, [])
-
-  const scrollToContent: MouseEventHandler<HTMLButtonElement> = () => {
-    scrollToElement('personal-network', { offset: 100, behavior: 'smooth', focus: true })
-  }
-
-  // Filter data based on search query
   const filteredData = useMemo(() => {
     if (!searchQuery.trim()) return data
 
     const query = searchQuery.toLowerCase().trim()
+    const match = (item: { title: string; url: string }) =>
+      item.title.toLowerCase().includes(query) ||
+      item.url.toLowerCase().includes(query)
+
     return {
       ...data,
-      contacts: data.contacts.filter(item =>
-        item.title.toLowerCase().includes(query) ||
-        item.url.toLowerCase().includes(query)
-      ),
-      socials: data.socials.filter(item =>
-        item.title.toLowerCase().includes(query) ||
-        item.url.toLowerCase().includes(query)
-      ),
-      communities: data.communities.filter(item =>
-        item.title.toLowerCase().includes(query) ||
-        item.url.toLowerCase().includes(query)
-      ),
-      resources: data.resources.filter(item =>
-        item.title.toLowerCase().includes(query) ||
-        item.url.toLowerCase().includes(query)
-      )
+      contacts: data.contacts.filter(match),
+      socials: data.socials.filter(match),
+      communities: data.communities.filter(match),
+      resources: data.resources.filter(match)
     }
   }, [searchQuery])
 
   return (
-    <div className="relative w-full bg-gradient-to-b from-white to-neutral-100 dark:from-neutral-950 dark:to-black">
-      {/* Progress bar */}
-      <div className="fixed top-0 left-0 w-full h-1 bg-neutral-200 dark:bg-neutral-800 z-50 will-change-transform">
-        <div
-          className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 transition-transform duration-75 ease-out"
-          style={{ width: `${scrollProgress}%`, transform: 'translateZ(0)' }}
+    <div className="site-shell relative pt-24 pb-8 sm:pt-28">
+      <div className="flex w-full flex-col gap-4">
+        <Frame>
+          <FrameHeader label="Links / Hub">
+            <span className="hidden font-mono text-[11px] text-muted-foreground sm:inline">
+              All in one place
+            </span>
+          </FrameHeader>
+          <FrameBody className="py-8 sm:py-10">
+            <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
+              <a
+                href="https://github.com/NotHarshhaa"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="order-1 shrink-0 focus:outline-none sm:order-2"
+                aria-label={`View ${data.name}'s GitHub profile`}
+              >
+                <Avatar className="size-24 rounded-none border border-border after:rounded-none sm:size-32">
+                  <AvatarImage
+                    alt={data.name}
+                    src={data.avatar}
+                    className="rounded-none object-cover"
+                  />
+                  <AvatarFallback className="rounded-none font-mono">
+                    {data.initials}
+                  </AvatarFallback>
+                </Avatar>
+              </a>
+
+              <div className="order-2 w-full flex-1 space-y-4 text-center sm:order-1 sm:text-left">
+                <div>
+                  <h1 className="font-heading text-3xl font-semibold tracking-tight text-balance sm:text-4xl md:text-5xl">
+                    {data.name}
+                  </h1>
+                  <div className="mt-2 flex justify-center sm:justify-start">
+                    <TypingRole />
+                  </div>
+                  <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:mx-0 sm:text-base">
+                    {data.about}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap justify-center gap-2 pt-1 sm:justify-start">
+                  {data.contacts.map((contact) => (
+                    <ButtonLink key={contact.url} {...contact} />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 border-t border-border pt-6">
+              <SearchBar onSearch={setSearchQuery} />
+            </div>
+          </FrameBody>
+        </Frame>
+
+        <LinkSection
+          id="personal-network"
+          label="Personal Network"
+          items={filteredData.socials}
+          trackClick={trackClick}
         />
-      </div>
 
-      {/* Background decoration */}
-      <ParticleBackground />
-      <div className="fixed top-0 left-0 right-0 h-[500px] bg-gradient-to-b from-blue-50/50 via-purple-50/30 to-transparent dark:from-blue-950/20 dark:via-purple-950/10 dark:to-transparent -z-10 will-change-transform" style={{ transform: 'translateZ(0)' }}></div>
-      <div className="fixed top-20 -left-5 sm:-left-10 md:left-10 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-purple-200/30 dark:bg-purple-900/20 rounded-full blur-3xl animate-pulse -z-10 will-change-transform" style={{ transform: 'translateZ(0)' }}></div>
-      <div className="fixed top-40 -right-5 sm:-right-10 md:right-10 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-blue-200/30 dark:bg-blue-900/20 rounded-full blur-3xl animate-pulse -z-10 will-change-transform" style={{ transform: 'translateZ(0)' }}></div>
+        <LinkSection
+          id="community-network"
+          label="Community Network"
+          items={filteredData.communities}
+          trackClick={trackClick}
+        />
 
-      {/* Skip Animation Button */}
-      <SkipAnimation />
-
-      {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center w-full px-3 sm:px-8 pt-24 sm:pt-32 md:pt-36 lg:pt-40 pb-20 sm:pb-32">
-        <MotionDiv
-          data-skip-animation
-          initial={mounted && !isMobile ? { opacity: 0, y: 20 } : {}}
-          animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
-          transition={mounted && !isMobile ? { duration: 0.5 } : {}}
-          className="relative mt-6 sm:mt-8"
-        >
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
-          <a
-            href="https://github.com/NotHarshhaa"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="block rounded-full transition-transform hover:scale-105 relative group"
-            aria-label={`View ${data.name}'s GitHub profile`}
-          >
-            <Avatar className="size-32 sm:size-36 md:size-44 lg:size-52 shadow-xl border-2 border-neutral-200 dark:border-neutral-800 transition-transform duration-300 group-hover:rotate-6">
-              <AvatarImage alt={data.name} src={data.avatar} />
-              <AvatarFallback className="font-mono font-bold text-xl">
-                {data.initials}
-              </AvatarFallback>
-            </Avatar>
-          </a>
-        </MotionDiv>
-
-        <MotionSection
-          data-skip-animation
-          className="flex flex-col items-center justify-center mt-2 sm:mt-4"
-          initial={mounted && !isMobile ? { opacity: 0, y: 20 } : {}}
-          animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
-          transition={mounted && !isMobile ? { duration: 0.5, delay: 0.2 } : {}}
-        >
-          <div className="flex gap-4 justify-center items-center mt-4 sm:mt-8 mb-2">
-            <h1 className="font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400 text-center">
-              {data.name}
-            </h1>
-            <motion.div
-              animate={{ rotate: [0, 10, -10, 0] }}
-              transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-              className="hidden md:block"
-            >
-              <Sparkles className="h-8 w-8 text-purple-500" />
-            </motion.div>
-          </div>
-
-          <TypingRole />
-
-          <h2 className="mx-auto max-w-2xl px-3 sm:px-4 text-sm font-mono font-medium dark:text-neutral-300 text-neutral-700 md:text-pretty text-center mt-3 sm:mt-4 leading-relaxed">
-            {data.about}
-          </h2>
-        </MotionSection>
-
-        {/* Search Bar */}
-        <MotionSection
-          data-skip-animation
-          className="flex items-center justify-center my-4 sm:my-6"
-          initial={mounted && !isMobile ? { opacity: 0, y: 20 } : {}}
-          animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
-          transition={mounted && !isMobile ? { duration: 0.5, delay: 0.35 } : {}}
-        >
-          <SearchBar onSearch={setSearchQuery} />
-        </MotionSection>
-
-        <MotionSection
-          data-skip-animation
-          className="flex items-center gap-3 sm:gap-4 my-6 sm:my-8 flex-wrap justify-center relative"
-          initial={mounted && !isMobile ? { opacity: 0, y: 20 } : {}}
-          animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
-          transition={mounted && !isMobile ? { duration: 0.5, delay: 0.4 } : {}}
-        >
-          {data.contacts.map((contact, index) => (
-            <motion.div
-              key={contact.url}
-              data-skip-animation
-              initial={mounted && !isMobile ? { opacity: 0, y: 20 } : {}}
-              animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
-              transition={mounted && !isMobile ? { duration: 0.3, delay: 0.4 + index * 0.1 } : {}}
-            >
-              <ButtonLink {...contact} />
-            </motion.div>
-          ))}
-        </MotionSection>
-
-        {/* Scroll indicator - moved outside to be more visible */}
-        <motion.button
-          onClick={scrollToContent}
-          className="flex flex-col items-center justify-center cursor-pointer mb-8 sm:mb-12 text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
-          initial={mounted && !isMobile ? { opacity: 0, y: -10 } : {}}
-          animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
-          transition={mounted && !isMobile ? { delay: 0.8, duration: 0.5 } : {}}
-          whileHover={mounted && !isMobile ? { scale: 1.1 } : {}}
-          whileTap={mounted && !isMobile ? { scale: 0.9 } : {}}
-          aria-label="Scroll to explore more content"
-        >
-          <span className="text-base font-medium mb-2">Explore</span>
-          <motion.div
-            animate={mounted && !isMobile ? { y: [0, 8, 0] } : {}}
-            transition={mounted && !isMobile ? { duration: 1.5, repeat: Infinity, repeatType: 'loop' } : {}}
-          >
-            <ChevronDown size={28} />
-          </motion.div>
-        </motion.button>
-
-        {/* Sections with lazy loading for better performance */}
-        <IntersectionObserverWrapper
-          rootMargin="50px"
-          threshold={0.1}
-          triggerOnce={true}
-        >
-          <SectionContainer
-            title="Personal Network"
-            delay={0.6}
-            items={filteredData.socials}
-            id="personal-network"
-            icon={<TrendingUp className="h-5 w-5" />}
-            trackClick={trackClick}
-          />
-        </IntersectionObserverWrapper>
-
-        <IntersectionObserverWrapper
-          rootMargin="50px"
-          threshold={0.1}
-          triggerOnce={true}
-        >
-          <SectionContainer
-            title="Community Network"
-            delay={0.8}
-            items={filteredData.communities}
-            id="community-network"
-            icon={<Users className="h-5 w-5" />}
-            trackClick={trackClick}
-          />
-        </IntersectionObserverWrapper>
-
-        <IntersectionObserverWrapper
-          rootMargin="50px"
-          threshold={0.1}
-          triggerOnce={true}
-        >
-          <SectionContainer
-            title="One Resource at a Time"
-            delay={1.0}
-            items={filteredData.resources}
-            id="resources"
-            special
-            icon={<Sparkles className="h-5 w-5" />}
-            trackClick={trackClick}
-          />
-        </IntersectionObserverWrapper>
+        <LinkSection
+          id="resources"
+          label="Resources"
+          items={filteredData.resources}
+          trackClick={trackClick}
+        />
       </div>
     </div>
   )
 }
 
-interface SectionContainerProps {
-  title: string
-  delay: number
-  items: Array<{ title: string; url: string; icon: React.FC<React.SVGProps<SVGSVGElement>> }>
-  special?: boolean
-  id?: string
-  icon?: React.ReactNode
-  trackClick?: (url: string, title: string) => void
-}
-
-function SectionContainer({ title, delay, items, special, id, icon, trackClick }: SectionContainerProps) {
-  const { isMobile, mounted } = useMobile()
-
+function LinkSection({
+  id,
+  label,
+  items,
+  trackClick
+}: {
+  id: string
+  label: string
+  items: Array<{
+    title: string
+    url: string
+    icon: React.FC<React.SVGProps<SVGSVGElement>>
+  }>
+  trackClick: (url: string, title: string) => void
+}) {
   return (
-    <MotionSection
-      id={id}
-      data-skip-animation
-      className={`w-full max-w-[98vw] sm:max-w-[95vw] md:max-w-md lg:max-w-2xl mt-6 sm:mt-8 rounded-3xl p-3 sm:p-6 backdrop-blur-lg border border-neutral-200/50 dark:border-neutral-800/50 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.01] content-visibility-auto ${
-        special
-          ? 'bg-gradient-to-br from-white/80 via-white/90 to-blue-50/80 dark:from-zinc-900/80 dark:via-zinc-800/80 dark:to-blue-950/70'
-          : id === 'personal-network'
-            ? 'bg-gradient-to-br from-white/80 via-white/90 to-purple-50/70 dark:from-zinc-900/80 dark:via-zinc-800/80 dark:to-purple-950/70'
-            : 'bg-gradient-to-br from-white/80 via-white/90 to-green-50/70 dark:from-zinc-900/80 dark:via-zinc-800/80 dark:to-green-950/70'
-      }`}
-      initial={mounted && !isMobile ? { opacity: 0, y: 40 } : {}}
-      animate={mounted && !isMobile ? { opacity: 1, y: 0 } : {}}
-      transition={mounted && !isMobile ? { duration: 0.7, delay } : {}}
-    >
-      <motion.div
-        data-skip-animation
-        className="flex flex-col items-center"
-        initial={mounted && !isMobile ? { y: 20 } : {}}
-        animate={mounted && !isMobile ? { y: 0 } : {}}
-        transition={mounted && !isMobile ? { duration: 0.5, delay: delay + 0.2 } : {}}
-      >
-        <div className="relative mb-6 sm:mb-8">
-          <div className="flex items-center gap-2 mb-2">
-            {icon && (
-              <motion.div
-                animate={mounted && !isMobile ? { rotate: [0, 360] } : {}}
-                transition={mounted && !isMobile ? { duration: 3, repeat: Infinity, ease: 'linear' } : {}}
-                className={`${
-                  special
-                    ? 'text-blue-600 dark:text-blue-400'
-                    : id === 'personal-network'
-                      ? 'text-purple-600 dark:text-purple-400'
-                      : 'text-green-600 dark:text-green-400'
-                }`}
-              >
-                {icon}
-              </motion.div>
-            )}
-            <h3 className={`font-semibold text-2xl ${
-              special
-                ? 'bg-clip-text text-transparent bg-gradient-to-r from-blue-700 via-purple-700 to-blue-700 dark:from-blue-400 dark:via-purple-400 dark:to-blue-400'
-                : id === 'personal-network'
-                  ? 'bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-600 dark:from-purple-400 dark:via-indigo-400 dark:to-purple-400'
-                  : 'bg-clip-text text-transparent bg-gradient-to-r from-green-600 via-emerald-600 to-green-600 dark:from-green-400 dark:via-emerald-400 dark:to-green-400'
-            } text-center`}>
-              {title}
-            </h3>
-          </div>
-          <div className={`w-full h-0.5 mt-2 bg-gradient-to-r from-transparent ${
-            special
-              ? 'via-blue-500/50'
-              : id === 'personal-network'
-                ? 'via-purple-500/50'
-                : 'via-green-500/50'
-          } to-transparent rounded-full`}></div>
-        </div>
-      </motion.div>
-
-          <div className="flex flex-col gap-3 sm:gap-4 w-full max-w-lg mx-auto px-1 sm:px-0">
-        {items.map((item, index) => (
-          <MotionDiv
-            data-skip-animation
-            key={item.url}
-            className="w-full max-w-[600px] mx-auto px-0"
-            initial={mounted && !isMobile ? { opacity: 0, x: -20 } : {}}
-            animate={mounted && !isMobile ? { opacity: 1, x: 0 } : {}}
-            transition={mounted && !isMobile ? { duration: 0.3, delay: delay + 0.3 + (index * 0.1) } : {}}
-            whileHover={mounted && !isMobile ? { scale: 1.02 } : {}}
-            whileTap={mounted && !isMobile ? { scale: 0.98 } : {}}
-          >
+    <Frame id={id} className="scroll-mt-28 overflow-hidden">
+      <FrameHeader label={label}>
+        <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
+          {items.length}
+        </span>
+      </FrameHeader>
+      {items.length === 0 ? (
+        <FrameBody>
+          <p className="text-sm text-muted-foreground">No links match your search.</p>
+        </FrameBody>
+      ) : (
+        <ul>
+          {items.map((item, index) => (
             <CardLink
+              key={item.url}
               {...item}
-              special={special}
-              sectionId={id}
-              onTrackClick={trackClick ? () => { trackClick(item.url, item.title) } : undefined}
+              isLast={index === items.length - 1}
+              onTrackClick={() => {
+                trackClick(item.url, item.title)
+              }}
             />
-          </MotionDiv>
-        ))}
-      </div>
-    </MotionSection>
+          ))}
+        </ul>
+      )}
+    </Frame>
   )
 }
