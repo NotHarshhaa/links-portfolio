@@ -129,7 +129,7 @@ function LinkSection({
   trackClick: (url: string, title: string) => void
 }) {
   return (
-    <Frame id={id} className="scroll-mt-28 overflow-hidden">
+    <Frame id={id} className="scroll-mt-28 overflow-visible">
       <FrameHeader label={label}>
         <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
           {items.length}

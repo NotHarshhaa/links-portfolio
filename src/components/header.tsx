@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react'
 import { ChevronRight, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { handleAnchorClick } from '@/lib/scroll-utils'
+import { HoverMark } from '@/components/hover-mark'
 
 const navItems = [
   { href: '#personal-network', label: 'Personal' },
@@ -59,34 +60,35 @@ export function Header() {
   return (
     <header className="fixed top-0 right-0 left-0 z-50 bg-background/80 backdrop-blur-md">
       <div className="site-shell pt-3 sm:pt-4">
-        <div className="relative flex h-12 items-center justify-between border border-border bg-background/90 px-4 sm:h-14 sm:px-5">
+        <div className="relative flex h-12 items-center justify-between overflow-visible border border-border bg-background/90 px-4 sm:h-14 sm:px-5">
           <Corners />
 
           <Link
             href="/"
-            className="text-sm font-semibold tracking-[0.18em] uppercase"
+            className="relative z-10 text-sm font-semibold tracking-[0.18em] uppercase"
             aria-label="Home"
             onClick={() => setIsMobileMenuOpen(false)}
           >
             Harshhaa
           </Link>
 
-          <nav className="hidden items-center gap-6 md:flex" aria-label="Main">
+          <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
             {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                onClick={(e) => {
-                  handleAnchorClick(e, item.href)
-                }}
-                className="text-xs font-medium tracking-wide text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {item.label}
-              </a>
+              <HoverMark key={item.href} className="px-2.5 py-1.5">
+                <a
+                  href={item.href}
+                  onClick={(e) => {
+                    handleAnchorClick(e, item.href)
+                  }}
+                  className="text-xs font-medium tracking-wide text-muted-foreground transition-colors group-hover/mark:text-foreground"
+                >
+                  {item.label}
+                </a>
+              </HoverMark>
             ))}
           </nav>
 
-          <div className="flex items-center gap-2">
+          <div className="relative z-10 flex items-center gap-2">
             <ModeToggle />
             <Button
               variant="ghost"
@@ -107,7 +109,7 @@ export function Header() {
 
         {isMobileMenuOpen && (
           <nav
-            className="relative -mt-px border border-t-0 border-border bg-background/95 md:hidden"
+            className="relative -mt-px overflow-visible border border-t-0 border-border bg-background/95 md:hidden"
             aria-label="Mobile"
           >
             <Corners />
@@ -118,8 +120,10 @@ export function Header() {
             </div>
             <ul className="flex flex-col">
               {navItems.map((item, index) => (
-                <li
+                <HoverMark
+                  as="li"
                   key={item.href}
+                  label="Go"
                   className={
                     index < navItems.length - 1
                       ? 'border-b border-border'
@@ -132,19 +136,17 @@ export function Header() {
                       handleAnchorClick(e, item.href)
                       setIsMobileMenuOpen(false)
                     }}
-                    className={cn(
-                      'group flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left text-sm text-muted-foreground transition-colors hover:bg-muted/30 hover:text-foreground'
-                    )}
+                    className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left text-sm text-muted-foreground transition-colors group-hover/mark:text-foreground"
                   >
                     <span className="flex items-center gap-3">
-                      <span className="font-mono text-[10px] tabular-nums tracking-wider text-muted-foreground/60">
+                      <span className="font-mono text-[10px] tracking-wider text-muted-foreground/60 tabular-nums">
                         {String(index + 1).padStart(2, '0')}
                       </span>
                       {item.label}
                     </span>
-                    <ChevronRight className="size-3.5 shrink-0 opacity-40 transition-transform group-hover:translate-x-0.5" />
+                    <ChevronRight className="size-3.5 shrink-0 opacity-40 transition-transform group-hover/mark:translate-x-0.5" />
                   </a>
-                </li>
+                </HoverMark>
               ))}
             </ul>
           </nav>

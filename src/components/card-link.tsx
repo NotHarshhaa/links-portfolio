@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 import { ArrowUpRight, Check, Copy } from 'lucide-react'
 import { toast } from 'sonner'
 import type { Links } from '@/types'
+import { HoverMark } from '@/components/hover-mark'
 
 interface CardLinkProps extends Links {
   className?: string
@@ -15,15 +16,7 @@ interface CardLinkProps extends Links {
 
 const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
   (
-    {
-      className,
-      icon: Icon,
-      title,
-      url,
-      onTrackClick,
-      isLast,
-      ...props
-    },
+    { className, icon: Icon, title, url, onTrackClick, isLast, ...props },
     ref
   ) => {
     const [isCopied, setIsCopied] = useState(false)
@@ -42,8 +35,12 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
     }
 
     return (
-      <li className={cn(!isLast && 'border-b border-border', className)}>
-        <div className="group flex items-start justify-between gap-3 px-4 py-4 sm:gap-4 sm:px-6 sm:py-5">
+      <HoverMark
+        as="li"
+        label="Open link"
+        className={cn(!isLast && 'border-b border-border', className)}
+      >
+        <div className="flex items-start justify-between gap-3 px-4 py-4 sm:gap-4 sm:px-6 sm:py-5">
           <Link
             ref={ref}
             href={url}
@@ -51,7 +48,7 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
             rel="noopener noreferrer"
             prefetch={false}
             onClick={() => onTrackClick?.()}
-            className="flex min-w-0 flex-1 items-start gap-3 transition-opacity hover:opacity-70 sm:gap-4"
+            className="flex min-w-0 flex-1 items-start gap-3 sm:gap-4"
             aria-label={`Visit ${title}`}
             {...props}
           >
@@ -74,7 +71,7 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
           <button
             type="button"
             onClick={handleCopy}
-            className="mt-0.5 flex size-8 shrink-0 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+            className="relative z-20 mt-0.5 flex size-8 shrink-0 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
             aria-label="Copy link"
             title="Copy link"
           >
@@ -85,7 +82,7 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
             )}
           </button>
         </div>
-      </li>
+      </HoverMark>
     )
   }
 )
