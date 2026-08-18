@@ -18,6 +18,17 @@ export function Footer() {
             <p className="text-xs text-muted-foreground">
               © {year} · Platform Engineer · Hyderabad
             </p>
+            <p className="hidden text-[11px] text-muted-foreground/80 sm:block">
+              Press{' '}
+              <kbd className="border border-border px-1 py-0.5 font-mono text-[10px]">
+                ?
+              </kbd>{' '}
+              for shortcuts ·{' '}
+              <kbd className="border border-border px-1 py-0.5 font-mono text-[10px]">
+                ⌘K
+              </kbd>{' '}
+              to jump
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" asChild>

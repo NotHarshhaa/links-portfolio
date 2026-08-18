@@ -1,59 +1,78 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
-interface LinkClick {
+export interface LinkVisit {
   url: string
   title: string
-  timestamp: number
+  lastVisited: number
+  count: number
 }
 
-const STORAGE_KEY = 'link-clicks'
-const MAX_STORED_CLICKS = 50
+const STORAGE_KEY = 'link-visits'
+const MAX_STORED = 20
+
+function readVisits(): LinkVisit[] {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (!stored) {
+      const legacy = localStorage.getItem('link-clicks')
+      if (!legacy) return []
+      const parsed = JSON.parse(legacy) as Array<{
+        url: string
+        title: string
+        timestamp: number
+      }>
+      return parsed.map((item) => ({
+        url: item.url,
+        title: item.title,
+        lastVisited: item.timestamp,
+        count: 1
+      }))
+    }
+    return JSON.parse(stored) as LinkVisit[]
+  } catch {
+    return []
+  }
+}
 
 export function useLinkTracker() {
-  const [recentClicks, setRecentClicks] = useState<LinkClick[]>([])
+  const [visits, setVisits] = useState<LinkVisit[]>([])
+  const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    // Load recent clicks from localStorage
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        try {
-          setRecentClicks(JSON.parse(stored))
-        } catch (e) {
-          console.error('Failed to parse stored link clicks', e)
-        }
-      }
-    }
+    setVisits(readVisits())
+    setReady(true)
   }, [])
 
-  const trackClick = (url: string, title: string) => {
-    if (typeof window === 'undefined') return
+  const trackClick = useCallback((url: string, title: string) => {
+    setVisits((current) => {
+      const existing = current.find((item) => item.url === url)
+      const next: LinkVisit[] = existing
+        ? [
+            {
+              ...existing,
+              title,
+              lastVisited: Date.now(),
+              count: existing.count + 1
+            },
+            ...current.filter((item) => item.url !== url)
+          ]
+        : [
+            { url, title, lastVisited: Date.now(), count: 1 },
+            ...current
+          ]
 
-    const newClick: LinkClick = {
-      url,
-      title,
-      timestamp: Date.now()
-    }
-
-    const updated = [newClick, ...recentClicks]
-      .filter((click, index, self) =>
-        index === self.findIndex((c) => c.url === click.url)
-      )
-      .slice(0, MAX_STORED_CLICKS)
-
-    setRecentClicks(updated)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated))
-  }
-
-  const getClickCount = (url: string): number => {
-    return recentClicks.filter(click => click.url === url).length
-  }
+      const trimmed = next.slice(0, MAX_STORED)
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed))
+      return trimmed
+    })
+  }, [])
 
   return {
-    recentClicks,
+    visits,
+    recentVisits: visits.slice(0, 5),
     trackClick,
-    getClickCount
+    ready
   }
 }

@@ -4,12 +4,15 @@ import Link from 'next/link'
 import { ModeToggle } from '@/components/mode-toggle'
 import { Button } from '@/components/ui/button'
 import { useState, useEffect } from 'react'
-import { ChevronRight, Menu, X } from 'lucide-react'
+import { ChevronRight, Menu, Share2, X } from 'lucide-react'
+import { toast } from 'sonner'
+import { sharePage } from '@/lib/links'
 import { cn } from '@/lib/utils'
 import { handleAnchorClick } from '@/lib/scroll-utils'
 import { HoverMark } from '@/components/hover-mark'
 
 const navItems = [
+  { href: '#featured', label: 'Featured' },
   { href: '#personal-network', label: 'Personal' },
   { href: '#community-network', label: 'Community' },
   { href: '#resources', label: 'Resources' }
@@ -89,6 +92,24 @@ export function Header() {
           </nav>
 
           <div className="relative z-10 flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-9"
+              onClick={async () => {
+                try {
+                  const result = await sharePage()
+                  if (result === 'copied') toast.success('Page link copied')
+                } catch (error) {
+                  if (error instanceof Error && error.name === 'AbortError') return
+                  toast.error('Could not share page')
+                }
+              }}
+              aria-label="Share this page"
+              title="Share"
+            >
+              <Share2 className="size-4" />
+            </Button>
             <ModeToggle />
             <Button
               variant="ghost"

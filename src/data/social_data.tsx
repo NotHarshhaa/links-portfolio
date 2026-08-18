@@ -27,11 +27,20 @@ export const SOCIAL_DATA = {
   avatar: '/assets/avatar.png',
   about:
     'Platforms, AI infrastructure, and agents that help teams ship faster. Based in Hyderabad, India.',
+  now: 'Building AI infrastructure and agent tooling',
+  availability: 'Open to collaborations',
+  location: 'Hyderabad, India',
+  timezone: 'Asia/Kolkata',
+  email: 'harshhaa03@gmail.com',
+  phone: '+917995905634',
+  siteUrl: 'https://link.notharshhaa.site',
   contacts: [
     {
       title: 'Portfolio',
       url: 'https://harshhaareddy.site',
-      icon: IconWorld
+      icon: IconWorld,
+      featured: true,
+      description: 'Personal site and work'
     },
     {
       title: 'Resume',
@@ -58,12 +67,16 @@ export const SOCIAL_DATA = {
     {
       title: 'GitHub',
       url: 'https://github.com/NotHarshhaa',
-      icon: IconBrandGithub
+      icon: IconBrandGithub,
+      featured: true,
+      description: 'Open source and project work'
     },
     {
       title: 'LinkedIn',
       url: 'https://www.linkedin.com/in/harshhaa-vardhan-reddy',
-      icon: IconBrandLinkedin
+      icon: IconBrandLinkedin,
+      featured: true,
+      description: 'Professional network'
     },
     {
       title: 'X / Twitter',
@@ -97,7 +110,9 @@ export const SOCIAL_DATA = {
     {
       title: 'Real-Time DevOps/Cloud Projects Hub',
       url: 'https://projects.prodevopsguytech.com',
-      icon: IconPresentationAnalytics
+      icon: IconPresentationAnalytics,
+      featured: true,
+      description: 'Hands-on cloud and DevOps projects'
     },
     {
       title: 'Ultimate DevOps/Cloud Docs Resources Portal',
@@ -147,7 +162,9 @@ export const SOCIAL_DATA = {
     {
       title: 'ProDevOpsGuy Tech Community Home',
       url: 'https://prodevopsguytech.com',
-      icon: IconBuildingCommunity
+      icon: IconBuildingCommunity,
+      featured: true,
+      description: 'Community home and learning hub'
     },
     {
       title: 'Certified Kubernetes Administrator (CKA)',

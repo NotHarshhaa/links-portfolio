@@ -21,14 +21,21 @@ export function SearchBar({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-        e.preventDefault()
-        inputRef.current?.focus()
-      }
+      const target = e.target as HTMLElement | null
+      const typing =
+        target?.tagName === 'INPUT' ||
+        target?.tagName === 'TEXTAREA' ||
+        target?.isContentEditable
+
       if (e.key === 'Escape') {
         setQuery('')
         onSearch('')
         inputRef.current?.blur()
+      }
+
+      if (!typing && e.key === 'f' && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        e.preventDefault()
+        inputRef.current?.focus()
       }
     }
     window.addEventListener('keydown', handleKeyDown)
@@ -66,7 +73,7 @@ export function SearchBar({
           </Button>
         ) : (
           <kbd className="hidden border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground sm:inline">
-            ⌘K
+            F
           </kbd>
         )}
       </div>

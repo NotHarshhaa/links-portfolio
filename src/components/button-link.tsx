@@ -1,6 +1,5 @@
 import { forwardRef } from 'react'
 import Link from 'next/link'
-import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import type { Links } from '@/types'
 
@@ -10,7 +9,7 @@ interface ButtonLinkProps extends Links {
 }
 
 const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
-  ({ className, icon: Icon, title, url, ...props }, ref) => {
+  ({ className, icon: Icon, title, url }, ref) => {
     return (
       <Button variant="outline" size="sm" asChild className={className}>
         <Link
@@ -20,7 +19,6 @@ const ButtonLink = forwardRef<HTMLAnchorElement, ButtonLinkProps>(
           rel="noopener noreferrer"
           prefetch={false}
           aria-label={`Visit ${title}`}
-          {...props}
         >
           {Icon && <Icon className="size-3.5" />}
           {title}
