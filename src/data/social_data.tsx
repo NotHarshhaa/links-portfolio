@@ -18,7 +18,15 @@ import {
   IconDeviceImacQuestion,
   IconBuildingCommunity,
   IconSettingsCog,
-  IconPresentationAnalytics
+  IconPresentationAnalytics,
+  IconRobot,
+  IconSparkles,
+  IconBrain,
+  IconLayoutDashboard,
+  IconActivity,
+  IconMap2,
+  IconCoin,
+  IconBooks
 } from '@tabler/icons-react'
 
 export const SOCIAL_DATA = {
@@ -156,8 +164,9 @@ export const SOCIAL_DATA = {
     },
     {
       title: 'From Docker to Kubernetes Learning Platform',
-      url: 'https://dockertokubernetes.live',
-      icon: IconBrandDocker
+      url: 'https://dockertok8s.prodevopsguytech.com',
+      icon: IconBrandDocker,
+      description: 'Container fundamentals through Kubernetes deployments'
     },
     {
       title: 'ProDevOpsGuy Tech Community Home',
@@ -190,6 +199,98 @@ export const SOCIAL_DATA = {
       title: 'Awesome DevOps',
       url: 'https://awesomedevopsui.site',
       icon: IconWorld
+    },
+    {
+      title: 'Home of Best DevOps Resources',
+      url: 'https://devopsresourceshub.site',
+      icon: IconBooks,
+      description: 'Curated DevOps learning resources with live demos'
+    },
+    {
+      title: 'AI Platform Engineering Handbook',
+      url: 'https://ai-platform-handbook.prodevopsguytech.com',
+      icon: IconBrain,
+      featured: true,
+      description: 'Production AI infrastructure, MLOps, and platform patterns'
+    },
+    {
+      title: 'PromptDeck',
+      url: 'https://promptdeck.prodevopsguytech.com',
+      icon: IconSparkles,
+      description: 'Build, test, and compare prompts across model providers'
+    },
+    {
+      title: 'DevOps Project Generator',
+      url: 'https://devops-gen.prodevopsguytech.com',
+      icon: IconSettingsCog,
+      featured: true,
+      description: 'Scaffold production-ready DevOps repos from a UI/CLI'
+    },
+    {
+      title: 'MLOps Project Generator',
+      url: 'https://mlops-gen.prodevopsguytech.com',
+      icon: IconRobot,
+      description: 'Generate MLOps templates for Scikit-learn, PyTorch, TensorFlow'
+    },
+    {
+      title: 'AWS Infra Generator',
+      url: 'https://aws-infra.prodevopsguytech.com',
+      icon: IconCloud,
+      description: 'Generate Terraform or CloudFormation from selected AWS services'
+    },
+    {
+      title: 'Internal Developer Platform Generator',
+      url: 'https://idp-gen.prodevopsguytech.com',
+      icon: IconBuildingCommunity,
+      description: 'Self-service infrastructure and service scaffolding'
+    },
+    {
+      title: 'Pipeline Forge',
+      url: 'https://pipeline-forge.prodevopsguytech.com',
+      icon: IconPresentationAnalytics,
+      description: 'Create CI/CD pipelines without writing YAML from scratch'
+    },
+    {
+      title: 'Terraform Cost Predictor',
+      url: 'https://tf-cost-ml.prodevopsguytech.com',
+      icon: IconCoin,
+      description: 'Estimate monthly cloud cost from Terraform before deploy'
+    },
+    {
+      title: 'DevOps AtlasX',
+      url: 'https://devops-atlasx.prodevopsguytech.com',
+      icon: IconMap2,
+      description: 'Identify and fix production issues across DevOps tools'
+    },
+    {
+      title: 'DevOps Engineering Lab',
+      url: 'https://devops-engineering.site',
+      icon: IconDeviceImacQuestion,
+      description: 'Hands-on CI/CD and automation lab environment'
+    },
+    {
+      title: 'DevOps Tool Guides',
+      url: 'https://www.devopsguides.site',
+      icon: IconFileTypeDoc,
+      description: 'Install, configure, and troubleshoot DevOps tools'
+    },
+    {
+      title: 'Kubernetes Dashboard',
+      url: 'https://kubernetes-dashboard.vercel.app',
+      icon: IconLayoutDashboard,
+      description: 'Cluster health, security scanning, and pod observability'
+    },
+    {
+      title: 'AI Question Paper Generator',
+      url: 'https://ai-paper-gen.prodevopsguytech.com',
+      icon: IconFileText,
+      description: 'Generate DevOps and AWS certification-style papers'
+    },
+    {
+      title: 'Services Status Dashboard',
+      url: 'https://status.prodevopsguytech.com',
+      icon: IconActivity,
+      description: 'Uptime and health of ProDevOpsGuy sites'
     }
   ]
 }
