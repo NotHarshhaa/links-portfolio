@@ -9,7 +9,7 @@ import { useMemo, useState } from 'react'
 import { SearchBar } from '@/components/search-bar'
 import { useLinkTracker } from '@/hooks/use-link-tracker'
 import { useFavorites } from '@/hooks/use-favorites'
-import { Frame, FrameBody, FrameHeader } from '@/components/frame'
+import { BracketTitle, Frame, FrameBody, FrameHeader } from '@/components/frame'
 import { LocalTime } from '@/components/local-time'
 import { QuickActions } from '@/components/quick-actions'
 import { getAllLinks, getFeaturedLinks } from '@/lib/links'
@@ -114,16 +114,34 @@ export default function HomePage() {
                 className="order-1 shrink-0 focus:outline-none sm:order-2"
                 aria-label={`View ${data.name}'s GitHub profile`}
               >
-                <Avatar className="size-24 rounded-none border border-border after:rounded-none sm:size-32">
-                  <AvatarImage
-                    alt={data.name}
-                    src={data.avatar}
-                    className="rounded-none object-cover"
+                <span className="relative block">
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -top-px -left-px z-10 size-2.5 border-t-2 border-l-2 border-foreground/45 sm:size-3"
                   />
-                  <AvatarFallback className="rounded-none font-mono">
-                    {data.initials}
-                  </AvatarFallback>
-                </Avatar>
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -top-px -right-px z-10 size-2.5 border-t-2 border-r-2 border-foreground/45 sm:size-3"
+                  />
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -bottom-px -left-px z-10 size-2.5 border-b-2 border-l-2 border-foreground/45 sm:size-3"
+                  />
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute -right-px -bottom-px z-10 size-2.5 border-b-2 border-r-2 border-foreground/45 sm:size-3"
+                  />
+                  <Avatar className="size-24 rounded-none border border-border after:rounded-none sm:size-32">
+                    <AvatarImage
+                      alt={data.name}
+                      src={data.avatar}
+                      className="rounded-none object-cover"
+                    />
+                    <AvatarFallback className="rounded-none font-mono">
+                      {data.initials}
+                    </AvatarFallback>
+                  </Avatar>
+                </span>
               </a>
 
               <div className="order-2 w-full flex-1 space-y-4 text-center sm:order-1 sm:text-left">
@@ -142,7 +160,7 @@ export default function HomePage() {
                     )}
                   </div>
                   <h1 className="font-heading text-3xl font-semibold tracking-tight text-balance sm:text-4xl md:text-5xl">
-                    {data.name}
+                    <BracketTitle>{data.name}</BracketTitle>
                   </h1>
                   <div className="mt-2 flex justify-center sm:justify-start">
                     <TypingRole />

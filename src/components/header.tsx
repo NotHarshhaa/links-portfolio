@@ -10,6 +10,7 @@ import { sharePage } from '@/lib/links'
 import { cn } from '@/lib/utils'
 import { handleAnchorClick } from '@/lib/scroll-utils'
 import { HoverMark } from '@/components/hover-mark'
+import { BracketTitle } from '@/components/frame'
 
 const navItems = [
   { href: '#featured', label: 'Featured' },
@@ -61,9 +62,9 @@ export function Header() {
   }, [])
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-50 bg-background/80 backdrop-blur-md">
+    <header className="site-header fixed top-0 right-0 left-0 z-50">
       <div className="site-shell pt-3 sm:pt-4">
-        <div className="relative flex h-12 items-center justify-between overflow-visible border border-border bg-background/90 px-4 sm:h-14 sm:px-5">
+        <div className="site-header-surface relative flex h-12 items-center justify-between overflow-visible border border-border px-4 sm:h-14 sm:px-5">
           <Corners />
 
           <Link
@@ -72,7 +73,16 @@ export function Header() {
             aria-label="Home"
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            Harshhaa
+            <span className="relative z-10 flex items-center gap-2">
+              <img
+                src="/logo.svg?v=2"
+                alt="Harshhaa logo"
+                width="32"
+                height="32"
+                className="block size-8 shrink-0 object-contain"
+              />
+              <BracketTitle>Harshhaa</BracketTitle>
+            </span>
           </Link>
 
           <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
@@ -110,7 +120,9 @@ export function Header() {
             >
               <Share2 className="size-4" />
             </Button>
-            <ModeToggle />
+            <span className="hidden md:inline-flex">
+              <ModeToggle />
+            </span>
             <Button
               variant="ghost"
               size="icon"
@@ -130,7 +142,7 @@ export function Header() {
 
         {isMobileMenuOpen && (
           <nav
-            className="relative -mt-px overflow-visible border border-t-0 border-border bg-background/95 md:hidden"
+            className="site-header-surface relative -mt-px overflow-visible border border-t-0 border-border md:hidden"
             aria-label="Mobile"
           >
             <Corners />
@@ -170,6 +182,10 @@ export function Header() {
                 </HoverMark>
               ))}
             </ul>
+            <div className="flex items-center justify-between border-t border-border px-4 py-3">
+              <span className="text-sm text-muted-foreground">Appearance</span>
+              <ModeToggle />
+            </div>
           </nav>
         )}
       </div>

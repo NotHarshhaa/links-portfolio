@@ -2,7 +2,7 @@
 
 import { ArrowUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Frame, FrameBody } from '@/components/frame'
+import { BracketTitle, Frame, FrameBody } from '@/components/frame'
 
 export function Footer() {
   const year = new Date().getFullYear()
@@ -13,7 +13,7 @@ export function Footer() {
         <FrameBody className="flex flex-col items-start justify-between gap-4 py-5 sm:flex-row sm:items-center sm:py-6">
           <div className="space-y-1">
             <p className="text-sm font-medium tracking-[0.14em] uppercase">
-              Harshhaa
+              <BracketTitle>Harshhaa</BracketTitle>
             </p>
             <p className="text-xs text-muted-foreground">
               © {year} · Platform Engineer · Hyderabad

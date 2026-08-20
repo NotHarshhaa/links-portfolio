@@ -24,6 +24,36 @@ function Corners() {
   )
 }
 
+export function BracketTitle({
+  children,
+  className
+}: {
+  children: ReactNode
+  className?: string
+}) {
+  return (
+    <span className={cn('relative inline-block px-2 py-1', className)}>
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -top-px -left-px size-2 border-t border-l border-foreground/45"
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -top-px -right-px size-2 border-t border-r border-foreground/45"
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -bottom-px -left-px size-2 border-b border-l border-foreground/45"
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute -right-px -bottom-px size-2 border-b border-r border-foreground/45"
+      />
+      {children}
+    </span>
+  )
+}
+
 type FrameProps = HTMLAttributes<HTMLDivElement> & {
   children: ReactNode
   corners?: boolean
@@ -69,9 +99,9 @@ export function FrameHeader({
       {...props}
     >
       {label && (
-        <span className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+        <BracketTitle className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
           {label}
-        </span>
+        </BracketTitle>
       )}
       {children}
     </div>
