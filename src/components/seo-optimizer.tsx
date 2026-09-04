@@ -19,7 +19,7 @@ export function SEOOptimizer({
   keywords = 'DevOps Engineer, Cloud Infrastructure, Automation, AWS, Azure, GCP, Kubernetes, Docker, CI/CD, Hyderabad, India',
   ogImage = '/opengraph-image.png',
   twitterImage = '/opengraph-image.png',
-  url = 'https://notharshhaa.site',
+  url = 'https://harshhaareddy.com',
   type = 'website'
 }: SEOOptimizerProps) {
   useEffect(() => {
@@ -91,8 +91,8 @@ export function SEOOptimizer({
         'https://github.com/NotHarshhaa',
         'https://www.linkedin.com/in/harshhaa-vardhan-reddy',
         'https://x.com/NotHarshhaa',
-        'https://notharshhaa.site',
-        'https://blog.notharshhaa.site'
+        'https://harshhaareddy.com',
+        'https://blog.harshhaareddy.com'
       ],
       worksFor: {
         '@type': 'Organization',

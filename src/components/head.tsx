@@ -7,8 +7,8 @@ export function Head({ metadata }: { metadata: Metadata }) {
   const description =
     metadata.description?.toString() ||
     'DevOps Engineer • Passionate DevOps Engineer on a mission to automate everything and scale cloud infrastructures efficiently. • Loves to build and break things. Always learning and sharing knowledge. • Open to new opportunities and challenges. • Based in Hyderabad, India 🌏'
-  const image = 'https://link.notharshhaa.site/opengraph-image.png'
-  const url = 'https://link.notharshhaa.site'
+  const image = 'https://link.harshhaareddy.com/opengraph-image.png'
+  const url = 'https://link.harshhaareddy.com'
   const author = 'Harshhaa Vardhan Reddy'
   const githubHandle = '@NotHarshhaa'
 

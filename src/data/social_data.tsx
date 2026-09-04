@@ -41,18 +41,18 @@ export const SOCIAL_DATA = {
   timezone: 'Asia/Kolkata',
   email: 'harshhaa03@gmail.com',
   phone: '+917995905634',
-  siteUrl: 'https://link.notharshhaa.site',
+  siteUrl: 'https://link.harshhaareddy.com',
   contacts: [
     {
       title: 'Portfolio',
-      url: 'https://harshhaareddy.site',
+      url: 'https://harshhaareddy.com',
       icon: IconWorld,
       featured: true,
       description: 'Personal site and work'
     },
     {
       title: 'Resume',
-      url: 'https://cv.notharshhaa.site',
+      url: 'https://cv.harshhaareddy.com',
       icon: IconFileText
     },
     {
@@ -62,7 +62,7 @@ export const SOCIAL_DATA = {
     },
     {
       title: 'Blog',
-      url: 'https://blog.harshhaareddy.site',
+      url: 'https://blog.harshhaareddy.com',
       icon: IconBrandBlogger
     },
     {
