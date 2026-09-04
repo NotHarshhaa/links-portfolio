@@ -16,7 +16,7 @@ interface OutputLine {
   content: string | React.ReactNode
 }
 
-const QUICK_COMMANDS = ['help', 'whoami', 'skills', 'status', 'links', 'matrix', 'clear']
+const QUICK_COMMANDS = ['help', 'whoami', 'skills', 'status', 'links', 'matrix', 'clear', 'exit']
 
 export function TerminalModal() {
   const { activeModal, closeModal } = useActiveModal()
@@ -30,7 +30,7 @@ export function TerminalModal() {
   const [matrixActive, setMatrixActive] = useState(false)
 
   const inputRef = useRef<HTMLInputElement>(null)
-  const bottomRef = useRef<HTMLDivElement>(null)
+  const outputContainerRef = useRef<HTMLDivElement>(null)
 
   const allLinks = useMemo(() => getAllLinks(), [])
 
@@ -46,24 +46,29 @@ export function TerminalModal() {
         {
           id: 'w-2',
           type: 'system',
-          content: 'Type "help" to view available commands or tap quick actions below.'
+          content: 'Type "help" or tap quick actions below. Tap [Close] or type "exit" to quit.'
         }
       ])
     }
   }, [lines.length])
 
-  // Focus input on open
+  // Focus input on open without forcing mobile viewport to scroll down
   useEffect(() => {
     if (open) {
-      const t = setTimeout(() => inputRef.current?.focus(), 50)
-      return () => clearTimeout(t)
+      const isMobile =
+        typeof window !== 'undefined' &&
+        (window.innerWidth < 768 || window.matchMedia('(pointer: coarse)').matches)
+      if (!isMobile) {
+        const t = setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 60)
+        return () => clearTimeout(t)
+      }
     }
   }, [open])
 
-  // Scroll to bottom on lines change
+  // Scroll terminal output container to bottom without scrolling the outer window
   useEffect(() => {
-    if (open) {
-      bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (open && outputContainerRef.current) {
+      outputContainerRef.current.scrollTop = outputContainerRef.current.scrollHeight
     }
   }, [lines, open])
 
@@ -475,9 +480,11 @@ export function TerminalModal() {
             <button
               type="button"
               onClick={closeModal}
-              className="border border-emerald-500/30 px-1.5 py-0.5 font-mono text-[10px] text-emerald-400 hover:bg-emerald-500/20"
+              className="flex items-center gap-1 border border-emerald-500/40 bg-emerald-950/70 px-2.5 py-1 font-mono text-[11px] font-bold text-emerald-300 transition-colors hover:bg-emerald-500/20 active:scale-95 touch-manipulation"
+              aria-label="Close terminal"
             >
-              ESC
+              <X className="size-3.5" />
+              <span>CLOSE</span>
             </button>
           </div>
         </FrameHeader>
@@ -490,7 +497,7 @@ export function TerminalModal() {
           />
 
           {/* Terminal Output Area */}
-          <div className="relative z-10 flex-1 overflow-y-auto space-y-2 pr-1 text-xs">
+          <div ref={outputContainerRef} className="relative z-10 flex-1 overflow-y-auto space-y-2 pr-1 text-xs overscroll-contain">
             {lines.map((line) => (
               <div
                 key={line.id}
@@ -506,7 +513,6 @@ export function TerminalModal() {
                 {line.content}
               </div>
             ))}
-            <div ref={bottomRef} />
           </div>
 
           {/* Quick Command Chips */}
@@ -519,9 +525,14 @@ export function TerminalModal() {
                 key={cmd}
                 type="button"
                 onClick={() => executeCommand(cmd)}
-                className="border border-emerald-500/30 bg-emerald-950/40 px-2 py-0.5 font-mono text-[11px] text-emerald-400 transition-colors hover:border-emerald-400 hover:bg-emerald-500/20"
+                className={cn(
+                  'border px-2 py-0.5 font-mono text-[11px] transition-colors',
+                  cmd === 'exit'
+                    ? 'border-rose-500/40 bg-rose-950/30 text-rose-300 hover:bg-rose-500/20'
+                    : 'border-emerald-500/30 bg-emerald-950/40 text-emerald-400 hover:border-emerald-400 hover:bg-emerald-500/20'
+                )}
               >
-                {cmd}
+                {cmd === 'exit' ? '✕ exit' : cmd}
               </button>
             ))}
           </div>
@@ -539,14 +550,13 @@ export function TerminalModal() {
               onKeyDown={handleKeyDown}
               className="flex-1 bg-transparent font-mono text-xs text-emerald-200 outline-none placeholder:text-emerald-500/40"
               placeholder="type a command... (try 'help')"
-              autoFocus
               spellCheck={false}
               autoComplete="off"
             />
             <button
               type="button"
               onClick={() => executeCommand(inputVal)}
-              className="shrink-0 p-1 text-emerald-400 hover:text-emerald-300"
+              className="shrink-0 p-1 text-emerald-400 hover:text-emerald-300 active:scale-95"
               title="Submit command"
               aria-label="Submit command"
             >

@@ -24,6 +24,20 @@ export function useActiveModal() {
     return () => window.removeEventListener(EVENT_NAME, handler)
   }, [])
 
+  // Lock background scroll and preserve scroll position
+  useEffect(() => {
+    if (activeModal) {
+      const scrollY = window.scrollY
+      const prevOverflow = document.body.style.overflow
+      document.body.style.overflow = 'hidden'
+
+      return () => {
+        document.body.style.overflow = prevOverflow
+        window.scrollTo(0, scrollY)
+      }
+    }
+  }, [activeModal])
+
   return {
     activeModal,
     openModal: (type: ModalType) => triggerModal(type),

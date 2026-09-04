@@ -156,12 +156,17 @@ export function TelemetryModal() {
       >
         <FrameHeader label="Edge Telemetry / Service Monitor">
           <div className="flex items-center gap-2">
+            <span className="hidden sm:inline font-mono text-[10px] text-muted-foreground">
+              ESC
+            </span>
             <button
               type="button"
               onClick={closeModal}
-              className="border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground hover:text-foreground"
+              className="flex items-center gap-1 border border-border bg-background px-2.5 py-1 font-mono text-[11px] font-bold text-foreground transition-colors hover:bg-muted active:scale-95 touch-manipulation"
+              aria-label="Close telemetry monitor"
             >
-              ESC
+              <X className="size-3.5" />
+              <span>CLOSE</span>
             </button>
           </div>
         </FrameHeader>
@@ -273,20 +278,29 @@ export function TelemetryModal() {
             </div>
           </div>
 
-          {/* Quick Action Footer inside Modal */}
           <div className="flex items-center justify-between border-t border-border pt-4">
             <p className="font-mono text-[11px] text-muted-foreground">
               Node ID: <span className="text-foreground">hr-edge-node-01</span>
             </p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => triggerModal('terminal')}
-              className="gap-1.5 font-mono text-xs"
-            >
-              <Terminal className="size-3.5" />
-              Open Node Terminal
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={closeModal}
+                className="font-mono text-xs"
+              >
+                Close
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => triggerModal('terminal')}
+                className="gap-1.5 font-mono text-xs"
+              >
+                <Terminal className="size-3.5" />
+                Open Node Terminal
+              </Button>
+            </div>
           </div>
         </FrameBody>
       </Frame>

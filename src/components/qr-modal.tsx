@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import QRCode from 'qrcode'
-import { Check, Copy, Download, QrCode, Sparkles, UserCheck } from 'lucide-react'
+import { Check, Copy, Download, QrCode, Sparkles, UserCheck, X } from 'lucide-react'
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
 import { useActiveModal } from '@/hooks/use-modals'
 import { data } from '@/constants'
@@ -125,9 +125,11 @@ export function QrModal() {
             <button
               type="button"
               onClick={closeModal}
-              className="border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground hover:text-foreground"
+              className="flex items-center gap-1 border border-border bg-background px-2.5 py-1 font-mono text-[11px] font-bold text-foreground transition-colors hover:bg-muted active:scale-95 touch-manipulation"
+              aria-label="Close modal"
             >
-              ESC
+              <X className="size-3.5" />
+              <span>CLOSE</span>
             </button>
           </div>
         </FrameHeader>
