@@ -1,13 +1,12 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Terminal as TerminalIcon, X, CornerDownLeft } from 'lucide-react'
+import { X, CornerDownLeft } from 'lucide-react'
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
 import { useActiveModal } from '@/hooks/use-modals'
 import { data } from '@/constants'
 import { getAllLinks } from '@/lib/links'
 import { useTheme } from 'next-themes'
-import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
 interface OutputLine {
@@ -46,7 +45,7 @@ export function TerminalModal() {
         {
           id: 'w-2',
           type: 'system',
-          content: 'Type "help" or tap quick actions below. Tap [Close] or type "exit" to quit.'
+          content: 'Type "help" or click quick actions below. Tap [Close] or type "exit" to quit.'
         }
       ])
     }
@@ -132,29 +131,29 @@ export function TerminalModal() {
             type: 'output',
             content: (
               <div className="space-y-1 font-mono text-xs text-muted-foreground">
-                <p className="text-foreground font-semibold">Available Commands:</p>
-                <div className="grid grid-cols-[110px_1fr] gap-x-2 gap-y-0.5 pt-1">
-                  <span className="text-emerald-400">whoami</span>
+                <p className="font-semibold text-foreground">Available Commands:</p>
+                <div className="grid grid-cols-[110px_1fr] gap-x-2 gap-y-1 pt-1">
+                  <span className="font-medium text-foreground">whoami</span>
                   <span>About Harshhaa & background</span>
-                  <span className="text-emerald-400">skills</span>
+                  <span className="font-medium text-foreground">skills</span>
                   <span>DevOps, Cloud & AI Infrastructure stack</span>
-                  <span className="text-emerald-400">status</span>
+                  <span className="font-medium text-foreground">status</span>
                   <span>Edge node telemetry & cluster status</span>
-                  <span className="text-emerald-400">links</span>
+                  <span className="font-medium text-foreground">links</span>
                   <span>List all portfolio links & resources</span>
-                  <span className="text-emerald-400">open &lt;name&gt;</span>
+                  <span className="font-medium text-foreground">open &lt;name&gt;</span>
                   <span>Open link (e.g. "open github", "open blog")</span>
-                  <span className="text-emerald-400">ping &lt;host&gt;</span>
+                  <span className="font-medium text-foreground">ping &lt;host&gt;</span>
                   <span>Simulate network ping to host</span>
-                  <span className="text-emerald-400">curl contact</span>
+                  <span className="font-medium text-foreground">curl contact</span>
                   <span>Print contact card and direct handles</span>
-                  <span className="text-emerald-400">theme &lt;mode&gt;</span>
+                  <span className="font-medium text-foreground">theme &lt;mode&gt;</span>
                   <span>Set theme ('light', 'dark', 'toggle')</span>
-                  <span className="text-emerald-400">matrix</span>
+                  <span className="font-medium text-foreground">matrix</span>
                   <span>Toggle digital code rain</span>
-                  <span className="text-emerald-400">clear</span>
+                  <span className="font-medium text-foreground">clear</span>
                   <span>Clear screen</span>
-                  <span className="text-emerald-400">exit</span>
+                  <span className="font-medium text-foreground">exit</span>
                   <span>Close this terminal</span>
                 </div>
               </div>
@@ -174,10 +173,10 @@ export function TerminalModal() {
                 <p className="font-semibold text-foreground">{data.name}</p>
                 <p className="text-muted-foreground">{data.about}</p>
                 <p className="text-muted-foreground">
-                  Location: <span className="text-foreground">{data.location}</span> ({data.timezone})
+                  Location: <span className="text-foreground font-medium">{data.location}</span> ({data.timezone})
                 </p>
                 <p className="text-muted-foreground">
-                  Focus: <span className="text-emerald-400">{data.now}</span>
+                  Focus: <span className="text-foreground font-medium">{data.now}</span>
                 </p>
               </div>
             )
@@ -193,22 +192,22 @@ export function TerminalModal() {
             type: 'output',
             content: (
               <div className="space-y-2 font-mono text-xs">
-                <p className="text-foreground font-semibold">Technical Architecture & Stack:</p>
+                <p className="font-semibold text-foreground">Technical Architecture & Stack:</p>
                 <div className="space-y-1.5 text-muted-foreground">
                   <p>
-                    <span className="text-emerald-400 font-semibold">[DevOps & Orchestration]:</span>{' '}
+                    <span className="font-semibold text-foreground">[DevOps & Orchestration]:</span>{' '}
                     Kubernetes, Docker, Helm, Terraform, Ansible, ArgoCD, GitHub Actions
                   </p>
                   <p>
-                    <span className="text-emerald-400 font-semibold">[Cloud & Infrastructure]:</span>{' '}
+                    <span className="font-semibold text-foreground">[Cloud & Infrastructure]:</span>{' '}
                     AWS, Google Cloud, Edge Anycast, Linux Kernel/eBPF, CI/CD Pipelines
                   </p>
                   <p>
-                    <span className="text-emerald-400 font-semibold">[AI & LLMOps]:</span>{' '}
+                    <span className="font-semibold text-foreground">[AI & LLMOps]:</span>{' '}
                     PyTorch, LangChain, Agentic Workflows, Vector Stores, Model Serving, GPU Clusters
                   </p>
                   <p>
-                    <span className="text-emerald-400 font-semibold">[Platforms & Web]:</span>{' '}
+                    <span className="font-semibold text-foreground">[Platforms & Web]:</span>{' '}
                     Next.js, TypeScript, Tailwind CSS, Python, Go, Bash Shell Scripting
                   </p>
                 </div>
@@ -225,7 +224,9 @@ export function TerminalModal() {
             type: 'output',
             content: (
               <div className="space-y-1 font-mono text-xs">
-                <p className="text-emerald-400 font-semibold">● CLUSTER STATUS: 100% OPERATIONAL</p>
+                <p className="font-semibold text-emerald-600 dark:text-emerald-400">
+                  ● CLUSTER STATUS: 100% OPERATIONAL
+                </p>
                 <p className="text-muted-foreground">Region: Asia-Pacific (Edge Anycast · HYD/BOM/SIN)</p>
                 <p className="text-muted-foreground">Edge Node: hr-edge-node-01</p>
                 <p className="text-muted-foreground">HTTP Protocol: HTTP/3 (QUIC) over TLS 1.3</p>
@@ -244,11 +245,13 @@ export function TerminalModal() {
             type: 'output',
             content: (
               <div className="space-y-1 font-mono text-xs">
-                <p className="text-foreground font-semibold">Available Links (use 'open &lt;name&gt;'):</p>
+                <p className="font-semibold text-foreground">Available Links (use 'open &lt;name&gt;'):</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 pt-1 text-muted-foreground">
                   {allLinks.map((l) => (
                     <div key={l.url} className="truncate">
-                      <span className="text-emerald-400">{l.title.toLowerCase().replace(/\s+/g, '-')}</span>
+                      <span className="font-medium text-foreground">
+                        {l.title.toLowerCase().replace(/\s+/g, '-')}
+                      </span>
                       {' -> '}
                       <span className="text-[11px] opacity-75">{l.url.replace(/^https?:\/\//, '')}</span>
                     </div>
@@ -331,9 +334,9 @@ export function TerminalModal() {
               type: 'output',
               content: (
                 <div className="space-y-1 font-mono text-xs">
-                  <p className="text-emerald-400">HTTP/1.1 200 OK</p>
+                  <p className="font-semibold text-emerald-600 dark:text-emerald-400">HTTP/1.1 200 OK</p>
                   <p className="text-muted-foreground">Content-Type: application/json</p>
-                  <pre className="border border-border/80 bg-muted/20 p-2 text-foreground">
+                  <pre className="border border-border bg-muted/30 p-2 text-foreground">
 {`{
   "name": "${data.name}",
   "email": "${data.email}",
@@ -400,7 +403,9 @@ export function TerminalModal() {
           {
             id: Math.random().toString(36),
             type: 'success',
-            content: matrixActive ? 'Matrix digital rain deactivated.' : 'Matrix digital rain engaged! (type matrix to stop)'
+            content: matrixActive
+              ? 'Matrix mode deactivated.'
+              : 'Matrix mode active! (type "matrix" to toggle)'
           }
         ]
         break
@@ -466,21 +471,18 @@ export function TerminalModal() {
       aria-label="Interactive Terminal"
     >
       <Frame
-        className="relative w-full max-w-2xl overflow-hidden shadow-2xl border-foreground/30 bg-black/95 text-emerald-400"
+        className="relative w-full max-w-2xl overflow-hidden shadow-2xl border-border bg-background text-foreground"
         onClick={(e) => e.stopPropagation()}
       >
-        <FrameHeader
-          label="Edge Node Terminal · bash"
-          className="bg-black/90 border-b border-emerald-500/20 text-emerald-400"
-        >
+        <FrameHeader label="Terminal / CLI">
           <div className="flex items-center gap-2">
-            <span className="hidden sm:inline font-mono text-[10px] text-emerald-500/70">
-              Press ` or ESC to close
+            <span className="hidden sm:inline font-mono text-[10px] text-muted-foreground">
+              Press ` or ESC
             </span>
             <button
               type="button"
               onClick={closeModal}
-              className="flex items-center gap-1 border border-emerald-500/40 bg-emerald-950/70 px-2.5 py-1 font-mono text-[11px] font-bold text-emerald-300 transition-colors hover:bg-emerald-500/20 active:scale-95 touch-manipulation"
+              className="flex items-center gap-1 border border-border bg-background px-2.5 py-1 font-mono text-[11px] font-bold text-foreground transition-colors hover:bg-muted active:scale-95 touch-manipulation"
               aria-label="Close terminal"
             >
               <X className="size-3.5" />
@@ -489,25 +491,22 @@ export function TerminalModal() {
           </div>
         </FrameHeader>
 
-        <FrameBody className="relative flex flex-col p-4 font-mono sm:p-5 h-[65vh] max-h-[550px] bg-black text-emerald-400">
-          {/* Subtle Scanline Overlay */}
-          <div
-            className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] opacity-40 z-0"
-            aria-hidden
-          />
-
+        <FrameBody className="relative flex flex-col p-4 font-mono sm:p-5 h-[65vh] max-h-[550px] bg-background/95 text-foreground">
           {/* Terminal Output Area */}
-          <div ref={outputContainerRef} className="relative z-10 flex-1 overflow-y-auto space-y-2 pr-1 text-xs overscroll-contain">
+          <div
+            ref={outputContainerRef}
+            className="relative z-10 flex-1 overflow-y-auto space-y-2 pr-1 text-xs overscroll-contain"
+          >
             {lines.map((line) => (
               <div
                 key={line.id}
                 className={cn(
-                  'leading-relaxed break-words',
-                  line.type === 'input' && 'text-emerald-300 font-bold',
-                  line.type === 'system' && 'text-emerald-500/80',
-                  line.type === 'error' && 'text-rose-400',
-                  line.type === 'success' && 'text-emerald-400 font-semibold',
-                  line.type === 'output' && 'text-emerald-100/90'
+                  'leading-relaxed break-words font-mono',
+                  line.type === 'input' && 'text-foreground font-bold',
+                  line.type === 'system' && 'text-muted-foreground',
+                  line.type === 'error' && 'text-destructive font-medium',
+                  line.type === 'success' && 'text-emerald-600 dark:text-emerald-400 font-medium',
+                  line.type === 'output' && 'text-foreground'
                 )}
               >
                 {line.content}
@@ -516,8 +515,8 @@ export function TerminalModal() {
           </div>
 
           {/* Quick Command Chips */}
-          <div className="relative z-10 mt-3 flex flex-wrap gap-1.5 border-t border-emerald-500/20 pt-3">
-            <span className="self-center font-mono text-[10px] text-emerald-500/60 uppercase">
+          <div className="relative z-10 mt-3 flex flex-wrap items-center gap-1.5 border-t border-border pt-3">
+            <span className="font-mono text-[10px] text-muted-foreground uppercase">
               Quick:
             </span>
             {QUICK_COMMANDS.map((cmd) => (
@@ -526,10 +525,10 @@ export function TerminalModal() {
                 type="button"
                 onClick={() => executeCommand(cmd)}
                 className={cn(
-                  'border px-2 py-0.5 font-mono text-[11px] transition-colors',
+                  'border px-2 py-0.5 font-mono text-[11px] transition-all active:scale-95',
                   cmd === 'exit'
-                    ? 'border-rose-500/40 bg-rose-950/30 text-rose-300 hover:bg-rose-500/20'
-                    : 'border-emerald-500/30 bg-emerald-950/40 text-emerald-400 hover:border-emerald-400 hover:bg-emerald-500/20'
+                    ? 'border-border bg-muted/40 text-muted-foreground hover:border-destructive hover:text-destructive'
+                    : 'border-border bg-muted/20 text-muted-foreground hover:border-foreground hover:text-foreground'
                 )}
               >
                 {cmd === 'exit' ? '✕ exit' : cmd}
@@ -538,8 +537,8 @@ export function TerminalModal() {
           </div>
 
           {/* Command Prompt Input */}
-          <div className="relative z-10 mt-3 flex items-center gap-2 border-t border-emerald-500/20 pt-3">
-            <span className="shrink-0 font-mono text-xs font-semibold text-emerald-400">
+          <div className="relative z-10 mt-3 flex items-center gap-2 border-t border-border pt-3">
+            <span className="shrink-0 font-mono text-xs font-semibold text-foreground">
               harshhaa@edge:~$
             </span>
             <input
@@ -548,7 +547,7 @@ export function TerminalModal() {
               value={inputVal}
               onChange={(e) => setInputVal(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="flex-1 bg-transparent font-mono text-xs text-emerald-200 outline-none placeholder:text-emerald-500/40"
+              className="flex-1 bg-transparent font-mono text-xs text-foreground outline-none placeholder:text-muted-foreground/60"
               placeholder="type a command... (try 'help')"
               spellCheck={false}
               autoComplete="off"
@@ -556,7 +555,7 @@ export function TerminalModal() {
             <button
               type="button"
               onClick={() => executeCommand(inputVal)}
-              className="shrink-0 p-1 text-emerald-400 hover:text-emerald-300 active:scale-95"
+              className="shrink-0 p-1 text-muted-foreground hover:text-foreground active:scale-95"
               title="Submit command"
               aria-label="Submit command"
             >
