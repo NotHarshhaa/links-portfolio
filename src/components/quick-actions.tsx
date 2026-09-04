@@ -1,10 +1,11 @@
 'use client'
 
-import { Contact, Dices, Mail, Share2 } from 'lucide-react'
+import { Contact, Dices, Mail, QrCode, Share2, Terminal } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { data } from '@/constants'
 import { downloadVCard, getAllLinks, sharePage } from '@/lib/links'
+import { triggerModal } from '@/hooks/use-modals'
 
 export function QuickActions() {
   const copyEmail = async () => {
@@ -42,22 +43,31 @@ export function QuickActions() {
 
   return (
     <div className="flex flex-wrap justify-center gap-2 sm:justify-start">
+      <Button variant="outline" size="sm" onClick={() => triggerModal('qr')}>
+        <QrCode className="size-4" />
+        QR Pass
+      </Button>
+      <Button variant="outline" size="sm" onClick={() => triggerModal('terminal')}>
+        <Terminal className="size-4" />
+        Terminal
+      </Button>
       <Button variant="outline" size="sm" onClick={share}>
-        <Share2 />
+        <Share2 className="size-4" />
         Share
       </Button>
       <Button variant="outline" size="sm" onClick={saveContact}>
-        <Contact />
+        <Contact className="size-4" />
         Save contact
       </Button>
       <Button variant="outline" size="sm" onClick={copyEmail}>
-        <Mail />
+        <Mail className="size-4" />
         Copy email
       </Button>
       <Button variant="outline" size="sm" onClick={surprise}>
-        <Dices />
+        <Dices className="size-4" />
         Surprise me
       </Button>
     </div>
   )
 }
+

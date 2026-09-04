@@ -5,6 +5,8 @@ import { Frame, FrameBody, FrameHeader } from '@/components/frame'
 
 const shortcuts = [
   { keys: '⌘ K', action: 'Open command palette' },
+  { keys: '` / Ctrl `', action: 'Open edge node terminal' },
+  { keys: 'Q', action: 'Open QR & conference pass' },
   { keys: '/', action: 'Jump to a link' },
   { keys: 'F', action: 'Focus search' },
   { keys: '?', action: 'Show this help' },

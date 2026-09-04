@@ -1,11 +1,22 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowUpRight, Search } from 'lucide-react'
+import { ArrowUpRight, Search, Terminal, QrCode, Activity } from 'lucide-react'
 import { data } from '@/constants'
 import { getAllLinks, getCategoryLabel } from '@/lib/links'
 import { cn } from '@/lib/utils'
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
+import { triggerModal, ModalType } from '@/hooks/use-modals'
+
+interface PaletteItem {
+  id: string
+  title: string
+  url?: string
+  description?: string
+  categoryLabel: string
+  action?: () => void
+  icon?: React.ComponentType<{ className?: string }>
+}
 
 export function CommandPalette() {
   const [open, setOpen] = useState(false)
@@ -14,17 +25,57 @@ export function CommandPalette() {
   const inputRef = useRef<HTMLInputElement>(null)
   const links = useMemo(() => getAllLinks(), [])
 
-  const results = useMemo(() => {
+  const actions: PaletteItem[] = useMemo(
+    () => [
+      {
+        id: 'action-terminal',
+        title: 'Open Edge Terminal',
+        description: 'Interactive CLI shell with whoami, skills, ping, matrix',
+        categoryLabel: 'System',
+        icon: Terminal,
+        action: () => triggerModal('terminal')
+      },
+      {
+        id: 'action-qr',
+        title: 'QR Code & Conference Pass',
+        description: 'Show printable QR code and digital attendee badge',
+        categoryLabel: 'Networking',
+        icon: QrCode,
+        action: () => triggerModal('qr')
+      },
+      {
+        id: 'action-telemetry',
+        title: 'Edge Telemetry & Subdomain Status',
+        description: 'Live latency ping and subdomains health monitor',
+        categoryLabel: 'DevOps',
+        icon: Activity,
+        action: () => triggerModal('telemetry')
+      }
+    ],
+    []
+  )
+
+  const results: PaletteItem[] = useMemo(() => {
     const q = query.toLowerCase().trim()
-    if (!q) return links
-    return links.filter(
+    const linkItems: PaletteItem[] = links.map((l) => ({
+      id: l.url,
+      title: l.title,
+      url: l.url,
+      description: l.description,
+      categoryLabel: getCategoryLabel(l.category)
+    }))
+
+    const combined = [...actions, ...linkItems]
+    if (!q) return combined
+
+    return combined.filter(
       (item) =>
         item.title.toLowerCase().includes(q) ||
-        item.url.toLowerCase().includes(q) ||
-        item.description?.toLowerCase().includes(q) ||
-        getCategoryLabel(item.category).toLowerCase().includes(q)
+        (item.url && item.url.toLowerCase().includes(q)) ||
+        (item.description && item.description.toLowerCase().includes(q)) ||
+        item.categoryLabel.toLowerCase().includes(q)
     )
-  }, [links, query])
+  }, [actions, links, query])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -76,9 +127,13 @@ export function CommandPalette() {
     }
   }, [open])
 
-  const openLink = (url: string) => {
-    window.open(url, '_blank', 'noopener,noreferrer')
+  const handleSelect = (item: PaletteItem) => {
     setOpen(false)
+    if (item.action) {
+      item.action()
+    } else if (item.url) {
+      window.open(item.url, '_blank', 'noopener,noreferrer')
+    }
   }
 
   if (!open) return null
@@ -95,7 +150,7 @@ export function CommandPalette() {
         className="w-full max-w-xl overflow-hidden shadow-sm"
         onClick={(e) => e.stopPropagation()}
       >
-        <FrameHeader label="Jump to link">
+        <FrameHeader label="Jump to link or tool">
           <kbd className="border border-border px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
             ESC
           </kbd>
@@ -117,12 +172,12 @@ export function CommandPalette() {
                 const selected = results[active]
                 if (!selected) return
                 e.preventDefault()
-                openLink(selected.url)
+                handleSelect(selected)
               }
             }}
-            placeholder={`Search ${data.name}'s links...`}
+            placeholder={`Search ${data.name}'s links or actions (terminal, qr, status)...`}
             className="h-12 w-full bg-transparent pr-4 pl-11 text-sm outline-none placeholder:text-muted-foreground"
-            aria-label="Filter links"
+            aria-label="Filter links and tools"
           />
         </div>
         <FrameBody className="max-h-[50vh] overflow-y-auto p-0 sm:p-0">
@@ -132,30 +187,40 @@ export function CommandPalette() {
             </p>
           ) : (
             <ul>
-              {results.map((item, index) => (
-                <li key={item.url}>
-                  <button
-                    type="button"
-                    onClick={() => openLink(item.url)}
-                    onMouseEnter={() => setActive(index)}
-                    className={cn(
-                      'flex w-full items-center justify-between gap-3 border-b border-border px-4 py-3 text-left last:border-b-0',
-                      index === active && 'bg-muted'
-                    )}
-                  >
-                    <span className="min-w-0">
-                      <span className="block truncate text-sm font-medium">
-                        {item.title}
+              {results.map((item, index) => {
+                const IconComponent = item.icon
+                return (
+                  <li key={item.id}>
+                    <button
+                      type="button"
+                      onClick={() => handleSelect(item)}
+                      onMouseEnter={() => setActive(index)}
+                      className={cn(
+                        'flex w-full items-center justify-between gap-3 border-b border-border px-4 py-3 text-left last:border-b-0',
+                        index === active && 'bg-muted'
+                      )}
+                    >
+                      <span className="min-w-0 flex items-center gap-3">
+                        {IconComponent && (
+                          <span className="flex size-7 shrink-0 items-center justify-center border border-border bg-background/80">
+                            <IconComponent className="size-3.5 text-foreground" />
+                          </span>
+                        )}
+                        <span className="min-w-0">
+                          <span className="block truncate text-sm font-medium">
+                            {item.title}
+                          </span>
+                          <span className="mt-0.5 block truncate font-mono text-[11px] text-muted-foreground">
+                            {item.categoryLabel}
+                            {item.url ? ` · ${item.url.replace(/^https?:\/\//, '')}` : item.description ? ` · ${item.description}` : ''}
+                          </span>
+                        </span>
                       </span>
-                      <span className="mt-0.5 block truncate font-mono text-[11px] text-muted-foreground">
-                        {getCategoryLabel(item.category)} ·{' '}
-                        {item.url.replace(/^https?:\/\//, '')}
-                      </span>
-                    </span>
-                    <ArrowUpRight className="size-3.5 shrink-0 opacity-40" />
-                  </button>
-                </li>
-              ))}
+                      <ArrowUpRight className="size-3.5 shrink-0 opacity-40" />
+                    </button>
+                  </li>
+                )
+              })}
             </ul>
           )}
         </FrameBody>

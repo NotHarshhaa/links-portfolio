@@ -11,6 +11,9 @@ import { Footer } from '@/components/footer'
 import { ErrorBoundary } from '@/components/error-boundary'
 import { CommandPalette } from '@/components/command-palette'
 import { KeyboardHelp } from '@/components/keyboard-help'
+import { QrModal } from '@/components/qr-modal'
+import { TelemetryModal } from '@/components/telemetry-modal'
+import { TerminalModal } from '@/components/terminal-modal'
 import { ScrollProgress } from '@/components/scroll-progress'
 import { cn } from '@/lib/utils'
 import './globals.css'
@@ -60,6 +63,9 @@ export default function RootLayout({
               <Footer />
               <CommandPalette />
               <KeyboardHelp />
+              <QrModal />
+              <TelemetryModal />
+              <TerminalModal />
             </TooltipProvider>
             <Toaster position="bottom-right" />
           </ThemeProvider>

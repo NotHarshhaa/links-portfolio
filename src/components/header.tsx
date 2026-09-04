@@ -4,13 +4,15 @@ import Link from 'next/link'
 import { ModeToggle } from '@/components/mode-toggle'
 import { Button } from '@/components/ui/button'
 import { useState, useEffect } from 'react'
-import { ChevronRight, Menu, Share2, X } from 'lucide-react'
+import { ChevronRight, Menu, QrCode, Share2, Terminal, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { sharePage } from '@/lib/links'
 import { cn } from '@/lib/utils'
 import { handleAnchorClick } from '@/lib/scroll-utils'
 import { HoverMark } from '@/components/hover-mark'
 import { BracketTitle } from '@/components/frame'
+import { TelemetryBadge } from '@/components/telemetry-badge'
+import { triggerModal } from '@/hooks/use-modals'
 
 const navItems = [
   { href: '#featured', label: 'Featured' },
@@ -101,7 +103,31 @@ export function Header() {
             ))}
           </nav>
 
-          <div className="relative z-10 flex items-center gap-2">
+          <div className="relative z-10 flex items-center gap-1.5 sm:gap-2">
+            <TelemetryBadge className="hidden sm:flex" />
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-9"
+              onClick={() => triggerModal('terminal')}
+              aria-label="Open terminal"
+              title="Open Terminal (`)"
+            >
+              <Terminal className="size-4" />
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-9"
+              onClick={() => triggerModal('qr')}
+              aria-label="Show QR Pass"
+              title="QR Pass (Q)"
+            >
+              <QrCode className="size-4" />
+            </Button>
+
             <Button
               variant="ghost"
               size="icon"
@@ -120,9 +146,11 @@ export function Header() {
             >
               <Share2 className="size-4" />
             </Button>
+
             <span className="hidden md:inline-flex">
               <ModeToggle />
             </span>
+
             <Button
               variant="ghost"
               size="icon"
@@ -182,6 +210,44 @@ export function Header() {
                 </HoverMark>
               ))}
             </ul>
+            <div className="grid grid-cols-3 gap-1 border-t border-border p-2 bg-muted/20">
+              <Button
+                variant="outline"
+                size="sm"
+                className="font-mono text-[11px] gap-1 px-2"
+                onClick={() => {
+                  triggerModal('terminal')
+                  setIsMobileMenuOpen(false)
+                }}
+              >
+                <Terminal className="size-3" />
+                Terminal
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="font-mono text-[11px] gap-1 px-2"
+                onClick={() => {
+                  triggerModal('qr')
+                  setIsMobileMenuOpen(false)
+                }}
+              >
+                <QrCode className="size-3" />
+                QR Pass
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="font-mono text-[11px] gap-1 px-2"
+                onClick={() => {
+                  triggerModal('telemetry')
+                  setIsMobileMenuOpen(false)
+                }}
+              >
+                <span className="size-1.5 rounded-full bg-emerald-500 inline-block mr-0.5" />
+                Status
+              </Button>
+            </div>
             <div className="flex items-center justify-between border-t border-border px-4 py-3">
               <span className="text-sm text-muted-foreground">Appearance</span>
               <ModeToggle />

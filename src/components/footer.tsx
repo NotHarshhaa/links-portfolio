@@ -1,8 +1,9 @@
 'use client'
 
-import { ArrowUp } from 'lucide-react'
+import { ArrowUp, Activity, QrCode, Terminal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { BracketTitle, Frame, FrameBody } from '@/components/frame'
+import { triggerModal } from '@/hooks/use-modals'
 
 export function Footer() {
   const year = new Date().getFullYear()
@@ -25,12 +26,47 @@ export function Footer() {
               </kbd>{' '}
               for shortcuts ·{' '}
               <kbd className="border border-border px-1 py-0.5 font-mono text-[10px]">
+                `
+              </kbd>{' '}
+              terminal ·{' '}
+              <kbd className="border border-border px-1 py-0.5 font-mono text-[10px]">
+                Q
+              </kbd>{' '}
+              pass ·{' '}
+              <kbd className="border border-border px-1 py-0.5 font-mono text-[10px]">
                 ⌘K
               </kbd>{' '}
-              to jump
+              jump
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1 font-mono text-xs"
+              onClick={() => triggerModal('telemetry')}
+            >
+              <Activity className="size-3.5 text-emerald-500" />
+              <span className="hidden sm:inline">Telemetry</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1 font-mono text-xs"
+              onClick={() => triggerModal('terminal')}
+            >
+              <Terminal className="size-3.5" />
+              <span className="hidden sm:inline">CLI</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1 font-mono text-xs"
+              onClick={() => triggerModal('qr')}
+            >
+              <QrCode className="size-3.5" />
+              <span className="hidden sm:inline">QR Pass</span>
+            </Button>
             <Button variant="outline" size="sm" asChild>
               <a
                 href="https://github.com/NotHarshhaa"
