@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Share2, Check, Copy } from 'lucide-react'
+import { Share2, Check } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
@@ -54,7 +54,7 @@ export function ShareLink({ url, title, className }: ShareLinkProps) {
           })
           setIsShared(true)
           setTimeout(() => { setIsShared(false) }, 2000)
-        } catch (copyError) {
+        } catch {
           toast.error('Failed to share link', {
             description: 'Please try again',
             duration: 2000

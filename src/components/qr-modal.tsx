@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import QRCode from 'qrcode'
 import { Check, Copy, Download, QrCode, Sparkles, UserCheck, X } from 'lucide-react'
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
-import { useActiveModal } from '@/hooks/use-modals'
+import { triggerModal, useActiveModal } from '@/hooks/use-modals'
 import { data } from '@/constants'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
@@ -68,10 +68,7 @@ export function QrModal() {
       if ((e.key === 'q' || e.key === 'Q') && !isInput && !e.ctrlKey && !e.metaKey) {
         e.preventDefault()
         if (open) closeModal()
-        else {
-          const { triggerModal } = require('@/hooks/use-modals')
-          triggerModal('qr')
-        }
+        else triggerModal('qr')
       } else if (e.key === 'Escape' && open) {
         closeModal()
       }

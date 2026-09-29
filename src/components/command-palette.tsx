@@ -6,7 +6,7 @@ import { data } from '@/constants'
 import { getAllLinks, getCategoryLabel } from '@/lib/links'
 import { cn } from '@/lib/utils'
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
-import { triggerModal, ModalType } from '@/hooks/use-modals'
+import { triggerModal } from '@/hooks/use-modals'
 
 interface PaletteItem {
   id: string
@@ -57,8 +57,8 @@ export function CommandPalette() {
 
   const results: PaletteItem[] = useMemo(() => {
     const q = query.toLowerCase().trim()
-    const linkItems: PaletteItem[] = links.map((l) => ({
-      id: l.url,
+    const linkItems: PaletteItem[] = links.map((l, index) => ({
+      id: `${l.category}-${l.url}-${index}`,
       title: l.title,
       url: l.url,
       description: l.description,

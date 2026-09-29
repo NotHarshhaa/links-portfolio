@@ -10,6 +10,16 @@ interface PerformanceMetrics {
   ttfb: number | null
 }
 
+interface FirstInputEntry {
+  processingStart?: number
+  startTime?: number
+}
+
+interface LayoutShiftEntry {
+  hadRecentInput?: boolean
+  value?: number
+}
+
 export function PerformanceMonitor() {
   const [metrics, setMetrics] = useState<PerformanceMetrics>({
     fcp: null,
@@ -46,7 +56,7 @@ export function PerformanceMonitor() {
       const fidObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries()
         entries.forEach(entry => {
-          const firstInputEntry = entry as any
+          const firstInputEntry = entry as FirstInputEntry
           if (firstInputEntry.processingStart && firstInputEntry.startTime) {
             const fid = firstInputEntry.processingStart - firstInputEntry.startTime
             setMetrics(prev => ({ ...prev, fid }))
@@ -60,8 +70,8 @@ export function PerformanceMonitor() {
       const clsObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries()
         entries.forEach(entry => {
-          const layoutShiftEntry = entry as any
-          if (!layoutShiftEntry.hadRecentInput) {
+          const layoutShiftEntry = entry as LayoutShiftEntry
+          if (!layoutShiftEntry.hadRecentInput && typeof layoutShiftEntry.value === 'number') {
             clsValue += layoutShiftEntry.value
             setMetrics(prev => ({ ...prev, cls: clsValue }))
           }

@@ -27,7 +27,7 @@ export function IntersectionObserverWrapper({
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, {
     once: triggerOnce,
-    margin: rootMargin as any,
+    margin: rootMargin as `${number}px`,
     amount: threshold
   })
 

@@ -9,7 +9,7 @@ interface SmoothScrollLinkProps {
   children: ReactNode
   className?: string
   onClick?: (e: MouseEvent<HTMLAnchorElement>) => void
-  [key: string]: any
+  [key: string]: unknown
 }
 
 /**

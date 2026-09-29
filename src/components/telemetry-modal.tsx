@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { CheckCircle2, RefreshCw, Server, ShieldCheck, Terminal, Wifi, X } from 'lucide-react'
+import { CheckCircle2, RefreshCw, Server, ShieldCheck, Terminal, Wifi, X, XCircle } from 'lucide-react'
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
 import { triggerModal, useActiveModal } from '@/hooks/use-modals'
 import { Button } from '@/components/ui/button'
@@ -73,6 +73,9 @@ export function TelemetryModal() {
   const [services, setServices] = useState<ServiceStatus[]>(INITIAL_SERVICES)
   const [isChecking, setIsChecking] = useState(false)
 
+  const operationalCount = services.filter((s) => s.status === 'operational').length
+  const hasDegraded = services.some((s) => s.status === 'degraded')
+
   const checkTelemetry = async () => {
     setIsChecking(true)
     const t0 = performance.now()
@@ -115,8 +118,8 @@ export function TelemetryModal() {
         } catch {
           return {
             ...svc,
-            status: 'operational' as const, // Fallback gracefully if browser restricts CORS
-            latency: Math.floor(Math.random() * 25) + 20
+            status: 'degraded' as const, // Browser blocked the probe (CORS/network) — report unknown rather than fake healthy
+            latency: null
           }
         }
       })
@@ -176,12 +179,18 @@ export function TelemetryModal() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-border/70 bg-muted/20 p-4">
             <div className="flex items-center gap-3">
               <span className="relative flex size-3">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-                <span className="relative inline-flex size-3 rounded-full bg-emerald-500" />
+                {hasDegraded ? (
+                  <span className="relative inline-flex size-3 rounded-full bg-rose-500" />
+                ) : (
+                  <>
+                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+                    <span className="relative inline-flex size-3 rounded-full bg-emerald-500" />
+                  </>
+                )}
               </span>
               <div>
                 <h3 className="font-heading text-sm font-semibold tracking-wide uppercase">
-                  All Systems Operational
+                  {hasDegraded ? 'Some Endpoints Unverified' : 'All Systems Operational'}
                 </h3>
                 <p className="font-mono text-xs text-muted-foreground">
                   Edge Region: <span className="text-foreground font-medium">{edgeData.region}</span> · RTT Latency:{' '}
@@ -210,7 +219,9 @@ export function TelemetryModal() {
               <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Cluster Health & Endpoints
               </span>
-              <span className="font-mono text-[10px] text-muted-foreground">5 / 5 ACTIVE</span>
+              <span className="font-mono text-[10px] text-muted-foreground">
+                {operationalCount} / {services.length} ACTIVE
+              </span>
             </div>
 
             <div className="divide-y divide-border border border-border">
@@ -233,9 +244,33 @@ export function TelemetryModal() {
                     <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
                       {svc.latency !== null ? `${svc.latency}ms` : '...'}
                     </span>
-                    <span className="inline-flex items-center gap-1 border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-medium text-emerald-500 uppercase">
-                      <CheckCircle2 className="size-3" />
-                      Live
+                    <span
+                      className={cn(
+                        'inline-flex items-center gap-1 border px-2 py-0.5 font-mono text-[10px] font-medium uppercase',
+                        svc.status === 'degraded' &&
+                          'border-rose-500/30 bg-rose-500/10 text-rose-500',
+                        svc.status === 'checking' &&
+                          'border-amber-500/30 bg-amber-500/10 text-amber-500',
+                        svc.status === 'operational' &&
+                          'border-emerald-500/30 bg-emerald-500/10 text-emerald-500'
+                      )}
+                    >
+                      {svc.status === 'degraded' ? (
+                        <>
+                          <XCircle className="size-3" />
+                          Unverified
+                        </>
+                      ) : svc.status === 'checking' ? (
+                        <>
+                          <RefreshCw className="size-3 animate-spin" />
+                          Checking
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 className="size-3" />
+                          Live
+                        </>
+                      )}
                     </span>
                   </div>
                 </div>

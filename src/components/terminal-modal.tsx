@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { X, CornerDownLeft } from 'lucide-react'
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
-import { useActiveModal } from '@/hooks/use-modals'
+import { triggerModal, useActiveModal } from '@/hooks/use-modals'
 import { data } from '@/constants'
 import { getAllLinks } from '@/lib/links'
 import { useTheme } from 'next-themes'
@@ -17,10 +17,69 @@ interface OutputLine {
 
 const QUICK_COMMANDS = ['help', 'whoami', 'skills', 'status', 'links', 'matrix', 'clear', 'exit']
 
+const MATRIX_CHARS = 'アイウエオカキクケコサシスセソ0123456789ABCDEF<>[]{}#$%&*+=/'.split('')
+
+function MatrixRain() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const parent = canvas.parentElement
+    const resize = () => {
+      canvas.width = parent?.clientWidth ?? canvas.offsetWidth
+      canvas.height = parent?.clientHeight ?? canvas.offsetHeight
+    }
+    resize()
+
+    const fontSize = 14
+    const columns = Math.floor(canvas.width / fontSize)
+    const drops = Array.from({ length: columns }, () =>
+      Math.floor(Math.random() * (canvas.height / fontSize))
+    )
+
+    const draw = () => {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.08)'
+      ctx.fillRect(0, 0, canvas.width, canvas.height)
+      ctx.font = `${fontSize}px monospace`
+
+      for (let i = 0; i < drops.length; i++) {
+        const char = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)] ?? '0'
+        const x = i * fontSize
+        const y = (drops[i] ?? 0) * fontSize
+
+        ctx.fillStyle = Math.random() > 0.975 ? '#c8ffe0' : '#00ff41'
+        ctx.fillText(char, x, y)
+
+        if (y > canvas.height && Math.random() > 0.975) drops[i] = 0
+        else drops[i]++
+      }
+    }
+
+    const id = window.setInterval(draw, 50)
+    window.addEventListener('resize', resize)
+    return () => {
+      window.clearInterval(id)
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-hidden
+      className="pointer-events-none absolute inset-0 z-0 size-full opacity-25"
+    />
+  )
+}
+
 export function TerminalModal() {
   const { activeModal, closeModal } = useActiveModal()
   const open = activeModal === 'terminal'
-  const { theme, setTheme } = useTheme()
+  const { resolvedTheme, setTheme } = useTheme()
 
   const [inputVal, setInputVal] = useState('')
   const [history, setHistory] = useState<string[]>([])
@@ -83,17 +142,11 @@ export function TerminalModal() {
       if (e.key === '`' && !isInput && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
         e.preventDefault()
         if (open) closeModal()
-        else {
-          const { triggerModal } = require('@/hooks/use-modals')
-          triggerModal('terminal')
-        }
+        else triggerModal('terminal')
       } else if (e.ctrlKey && e.key === '`') {
         e.preventDefault()
         if (open) closeModal()
-        else {
-          const { triggerModal } = require('@/hooks/use-modals')
-          triggerModal('terminal')
-        }
+        else triggerModal('terminal')
       } else if (e.key === 'Escape' && open) {
         closeModal()
       }
@@ -142,13 +195,13 @@ export function TerminalModal() {
                   <span className="font-medium text-foreground">links</span>
                   <span>List all portfolio links & resources</span>
                   <span className="font-medium text-foreground">open &lt;name&gt;</span>
-                  <span>Open link (e.g. "open github", "open blog")</span>
+                  <span>Open link (e.g. &quot;open github&quot;, &quot;open blog&quot;)</span>
                   <span className="font-medium text-foreground">ping &lt;host&gt;</span>
                   <span>Simulate network ping to host</span>
                   <span className="font-medium text-foreground">curl contact</span>
                   <span>Print contact card and direct handles</span>
                   <span className="font-medium text-foreground">theme &lt;mode&gt;</span>
-                  <span>Set theme ('light', 'dark', 'toggle')</span>
+                  <span>Set theme (&apos;light&apos;, &apos;dark&apos;, &apos;toggle&apos;)</span>
                   <span className="font-medium text-foreground">matrix</span>
                   <span>Toggle digital code rain</span>
                   <span className="font-medium text-foreground">clear</span>
@@ -245,7 +298,7 @@ export function TerminalModal() {
             type: 'output',
             content: (
               <div className="space-y-1 font-mono text-xs">
-                <p className="font-semibold text-foreground">Available Links (use 'open &lt;name&gt;'):</p>
+                <p className="font-semibold text-foreground">Available Links (use &apos;open &lt;name&gt;&apos;):</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 pt-1 text-muted-foreground">
                   {allLinks.map((l) => (
                     <div key={l.url} className="truncate">
@@ -376,7 +429,7 @@ export function TerminalModal() {
             }
           ]
         } else if (mode === 'toggle') {
-          const next = theme === 'dark' ? 'light' : 'dark'
+          const next = resolvedTheme === 'dark' ? 'light' : 'dark'
           setTheme(next)
           response = [
             {
@@ -492,6 +545,7 @@ export function TerminalModal() {
         </FrameHeader>
 
         <FrameBody className="relative flex flex-col p-4 font-mono sm:p-5 h-[65vh] max-h-[550px] bg-background/95 text-foreground">
+          {matrixActive && <MatrixRain />}
           {/* Terminal Output Area */}
           <div
             ref={outputContainerRef}
