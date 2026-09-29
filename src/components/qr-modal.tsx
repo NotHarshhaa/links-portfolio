@@ -2,15 +2,16 @@
 
 import { useEffect, useRef, useState } from 'react'
 import QRCode from 'qrcode'
-import { Check, Copy, Download, QrCode, Sparkles, UserCheck, X } from 'lucide-react'
+import { Check, Contact, Copy, Download, QrCode, Sparkles, UserCheck, X } from 'lucide-react'
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
 import { triggerModal, useActiveModal } from '@/hooks/use-modals'
 import { data } from '@/constants'
+import { buildVCard, downloadVCard } from '@/lib/links'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 
-type TabType = 'qr' | 'badge'
+type TabType = 'qr' | 'badge' | 'vcard'
 
 export function QrModal() {
   const { activeModal, closeModal } = useActiveModal()
@@ -19,13 +20,15 @@ export function QrModal() {
   const [tab, setTab] = useState<TabType>('qr')
   const [qrDataUrl, setQrDataUrl] = useState<string>('')
   const [badgeQrUrl, setBadgeQrUrl] = useState<string>('')
+  const [vcardQrUrl, setVcardQrUrl] = useState<string>('')
   const [copied, setCopied] = useState(false)
+  const [copiedVCard, setCopiedVCard] = useState(false)
   const badgeRef = useRef<HTMLDivElement>(null)
 
   const targetUrl: string =
     typeof window !== 'undefined' && window.location?.href
       ? window.location.href
-      : data.siteUrl || 'https://link.harshhaareddy.com'
+      : data.siteUrl || 'https://links.harshhaareddy.com'
 
   useEffect(() => {
     if (open) {
@@ -54,6 +57,19 @@ export function QrModal() {
       })
         .then((url) => setBadgeQrUrl(url))
         .catch((err) => console.error(err))
+
+      // Generate contact card QR (scanning it prompts "Add contact")
+      QRCode.toDataURL(buildVCard(), {
+        width: 420,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#ffffff'
+        },
+        errorCorrectionLevel: 'M'
+      })
+        .then((url) => setVcardQrUrl(url))
+        .catch((err) => console.error(err))
     }
   }, [open, targetUrl])
 
@@ -78,11 +94,11 @@ export function QrModal() {
     return () => window.removeEventListener('keydown', handleKey)
   }, [open, closeModal])
 
-  const downloadQr = () => {
-    if (!qrDataUrl) return
+  const downloadQr = (dataUrl: string, filename: string) => {
+    if (!dataUrl) return
     const a = document.createElement('a')
-    a.href = qrDataUrl
-    a.download = `harshhaa-links-qr.png`
+    a.href = dataUrl
+    a.download = filename
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -97,6 +113,17 @@ export function QrModal() {
       setTimeout(() => setCopied(false), 2000)
     } catch {
       toast.error('Failed to copy link')
+    }
+  }
+
+  const copyVCard = async () => {
+    try {
+      await navigator.clipboard.writeText(buildVCard())
+      setCopiedVCard(true)
+      toast.success('Contact card copied')
+      setTimeout(() => setCopiedVCard(false), 2000)
+    } catch {
+      toast.error('Failed to copy contact card')
     }
   }
 
@@ -160,6 +187,19 @@ export function QrModal() {
               <UserCheck className="size-3.5" />
               Conference Pass
             </button>
+            <button
+              type="button"
+              onClick={() => setTab('vcard')}
+              className={cn(
+                'flex flex-1 items-center justify-center gap-2 py-1.5 font-mono text-xs font-medium uppercase transition-all',
+                tab === 'vcard'
+                  ? 'bg-foreground text-background shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
+              <Contact className="size-3.5" />
+              vCard
+            </button>
           </div>
 
           {/* Tab 1: Clean QR View */}
@@ -197,7 +237,11 @@ export function QrModal() {
                   {copied ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
                   {copied ? 'Copied' : 'Copy Link'}
                 </Button>
-                <Button variant="default" className="flex-1 gap-1.5 font-mono text-xs" onClick={downloadQr}>
+                <Button
+                  variant="default"
+                  className="flex-1 gap-1.5 font-mono text-xs"
+                  onClick={() => downloadQr(qrDataUrl, 'harshhaa-links-qr.png')}
+                >
                   <Download className="size-3.5" />
                   Download PNG
                 </Button>
@@ -254,7 +298,7 @@ export function QrModal() {
                       Verified Profile
                     </span>
                     <p className="font-mono text-[10px] text-muted-foreground/90">
-                      link.harshhaareddy.com
+                      links.harshhaareddy.com
                     </p>
                   </div>
 
@@ -273,13 +317,68 @@ export function QrModal() {
               </div>
 
               <div className="flex w-full gap-2">
-                <Button variant="outline" className="flex-1 gap-1.5 font-mono text-xs" onClick={downloadQr}>
+                <Button
+                  variant="outline"
+                  className="flex-1 gap-1.5 font-mono text-xs"
+                  onClick={() => downloadQr(qrDataUrl, 'harshhaa-links-qr.png')}
+                >
                   <Download className="size-3.5" />
                   Save QR Pass
                 </Button>
                 <Button variant="default" className="flex-1 gap-1.5 font-mono text-xs" onClick={copyLink}>
                   <Copy className="size-3.5" />
                   Share URL
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Tab 3: Contact Card QR — scanning prompts "Add contact" */}
+          {tab === 'vcard' && (
+            <div className="flex flex-col items-center space-y-4 py-2">
+              <div className="rounded-none border-2 border-foreground/30 bg-white p-3 shadow-lg">
+                {vcardQrUrl ? (
+                  <img
+                    src={vcardQrUrl}
+                    alt={`Contact card QR for ${data.name}`}
+                    className="size-56 object-contain"
+                  />
+                ) : (
+                  <div className="size-56 animate-pulse bg-muted/40" />
+                )}
+              </div>
+
+              <div className="w-full text-center">
+                <p className="text-sm font-medium">{data.name}</p>
+                <p className="mt-0.5 font-mono text-xs text-muted-foreground">
+                  {data.email}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground/80">
+                  Scan with a phone camera and tap the contact prompt to save it
+                  — no app needed.
+                </p>
+              </div>
+
+              <div className="flex w-full flex-wrap gap-2 pt-1">
+                <Button variant="outline" className="flex-1 gap-1.5 font-mono text-xs" onClick={copyVCard}>
+                  {copiedVCard ? (
+                    <Check className="size-3.5 text-emerald-500" />
+                  ) : (
+                    <Copy className="size-3.5" />
+                  )}
+                  {copiedVCard ? 'Copied' : 'Copy vCard'}
+                </Button>
+                <Button variant="outline" className="flex-1 gap-1.5 font-mono text-xs" onClick={downloadVCard}>
+                  <Download className="size-3.5" />
+                  Download .vcf
+                </Button>
+                <Button
+                  variant="default"
+                  className="flex-1 gap-1.5 font-mono text-xs"
+                  onClick={() => downloadQr(vcardQrUrl, 'harshhaa-contact-qr.png')}
+                >
+                  <QrCode className="size-3.5" />
+                  Download QR
                 </Button>
               </div>
             </div>

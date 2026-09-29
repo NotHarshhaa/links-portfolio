@@ -1,57 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { CheckCircle2, RefreshCw, Server, ShieldCheck, Terminal, Wifi, X, XCircle } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, RefreshCw, Server, ShieldCheck, Terminal, Wifi, X, XCircle } from 'lucide-react'
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
 import { triggerModal, useActiveModal } from '@/hooks/use-modals'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-
-interface ServiceStatus {
-  name: string
-  url: string
-  role: string
-  status: 'operational' | 'checking' | 'degraded'
-  latency: number | null
-}
-
-const INITIAL_SERVICES: ServiceStatus[] = [
-  {
-    name: 'Main Portfolio',
-    url: 'https://harshhaareddy.com',
-    role: 'Primary Site & Projects',
-    status: 'checking',
-    latency: null
-  },
-  {
-    name: 'Engineering Blog',
-    url: 'https://blog.harshhaareddy.com',
-    role: 'Articles & Architecture',
-    status: 'checking',
-    latency: null
-  },
-  {
-    name: 'Resume & CV',
-    url: 'https://cv.harshhaareddy.com',
-    role: 'Work Experience & Credentials',
-    status: 'checking',
-    latency: null
-  },
-  {
-    name: 'Links Hub',
-    url: 'https://link.harshhaareddy.com',
-    role: 'Active Edge Node',
-    status: 'checking',
-    latency: null
-  },
-  {
-    name: 'GitHub Gateway',
-    url: 'https://api.github.com/users/NotHarshhaa',
-    role: 'Open Source Repositories',
-    status: 'checking',
-    latency: null
-  }
-]
+import { initialServiceStatuses, type ServiceStatus } from '@/lib/services'
 
 export function TelemetryModal() {
   const { activeModal, closeModal } = useActiveModal()
@@ -70,13 +25,14 @@ export function TelemetryModal() {
     localLatency: null
   })
 
-  const [services, setServices] = useState<ServiceStatus[]>(INITIAL_SERVICES)
+  const [services, setServices] = useState<ServiceStatus[]>(initialServiceStatuses)
   const [isChecking, setIsChecking] = useState(false)
 
   const operationalCount = services.filter((s) => s.status === 'operational').length
   const hasDegraded = services.some((s) => s.status === 'degraded')
+  const hasDown = services.some((s) => s.status === 'down')
 
-  const checkTelemetry = async () => {
+  const checkTelemetry = async (fresh = false) => {
     setIsChecking(true)
     const t0 = performance.now()
 
@@ -94,38 +50,22 @@ export function TelemetryModal() {
       setEdgeData((prev) => ({ ...prev, localLatency: null }))
     }
 
-    // Benchmark services
-    const updated = await Promise.all(
-      INITIAL_SERVICES.map(async (svc) => {
-        const start = performance.now()
-        try {
-          // For same-origin /api/ping or cors-friendly checks:
-          if (svc.url.includes('link.harshhaareddy.com') || svc.url.includes('api.github.com')) {
-            await fetch(svc.url.includes('link') ? '/api/ping' : 'https://api.github.com/users/NotHarshhaa', {
-              mode: 'cors',
-              cache: 'no-store'
-            })
-          } else {
-            // For cross-origin no-cors ping (measuring connection turnaround)
-            await fetch(svc.url, { mode: 'no-cors', cache: 'no-store' })
-          }
-          const end = performance.now()
-          return {
-            ...svc,
-            status: 'operational' as const,
-            latency: Math.max(12, Math.round(end - start))
-          }
-        } catch {
-          return {
-            ...svc,
-            status: 'degraded' as const, // Browser blocked the probe (CORS/network) — report unknown rather than fake healthy
-            latency: null
-          }
-        }
+    try {
+      const statusRes = await fetch(`/api/status${fresh ? '?fresh=1' : ''}`, {
+        cache: 'no-store'
       })
-    )
+      const json = (await statusRes.json()) as { services?: ServiceStatus[] }
+      setServices(json.services?.length ? json.services : initialServiceStatuses())
+    } catch {
+      // Our own API unreachable — leave previous results, mark unverified.
+      setServices((prev) =>
+        prev.map((svc) => ({
+          ...svc,
+          status: svc.status === 'checking' ? 'degraded' : svc.status
+        }))
+      )
+    }
 
-    setServices(updated)
     setIsChecking(false)
   }
 
@@ -179,8 +119,10 @@ export function TelemetryModal() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-border/70 bg-muted/20 p-4">
             <div className="flex items-center gap-3">
               <span className="relative flex size-3">
-                {hasDegraded ? (
+                {hasDown ? (
                   <span className="relative inline-flex size-3 rounded-full bg-rose-500" />
+                ) : hasDegraded ? (
+                  <span className="relative inline-flex size-3 rounded-full bg-amber-500" />
                 ) : (
                   <>
                     <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75" />
@@ -190,7 +132,11 @@ export function TelemetryModal() {
               </span>
               <div>
                 <h3 className="font-heading text-sm font-semibold tracking-wide uppercase">
-                  {hasDegraded ? 'Some Endpoints Unverified' : 'All Systems Operational'}
+                  {hasDown
+                    ? 'Service Disruption Detected'
+                    : hasDegraded
+                      ? 'Some Endpoints Unverified'
+                      : 'All Systems Operational'}
                 </h3>
                 <p className="font-mono text-xs text-muted-foreground">
                   Edge Region: <span className="text-foreground font-medium">{edgeData.region}</span> · RTT Latency:{' '}
@@ -204,7 +150,7 @@ export function TelemetryModal() {
             <Button
               variant="outline"
               size="sm"
-              onClick={checkTelemetry}
+              onClick={() => checkTelemetry(true)}
               disabled={isChecking}
               className="gap-1.5 font-mono text-xs"
             >
@@ -242,22 +188,29 @@ export function TelemetryModal() {
 
                   <div className="flex items-center gap-3 shrink-0">
                     <span className="font-mono text-[11px] tabular-nums text-muted-foreground">
-                      {svc.latency !== null ? `${svc.latency}ms` : '...'}
+                      {svc.latency !== null
+                        ? `${svc.latency}ms`
+                        : svc.status === 'down'
+                          ? '—'
+                          : '...'}
                     </span>
                     <span
                       className={cn(
                         'inline-flex items-center gap-1 border px-2 py-0.5 font-mono text-[10px] font-medium uppercase',
-                        svc.status === 'degraded' &&
-                          'border-rose-500/30 bg-rose-500/10 text-rose-500',
-                        svc.status === 'checking' &&
-                          'border-amber-500/30 bg-amber-500/10 text-amber-500',
-                        svc.status === 'operational' &&
-                          'border-emerald-500/30 bg-emerald-500/10 text-emerald-500'
+                        svc.status === 'down' && 'border-rose-500/30 bg-rose-500/10 text-rose-500',
+                        svc.status === 'degraded' && 'border-amber-500/30 bg-amber-500/10 text-amber-500',
+                        svc.status === 'checking' && 'border-amber-500/30 bg-amber-500/10 text-amber-500',
+                        svc.status === 'operational' && 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500'
                       )}
                     >
-                      {svc.status === 'degraded' ? (
+                      {svc.status === 'down' ? (
                         <>
                           <XCircle className="size-3" />
+                          Down
+                        </>
+                      ) : svc.status === 'degraded' ? (
+                        <>
+                          <AlertTriangle className="size-3" />
                           Unverified
                         </>
                       ) : svc.status === 'checking' ? (

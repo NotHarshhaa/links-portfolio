@@ -5,7 +5,7 @@ import { ButtonLink } from '@/components/button-link'
 import { CardLink } from '@/components/card-link'
 import { data } from '@/constants'
 import TypingRole from '@/components/TypingRole'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { SearchBar } from '@/components/search-bar'
 import { useLinkTracker } from '@/hooks/use-link-tracker'
 import { useFavorites } from '@/hooks/use-favorites'
@@ -28,14 +28,37 @@ const filters: Array<{ id: FilterId; label: string }> = [
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filter, setFilter] = useState<FilterId>('all')
+  const [globalCounts, setGlobalCounts] = useState<Record<string, number>>({})
   const { trackClick, recentVisits, visits } = useLinkTracker()
   const { favorites, toggleFavorite, isFavorite } = useFavorites()
 
   const allLinks = useMemo(() => getAllLinks(), [])
-  const visitCounts = useMemo(
-    () => Object.fromEntries(visits.map((item) => [item.url, item.count])),
-    [visits]
-  )
+
+  useEffect(() => {
+    let active = true
+    fetch('/api/stats')
+      .then((res) => res.json())
+      .then((body: { configured?: boolean; top?: Array<{ url: string; count: number }> }) => {
+        if (!active || !body?.configured || !Array.isArray(body.top)) return
+        setGlobalCounts(
+          Object.fromEntries(body.top.map((item) => [item.url, item.count]))
+        )
+      })
+      .catch(() => {})
+    return () => {
+      active = false
+    }
+  }, [])
+
+  // Global counts win when present (they include everyone); local counts are
+  // the fallback so the site still shows useful numbers without analytics KV.
+  const visitCounts = useMemo(() => {
+    const merged: Record<string, number> = { ...globalCounts }
+    for (const visit of visits) {
+      if (merged[visit.url] === undefined) merged[visit.url] = visit.count
+    }
+    return merged
+  }, [visits, globalCounts])
 
   const filteredData = useMemo(() => {
     const query = searchQuery.toLowerCase().trim()

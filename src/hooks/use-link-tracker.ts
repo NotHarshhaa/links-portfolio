@@ -46,6 +46,15 @@ export function useLinkTracker() {
   }, [])
 
   const trackClick = useCallback((url: string, title: string) => {
+    // Fire-and-forget server-side aggregation; silently ignored when the
+    // analytics KV isn't configured.
+    fetch('/api/track', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url, title }),
+      keepalive: true
+    }).catch(() => {})
+
     setVisits((current) => {
       const existing = current.find((item) => item.url === url)
       const next: LinkVisit[] = existing

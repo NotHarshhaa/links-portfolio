@@ -4,7 +4,7 @@
 
 A modern, beautifully designed web application to showcase social media profiles and professional networks, making it easy for others to connect online.
 
-🔗 **Live Preview:** [link.harshhaareddy.com](https://link.harshhaareddy.com)
+🔗 **Live Preview:** [links.harshhaareddy.com](https://links.harshhaareddy.com)
 
 ![Preview](https://imgur.com/MwgaHXp.png)
 

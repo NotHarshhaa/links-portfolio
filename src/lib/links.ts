@@ -33,20 +33,25 @@ export function getFeaturedLinks() {
   return getAllLinks().filter((item) => item.featured)
 }
 
-export function downloadVCard() {
-  const lines = [
+export function buildVCard() {
+  return [
     'BEGIN:VCARD',
     'VERSION:3.0',
     `FN:${data.name}`,
+    'ORG:ProDevOpsGuy Tech',
     'TITLE:Platform Engineer',
     data.email ? `EMAIL;TYPE=INTERNET:${data.email}` : '',
     data.phone ? `TEL;TYPE=CELL:${data.phone}` : '',
     data.location ? `ADR;TYPE=HOME:;;;${data.location};;;` : '',
     data.siteUrl ? `URL:${data.siteUrl}` : '',
     'END:VCARD'
-  ].filter(Boolean)
+  ]
+    .filter(Boolean)
+    .join('\n')
+}
 
-  const blob = new Blob([lines.join('\n')], { type: 'text/vcard;charset=utf-8' })
+export function downloadVCard() {
+  const blob = new Blob([buildVCard()], { type: 'text/vcard;charset=utf-8' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
   link.href = url

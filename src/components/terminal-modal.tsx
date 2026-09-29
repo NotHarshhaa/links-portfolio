@@ -15,7 +15,35 @@ interface OutputLine {
   content: string | React.ReactNode
 }
 
-const QUICK_COMMANDS = ['help', 'whoami', 'skills', 'status', 'links', 'matrix', 'clear', 'exit']
+const QUICK_COMMANDS = ['help', 'whoami', 'skills', 'status', 'stats', 'links', 'matrix', 'clear', 'exit']
+
+const COMMANDS = [
+  'help', 'whoami', 'bio', 'skills', 'stack', 'status', 'links', 'ls',
+  'open', 'ping', 'curl', 'theme', 'matrix', 'stats', 'history',
+  'clear', 'exit', 'quit'
+]
+
+const THEME_MODES = ['light', 'dark', 'toggle']
+
+const linkSlug = (title: string) => title.toLowerCase().replace(/\s+/g, '-')
+
+/** Small Levenshtein distance used for "did you mean" suggestions. */
+function editDistance(a: string, b: string): number {
+  let prev = Array.from({ length: b.length + 1 }, (_, j) => j)
+  for (let i = 1; i <= a.length; i++) {
+    const curr = [i]
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1
+      curr[j] = Math.min(
+        (prev[j] ?? 0) + 1,
+        (curr[j - 1] ?? 0) + 1,
+        (prev[j - 1] ?? 0) + cost
+      )
+    }
+    prev = curr
+  }
+  return prev[b.length] ?? 0
+}
 
 const MATRIX_CHARS = 'アイウエオカキクケコサシスセソ0123456789ABCDEF<>[]{}#$%&*+=/'.split('')
 
@@ -156,9 +184,27 @@ export function TerminalModal() {
     return () => window.removeEventListener('keydown', handleKey)
   }, [open, closeModal])
 
-  const executeCommand = (rawCmd: string) => {
+  const executeCommand = async (rawCmd: string): Promise<void> => {
     const cmd = rawCmd.trim()
     if (!cmd) return
+
+    // `!!` re-runs the previous command (bash-style history expansion)
+    if (cmd === '!!') {
+      const last = history[history.length - 1]
+      if (!last) {
+        setLines((prev) => [
+          ...prev,
+          {
+            id: Math.random().toString(36),
+            type: 'error',
+            content: '!!: no previous command in history'
+          }
+        ])
+        setInputVal('')
+        return
+      }
+      return executeCommand(last)
+    }
 
     // Add to history
     setHistory((prev) => [...prev, cmd])
@@ -204,6 +250,10 @@ export function TerminalModal() {
                   <span>Set theme (&apos;light&apos;, &apos;dark&apos;, &apos;toggle&apos;)</span>
                   <span className="font-medium text-foreground">matrix</span>
                   <span>Toggle digital code rain</span>
+                  <span className="font-medium text-foreground">stats</span>
+                  <span>Global click analytics (top links)</span>
+                  <span className="font-medium text-foreground">history</span>
+                  <span>Show command history (!! re-runs last)</span>
                   <span className="font-medium text-foreground">clear</span>
                   <span>Clear screen</span>
                   <span className="font-medium text-foreground">exit</span>
@@ -301,9 +351,9 @@ export function TerminalModal() {
                 <p className="font-semibold text-foreground">Available Links (use &apos;open &lt;name&gt;&apos;):</p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 pt-1 text-muted-foreground">
                   {allLinks.map((l) => (
-                    <div key={l.url} className="truncate">
+                    <div key={`${l.category}-${l.url}`} className="truncate">
                       <span className="font-medium text-foreground">
-                        {l.title.toLowerCase().replace(/\s+/g, '-')}
+                        {linkSlug(l.title)}
                       </span>
                       {' -> '}
                       <span className="text-[11px] opacity-75">{l.url.replace(/^https?:\/\//, '')}</span>
@@ -329,12 +379,22 @@ export function TerminalModal() {
           break
         }
 
-        const match = allLinks.find(
-          (l) =>
-            l.title.toLowerCase() === target ||
-            l.title.toLowerCase().includes(target) ||
-            l.url.toLowerCase().includes(target)
-        )
+        const t = target
+        const match =
+          allLinks.find(
+            (l) => linkSlug(l.title) === t || l.title.toLowerCase() === t
+          ) ??
+          allLinks.find(
+            (l) =>
+              linkSlug(l.title).startsWith(t) ||
+              l.title.toLowerCase().startsWith(t)
+          ) ??
+          allLinks.find(
+            (l) =>
+              l.url.toLowerCase().includes(t) ||
+              linkSlug(l.title).includes(t) ||
+              l.title.toLowerCase().includes(t)
+          )
 
         if (match) {
           window.open(match.url, '_blank', 'noopener,noreferrer')
@@ -346,11 +406,21 @@ export function TerminalModal() {
             }
           ]
         } else {
+          const suggestions = allLinks
+            .filter(
+              (l) =>
+                editDistance(linkSlug(l.title), t) <= 2 ||
+                editDistance(l.title.toLowerCase(), t) <= 2
+            )
+            .slice(0, 3)
+            .map((l) => `"open ${linkSlug(l.title)}"`)
           response = [
             {
               id: Math.random().toString(36),
               type: 'error',
-              content: `Link not found for "${target}". Type "links" to see available destinations.`
+              content: suggestions.length
+                ? `Link not found for "${target}". Did you mean: ${suggestions.join(', ')}?`
+                : `Link not found for "${target}". Type "links" to see available destinations.`
             }
           ]
         }
@@ -358,7 +428,7 @@ export function TerminalModal() {
       }
 
       case 'ping': {
-        const host = args[0] || 'link.harshhaareddy.com'
+        const host = args[0] || 'links.harshhaareddy.com'
         const fakeLatency = Math.floor(Math.random() * 15) + 18
         response = [
           {
@@ -464,6 +534,109 @@ export function TerminalModal() {
         break
       }
 
+      case 'stats': {
+        setLines((prev) => [
+          ...prev,
+          inputLine,
+          {
+            id: Math.random().toString(36),
+            type: 'system',
+            content: 'Fetching global click analytics...'
+          }
+        ])
+        setInputVal('')
+        try {
+          const res = await fetch('/api/stats')
+          const body = (await res.json()) as {
+            configured?: boolean
+            total?: number
+            top?: Array<{ url: string; title: string; count: number }>
+          }
+          const out: OutputLine[] = []
+          if (!body.configured) {
+            out.push({
+              id: Math.random().toString(36),
+              type: 'system',
+              content:
+                'Global analytics not configured. Set KV_REST_API_URL and KV_REST_API_TOKEN to enable.'
+            })
+          } else if (!body.top?.length) {
+            out.push({
+              id: Math.random().toString(36),
+              type: 'output',
+              content: 'No link clicks recorded yet.'
+            })
+          } else {
+            out.push({
+              id: Math.random().toString(36),
+              type: 'output',
+              content: (
+                <div className="space-y-0.5 font-mono text-xs">
+                  <p className="font-semibold text-foreground">
+                    Top Links by Global Clicks ({body.total ?? 0} total):
+                  </p>
+                  <div className="space-y-0.5 pt-1 text-muted-foreground">
+                    {body.top.map((item, i) => (
+                      <div key={item.url} className="flex justify-between gap-3">
+                        <span className="truncate">
+                          <span className="text-foreground">
+                            {String(i + 1).padStart(2, '0')}
+                          </span>{' '}
+                          {item.title}
+                        </span>
+                        <span className="shrink-0 tabular-nums">{item.count}×</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
+            })
+          }
+          setLines((prev) => [...prev, ...out])
+        } catch {
+          setLines((prev) => [
+            ...prev,
+            {
+              id: Math.random().toString(36),
+              type: 'error',
+              content: 'stats: failed to fetch analytics'
+            }
+          ])
+        }
+        return
+      }
+
+      case 'history':
+        response =
+          history.length === 0
+            ? [
+                {
+                  id: Math.random().toString(36),
+                  type: 'system',
+                  content: 'No commands in history yet.'
+                }
+              ]
+            : [
+                {
+                  id: Math.random().toString(36),
+                  type: 'output',
+                  content: (
+                    <div className="space-y-0.5 font-mono text-xs text-muted-foreground">
+                      {history.map((entry, i) => (
+                        <div key={`${i}-${entry}`}>
+                          <span className="text-foreground">
+                            {String(i + 1).padStart(3)}
+                          </span>
+                          {'  '}
+                          {entry}
+                        </div>
+                      ))}
+                    </div>
+                  )
+                }
+              ]
+        break
+
       case 'clear':
         setLines([])
         setInputVal('')
@@ -491,6 +664,54 @@ export function TerminalModal() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       executeCommand(inputVal)
+    } else if (e.key === 'Tab') {
+      e.preventDefault()
+      const value = inputVal
+      if (!value.trim()) return
+      const parts = value.split(' ')
+      const prefix = (parts[parts.length - 1] ?? '').toLowerCase()
+      const first = (parts[0] ?? '').toLowerCase()
+
+      let pool: string[]
+      if (parts.length <= 1) {
+        pool = COMMANDS
+      } else if (first === 'open') {
+        pool = [...new Set(allLinks.map((l) => linkSlug(l.title)))]
+      } else if (first === 'theme') {
+        pool = THEME_MODES
+      } else if (first === 'curl') {
+        pool = ['contact']
+      } else {
+        return
+      }
+
+      const matches = pool.filter((entry) => entry.startsWith(prefix))
+      if (matches.length === 0) return
+
+      if (matches.length === 1) {
+        parts[parts.length - 1] = matches[0] ?? prefix
+        setInputVal(parts.join(' '))
+        return
+      }
+
+      // Multiple matches: complete to the longest common prefix and list options
+      const common = matches.reduce((acc, entry) => {
+        let i = 0
+        while (i < acc.length && i < entry.length && acc[i] === entry[i]) i++
+        return acc.slice(0, i)
+      })
+      parts[parts.length - 1] = common || prefix
+      setInputVal(parts.join(' '))
+      setLines((prev) => [
+        ...prev,
+        {
+          id: Math.random().toString(36),
+          type: 'system',
+          content:
+            matches.slice(0, 8).join('  ') +
+            (matches.length > 8 ? `  (+${matches.length - 8} more)` : '')
+        }
+      ])
     } else if (e.key === 'ArrowUp') {
       e.preventDefault()
       if (history.length > 0) {

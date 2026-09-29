@@ -41,7 +41,7 @@ export const SOCIAL_DATA = {
   timezone: 'Asia/Kolkata',
   email: 'harshhaa03@gmail.com',
   phone: '+917995905634',
-  siteUrl: 'https://link.harshhaareddy.com',
+  siteUrl: 'https://links.harshhaareddy.com',
   contacts: [
     {
       title: 'Portfolio',
