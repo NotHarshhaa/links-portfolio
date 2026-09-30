@@ -127,6 +127,18 @@
   body {
     @apply text-foreground antialiased;
     background-color: var(--background);
+    min-height: 100vh;
+  }
+
+  /* Grid lives on a fixed pseudo-element so it can be masked independently:
+     strongest at the top, gradually fading into plain paper at the bottom */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-color: var(--background);
     background-image:
       linear-gradient(
         to right,
@@ -139,7 +151,21 @@
         transparent 1px
       );
     background-size: 48px 48px;
-    min-height: 100vh;
+    transform: translate3d(0, 0, 0);
+    mask-image: linear-gradient(
+      to bottom,
+      black 0%,
+      black 55%,
+      rgba(0, 0, 0, 0.35) 80%,
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      black 0%,
+      black 55%,
+      rgba(0, 0, 0, 0.35) 80%,
+      transparent 100%
+    );
   }
 
   ::selection {
