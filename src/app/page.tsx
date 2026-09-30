@@ -4,19 +4,27 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ButtonLink } from '@/components/button-link'
 import { CardLink } from '@/components/card-link'
 import { data } from '@/constants'
-import TypingRole from '@/components/TypingRole'
 import { useMemo, useState, useEffect } from 'react'
 import { SearchBar } from '@/components/search-bar'
 import { useLinkTracker } from '@/hooks/use-link-tracker'
 import { useFavorites } from '@/hooks/use-favorites'
-import { BracketTitle, Frame, FrameBody, FrameHeader } from '@/components/frame'
+import { BracketTitle, Corners, Frame, FrameBody, FrameHeader } from '@/components/frame'
 import { LocalTime } from '@/components/local-time'
 import { QuickActions } from '@/components/quick-actions'
+import { ViewsBadge } from '@/components/views-badge'
+import { FlipWords } from '@/components/flip-words'
 import { getAllLinks, getFeaturedLinks } from '@/lib/links'
 import { cn } from '@/lib/utils'
 import type { Links } from '@/types'
 
 type FilterId = 'all' | 'socials' | 'communities' | 'resources'
+
+const roles = [
+  'Platform Engineer',
+  'AI Infrastructure',
+  'Agentic Systems',
+  'DevOps & Cloud'
+]
 
 const filters: Array<{ id: FilterId; label: string }> = [
   { id: 'all', label: 'All' },
@@ -123,10 +131,13 @@ export default function HomePage() {
       <div className="flex w-full flex-col gap-4">
         <Frame>
           <FrameHeader label="Links / Hub">
-            <LocalTime
-              timezone={data.timezone}
-              location={data.location?.split(',')[0]}
-            />
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+              <ViewsBadge />
+              <LocalTime
+                timezone={data.timezone}
+                location={data.location?.split(',')[0]}
+              />
+            </div>
           </FrameHeader>
           <FrameBody className="py-8 sm:py-10">
             <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
@@ -137,23 +148,8 @@ export default function HomePage() {
                 className="order-1 shrink-0 focus:outline-none sm:order-2"
                 aria-label={`View ${data.name}'s GitHub profile`}
               >
-                <span className="relative block">
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute -top-px -left-px z-10 size-2.5 border-t-2 border-l-2 border-foreground/45 sm:size-3"
-                  />
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute -top-px -right-px z-10 size-2.5 border-t-2 border-r-2 border-foreground/45 sm:size-3"
-                  />
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute -bottom-px -left-px z-10 size-2.5 border-b-2 border-l-2 border-foreground/45 sm:size-3"
-                  />
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute -right-px -bottom-px z-10 size-2.5 border-b-2 border-r-2 border-foreground/45 sm:size-3"
-                  />
+                <span className="relative block p-1.5">
+                  <Corners />
                   <Avatar className="size-24 rounded-none border border-border after:rounded-none sm:size-32">
                     <AvatarImage
                       alt={data.name}
@@ -186,7 +182,9 @@ export default function HomePage() {
                     <BracketTitle>{data.name}</BracketTitle>
                   </h1>
                   <div className="mt-2 flex justify-center sm:justify-start">
-                    <TypingRole />
+                    <div className="flex flex-wrap items-baseline gap-x-2 font-heading text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
+                      <FlipWords words={roles} />
+                    </div>
                   </div>
                   <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:mx-0 sm:text-base">
                     {data.about}
