@@ -16,6 +16,8 @@ import { FlipWords } from '@/components/flip-words'
 import { DotBanner } from '@/components/dot-banner'
 import { StripedBox } from '@/components/striped-box'
 import { VerifiedBadge } from '@/components/verified-badge'
+import { Reveal } from '@/components/reveal'
+import { AnimatedShinyText } from '@/components/magicui/animated-shiny-text'
 import { getAllLinks, getFeaturedLinks } from '@/lib/links'
 import { cn } from '@/lib/utils'
 import type { Links } from '@/types'
@@ -174,9 +176,9 @@ export default function HomePage() {
                 <div>
                   <div className="mb-3 flex flex-wrap items-center justify-center gap-2 sm:justify-start">
                     {data.availability && (
-                      <span className="inline-flex items-center gap-1.5 border border-border px-2 py-1 font-mono text-[10px] tracking-wide text-muted-foreground uppercase">
+                      <span className="inline-flex items-center gap-1.5 border border-border px-2 py-1 font-mono text-[10px] tracking-wide uppercase">
                         <span className="size-1.5 bg-foreground" aria-hidden />
-                        {data.availability}
+                        <AnimatedShinyText>{data.availability}</AnimatedShinyText>
                       </span>
                     )}
                     {data.now && (
@@ -345,35 +347,37 @@ function LinkSection({
   visitCounts: Record<string, number>
 }) {
   return (
-    <Frame id={id} className="scroll-mt-28 overflow-visible">
-      <FrameHeader label={label}>
-        <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
-          {items.length}
-        </span>
-      </FrameHeader>
-      {items.length === 0 ? (
-        <FrameBody>
-          <p className="text-sm text-muted-foreground">
-            No links match your search.
-          </p>
-        </FrameBody>
-      ) : (
-        <ul>
-          {items.map((item, index) => (
-            <CardLink
-              key={`${id}-${item.url}`}
-              {...item}
-              isLast={index === items.length - 1}
-              isFavorite={isFavorite(item.url)}
-              onToggleFavorite={() => onToggleFavorite(item.url)}
-              visits={visitCounts[item.url]}
-              onTrackClick={() => {
-                trackClick(item.url, item.title)
-              }}
-            />
-          ))}
-        </ul>
-      )}
-    </Frame>
+    <Reveal className="w-full">
+      <Frame id={id} className="scroll-mt-28 overflow-visible">
+        <FrameHeader label={label}>
+          <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
+            {items.length}
+          </span>
+        </FrameHeader>
+        {items.length === 0 ? (
+          <FrameBody>
+            <p className="text-sm text-muted-foreground">
+              No links match your search.
+            </p>
+          </FrameBody>
+        ) : (
+          <ul>
+            {items.map((item, index) => (
+              <CardLink
+                key={`${id}-${item.url}`}
+                {...item}
+                isLast={index === items.length - 1}
+                isFavorite={isFavorite(item.url)}
+                onToggleFavorite={() => onToggleFavorite(item.url)}
+                visits={visitCounts[item.url]}
+                onTrackClick={() => {
+                  trackClick(item.url, item.title)
+                }}
+              />
+            ))}
+          </ul>
+        )}
+      </Frame>
+    </Reveal>
   )
 }
