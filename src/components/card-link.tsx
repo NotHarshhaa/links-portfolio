@@ -17,6 +17,9 @@ interface CardLinkProps extends Links {
   visits?: number
 }
 
+const revealClasses =
+  '[@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover/mark:opacity-100 [@media(hover:hover)]:group-focus-within/mark:opacity-100'
+
 const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
   (
     {
@@ -66,14 +69,16 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
             aria-label={`Visit ${title}`}
           >
             {Icon && (
-              <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center border border-border bg-muted/40">
-                <Icon className="size-4 text-foreground" />
+              <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center border border-border bg-muted/40">
+                <span className="flex size-6 items-center justify-center border border-border/70 bg-background">
+                  <Icon className="size-3.5 text-foreground" />
+                </span>
               </span>
             )}
             <span className="min-w-0 space-y-1">
               <span className="flex items-center gap-1.5 text-sm font-medium sm:text-base">
                 {title}
-                <ArrowUpRight className="size-3.5 shrink-0 opacity-40" />
+                <ArrowUpRight className="size-3.5 shrink-0 opacity-40 transition-all duration-200 group-hover/mark:rotate-45 group-hover/mark:opacity-100" />
               </span>
               <span className="hidden break-all font-mono text-xs text-muted-foreground sm:block">
                 {url.replace(/^https?:\/\//, '')}
@@ -103,7 +108,10 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
                     isFavorite ? 'Removed from favorites' : 'Saved to favorites'
                   )
                 }}
-                className="flex size-8 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+                className={cn(
+                  'flex size-8 items-center justify-center text-muted-foreground transition-colors hover:text-foreground',
+                  !isFavorite && revealClasses
+                )}
                 aria-label={
                   isFavorite ? 'Remove from favorites' : 'Save to favorites'
                 }
@@ -118,7 +126,10 @@ const CardLink = forwardRef<HTMLAnchorElement, CardLinkProps>(
             <button
               type="button"
               onClick={handleCopy}
-              className="flex size-8 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+              className={cn(
+                'flex size-8 items-center justify-center text-muted-foreground transition-colors hover:text-foreground',
+                revealClasses
+              )}
               aria-label="Copy link"
               title="Copy link"
             >

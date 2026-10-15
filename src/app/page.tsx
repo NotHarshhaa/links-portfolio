@@ -13,6 +13,9 @@ import { LocalTime } from '@/components/local-time'
 import { QuickActions } from '@/components/quick-actions'
 import { ViewsBadge } from '@/components/views-badge'
 import { FlipWords } from '@/components/flip-words'
+import { DotBanner } from '@/components/dot-banner'
+import { StripedBox } from '@/components/striped-box'
+import { VerifiedBadge } from '@/components/verified-badge'
 import { getAllLinks, getFeaturedLinks } from '@/lib/links'
 import { cn } from '@/lib/utils'
 import type { Links } from '@/types'
@@ -129,6 +132,10 @@ export default function HomePage() {
   return (
     <div className="site-shell relative pt-24 pb-8 sm:pt-28">
       <div className="flex w-full flex-col gap-4">
+        <DotBanner />
+
+        <StripedBox />
+
         <Frame>
           <FrameHeader label="Links / Hub">
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -178,8 +185,9 @@ export default function HomePage() {
                       </span>
                     )}
                   </div>
-                  <h1 className="font-heading text-3xl font-semibold tracking-tight text-balance sm:text-4xl md:text-5xl">
+                  <h1 className="font-heading flex items-center justify-center gap-2 text-3xl font-semibold tracking-tight text-balance sm:justify-start sm:text-4xl md:text-5xl">
                     <BracketTitle>{data.name}</BracketTitle>
+                    <VerifiedBadge className="size-5 shrink-0 sm:size-6" />
                   </h1>
                   <div className="mt-2 flex justify-center sm:justify-start">
                     <div className="flex flex-wrap items-baseline gap-x-2 font-heading text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
@@ -235,6 +243,8 @@ export default function HomePage() {
           </FrameBody>
         </Frame>
 
+        <StripedBox />
+
         {filter === 'all' && favoriteItems.length > 0 && (
           <LinkSection
             id="favorites"
@@ -271,6 +281,8 @@ export default function HomePage() {
           />
         )}
 
+        <StripedBox />
+
         {show('socials') && (
           <LinkSection
             id="personal-network"
@@ -283,6 +295,8 @@ export default function HomePage() {
           />
         )}
 
+        <StripedBox />
+
         {show('communities') && (
           <LinkSection
             id="community-network"
@@ -294,6 +308,8 @@ export default function HomePage() {
             visitCounts={visitCounts}
           />
         )}
+
+        <StripedBox />
 
         {show('resources') && (
           <LinkSection
