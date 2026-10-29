@@ -1,24 +1,29 @@
 'use client'
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useMemo, useState, useEffect } from 'react'
+import { ArrowUpRight, FileDown } from 'lucide-react'
 import { ButtonLink } from '@/components/button-link'
 import { CardLink } from '@/components/card-link'
-import { data } from '@/constants'
-import { useMemo, useState, useEffect } from 'react'
 import { SearchBar } from '@/components/search-bar'
 import { useLinkTracker } from '@/hooks/use-link-tracker'
 import { useFavorites } from '@/hooks/use-favorites'
-import { BracketTitle, Corners, Frame, FrameBody, FrameHeader } from '@/components/frame'
-import { LocalTime } from '@/components/local-time'
+import { BracketTitle, Frame, FrameBody, FrameHeader } from '@/components/frame'
 import { QuickActions } from '@/components/quick-actions'
 import { ViewsBadge } from '@/components/views-badge'
 import { FlipWords } from '@/components/flip-words'
 import { DotBanner } from '@/components/dot-banner'
 import { StripedBox } from '@/components/striped-box'
 import { VerifiedBadge } from '@/components/verified-badge'
-import { Reveal } from '@/components/reveal'
+import { Reveal } from '@/components/ui/reveal'
 import { AnimatedShinyText } from '@/components/magicui/animated-shiny-text'
+import { IdentityCard } from '@/components/home/identity-card'
+import { AboutSection } from '@/components/home/about-section'
+import { FocusSection } from '@/components/home/focus-section'
+import { ConnectSection } from '@/components/home/connect-section'
+import { LearningHub } from '@/components/home/learning-hub'
 import { getAllLinks, getFeaturedLinks } from '@/lib/links'
+import { data } from '@/constants'
+import { IMPACT_STATS, SPECIALTIES } from '@/data/personal'
 import { cn } from '@/lib/utils'
 import type { Links } from '@/types'
 
@@ -131,122 +136,213 @@ export default function HomePage() {
     filteredData.communities.length +
     filteredData.resources.length
 
+  const resume = data.contacts.find((c) => c.title.toLowerCase() === 'resume')
+
   return (
-    <div className="site-shell relative pt-24 pb-8 sm:pt-28">
-      <div className="flex w-full flex-col gap-4">
+    <div className="site-shell relative pt-20 pb-8 sm:pt-24">
+      <div className="flex w-full flex-col gap-4 sm:gap-5">
         <DotBanner />
 
-        <StripedBox />
-
-        <Frame>
-          <FrameHeader label="Links / Hub">
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-              <ViewsBadge />
-              <LocalTime
-                timezone={data.timezone}
-                location={data.location?.split(',')[0]}
-              />
+        {/* Blueprint Hero Section */}
+        <div className="flex flex-col">
+          {/* Blueprint banner strip */}
+          <div className="bg-dot-grid border-border bg-background relative flex h-20 w-full shrink-0 items-center justify-center overflow-hidden border sm:h-24">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/20 via-transparent to-background/70"
+            />
+            <span className="absolute top-2 left-3 hidden font-mono text-[9px] tracking-[0.16em] text-muted-foreground/40 uppercase sm:inline">
+              sys / links-hub
+            </span>
+            <span className="absolute top-2 right-3 hidden font-mono text-[9px] tracking-[0.16em] text-muted-foreground/40 uppercase sm:inline">
+              rev 2026.10
+            </span>
+            <span
+              aria-hidden
+              className="font-mono absolute bottom-1.5 left-3 hidden text-[10px] tracking-[0.14em] text-muted-foreground/50 sm:inline"
+            >
+              {'// harshhaa.pipeline'}
+            </span>
+            <span
+              aria-hidden
+              className="font-mono absolute right-3 bottom-1.5 hidden text-[10px] tracking-[0.14em] text-muted-foreground/50 sm:inline"
+            >
+              status: operational
+            </span>
+            <div className="relative z-10 flex items-center gap-2 px-4 py-1.5 font-mono text-xs text-muted-foreground">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+              </span>
+              <span className="font-semibold text-foreground tracking-wide uppercase text-[11px]">
+                Platform & AI Infrastructure Hub
+              </span>
             </div>
-          </FrameHeader>
-          <FrameBody className="py-8 sm:py-10">
-            <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
-              <a
-                href="https://github.com/NotHarshhaa"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="order-1 shrink-0 focus:outline-none sm:order-2"
-                aria-label={`View ${data.name}'s GitHub profile`}
-              >
-                <span className="relative block p-1.5">
-                  <Corners />
-                  <Avatar className="size-24 rounded-none border border-border after:rounded-none sm:size-32">
-                    <AvatarImage
-                      alt={data.name}
-                      src={data.avatar}
-                      className="rounded-none object-cover"
-                    />
-                    <AvatarFallback className="rounded-none font-mono">
-                      {data.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                </span>
-              </a>
+          </div>
 
-              <div className="order-2 w-full flex-1 space-y-4 text-center sm:order-1 sm:text-left">
-                <div>
-                  <div className="mb-3 flex flex-wrap items-center justify-center gap-2 sm:justify-start">
-                    {data.availability && (
-                      <span className="inline-flex items-center gap-1.5 border border-border px-2 py-1 font-mono text-[10px] tracking-wide uppercase">
-                        <span className="size-1.5 bg-foreground" aria-hidden />
-                        <AnimatedShinyText>{data.availability}</AnimatedShinyText>
+          <Frame className="border-t-0">
+            <FrameHeader label="Links / Hub">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <ViewsBadge />
+              </div>
+            </FrameHeader>
+
+            <FrameBody className="p-0">
+              <div className="grid lg:grid-cols-[1.4fr_0.6fr]">
+                {/* Hero Main Content */}
+                <div className="p-5 sm:p-7 lg:p-8 space-y-6">
+                  <div>
+                    <div className="mb-3 flex flex-wrap items-center gap-2">
+                      <span className="inline-flex items-center gap-1.5 border border-emerald-500/30 bg-emerald-500/5 px-2 py-1 font-mono text-[9px] tracking-[0.16em] text-emerald-700 uppercase dark:text-emerald-400">
+                        <span className="relative flex size-1.5">
+                          <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                          <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
+                        </span>
+                        available for work
                       </span>
-                    )}
-                    {data.now && (
-                      <span className="inline-flex border border-border px-2 py-1 font-mono text-[10px] tracking-wide text-muted-foreground uppercase">
-                        Now · {data.now}
+                      {data.availability && (
+                        <span className="inline-flex items-center gap-1.5 border border-border px-2 py-1 font-mono text-[9px] tracking-wide uppercase">
+                          <span className="size-1.5 bg-foreground" aria-hidden />
+                          <AnimatedShinyText>{data.availability}</AnimatedShinyText>
+                        </span>
+                      )}
+                      <span className="font-mono text-[9px] tracking-[0.16em] text-muted-foreground/60 uppercase">
+                        Hyderabad, IN · UTC+5:30
                       </span>
-                    )}
-                  </div>
-                  <h1 className="font-heading flex items-center justify-center gap-2 text-3xl font-semibold tracking-tight text-balance sm:justify-start sm:text-4xl md:text-5xl">
-                    <BracketTitle>{data.name}</BracketTitle>
-                    <VerifiedBadge className="size-5 shrink-0 sm:size-6" />
-                  </h1>
-                  <div className="mt-2 flex justify-center sm:justify-start">
-                    <div className="flex flex-wrap items-baseline gap-x-2 font-heading text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl">
-                      <FlipWords words={roles} />
                     </div>
+
+                    <h1 className="font-heading flex items-center gap-2 text-3xl font-semibold tracking-tight text-balance sm:text-4xl md:text-5xl">
+                      <BracketTitle>{data.name}</BracketTitle>
+                      <VerifiedBadge className="size-5 shrink-0 sm:size-6" />
+                    </h1>
+
+                    <div className="mt-2.5 flex items-baseline gap-2">
+                      <span className="font-mono text-sm text-muted-foreground/40">/</span>
+                      <div className="font-heading text-xl font-medium tracking-tight text-muted-foreground sm:text-2xl">
+                        <FlipWords words={roles} />
+                      </div>
+                    </div>
+
+                    <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                      {data.about}
+                    </p>
+
+                    {/* Specialties Pills */}
+                    <ul className="mt-4 flex flex-wrap gap-1.5">
+                      {SPECIALTIES.map((item) => (
+                        <li
+                          key={item}
+                          className="border border-border/80 px-2 py-1 font-mono text-[9px] tracking-[0.1em] text-muted-foreground uppercase transition-colors hover:border-foreground/40 hover:text-foreground"
+                        >
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:mx-0 sm:text-base">
-                    {data.about}
+
+                  {/* Contact Buttons */}
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {data.contacts.map((contact) => (
+                      <ButtonLink key={contact.url} {...contact} />
+                    ))}
+                  </div>
+
+                  <QuickActions />
+
+                  {/* Impact Stats Grid */}
+                  <div className="grid grid-cols-2 gap-px border border-border bg-border sm:grid-cols-4">
+                    {IMPACT_STATS.map((stat) => (
+                      <div
+                        key={stat.label}
+                        className="group bg-background px-3 py-3 transition-colors hover:bg-muted/20"
+                      >
+                        <p className="font-heading text-xl font-semibold tracking-tight tabular-nums sm:text-2xl">
+                          {stat.value}
+                        </p>
+                        <p className="mt-0.5 font-mono text-[8px] leading-snug tracking-[0.1em] text-muted-foreground uppercase">
+                          {stat.label}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Operator Passport Identity Card */}
+                <div className="relative border-t border-border p-5 sm:p-7 lg:border-t-0 lg:border-l lg:p-6">
+                  <div className="sticky top-24 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+                        Operator Profile
+                      </span>
+                      <span className="font-mono text-[9px] tracking-[0.14em] text-muted-foreground/50 uppercase">
+                        live
+                      </span>
+                    </div>
+
+                    <IdentityCard
+                      avatar={data.avatar}
+                      initials={data.initials}
+                      name={data.name}
+                      role="Platform & AI Infrastructure"
+                    />
+
+                    {resume && (
+                      <a
+                        href={resume.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex items-center justify-between border border-border px-3 py-2.5 font-mono text-[10px] tracking-[0.14em] text-muted-foreground uppercase transition-colors hover:border-foreground/40 hover:text-foreground"
+                      >
+                        <span className="inline-flex items-center gap-2">
+                          <FileDown className="size-3.5" />
+                          Download resume
+                        </span>
+                        <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Search & Filter Bar */}
+              <div className="space-y-4 border-t border-border p-5 sm:p-7">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                  <SearchBar onSearch={setSearchQuery} />
+                  <p className="font-mono text-[11px] text-muted-foreground tabular-nums">
+                    {totalVisible} links · {favorites.length} saved
                   </p>
                 </div>
-
-                <div className="flex flex-wrap justify-center gap-2 pt-1 sm:justify-start">
-                  {data.contacts.map((contact) => (
-                    <ButtonLink key={contact.url} {...contact} />
+                <div
+                  className="flex flex-wrap gap-1.5"
+                  role="tablist"
+                  aria-label="Filter sections"
+                >
+                  {filters.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={filter === item.id}
+                      onClick={() => setFilter(item.id)}
+                      className={cn(
+                        'border px-3 py-1.5 text-xs font-medium tracking-wide uppercase transition-colors',
+                        filter === item.id
+                          ? 'border-foreground bg-foreground text-background'
+                          : 'border-border text-muted-foreground hover:text-foreground hover:border-foreground/40'
+                      )}
+                    >
+                      {item.label}
+                    </button>
                   ))}
                 </div>
-
-                <QuickActions />
               </div>
-            </div>
-
-            <div className="mt-8 space-y-4 border-t border-border pt-6">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                <SearchBar onSearch={setSearchQuery} />
-                <p className="font-mono text-[11px] text-muted-foreground tabular-nums">
-                  {totalVisible} links · {favorites.length} saved
-                </p>
-              </div>
-              <div
-                className="flex flex-wrap gap-1.5"
-                role="tablist"
-                aria-label="Filter sections"
-              >
-                {filters.map((item) => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    role="tab"
-                    aria-selected={filter === item.id}
-                    onClick={() => setFilter(item.id)}
-                    className={cn(
-                      'border px-3 py-1.5 text-xs font-medium tracking-wide uppercase',
-                      filter === item.id
-                        ? 'border-foreground bg-foreground text-background'
-                        : 'border-border text-muted-foreground hover:text-foreground'
-                    )}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </FrameBody>
-        </Frame>
+            </FrameBody>
+          </Frame>
+        </div>
 
         <StripedBox />
 
+        {/* Favorite items */}
         {filter === 'all' && favoriteItems.length > 0 && (
           <LinkSection
             id="favorites"
@@ -259,6 +355,7 @@ export default function HomePage() {
           />
         )}
 
+        {/* Recent items */}
         {filter === 'all' && !searchQuery && recentItems.length > 0 && (
           <LinkSection
             id="recent"
@@ -271,6 +368,7 @@ export default function HomePage() {
           />
         )}
 
+        {/* Featured items */}
         {filter === 'all' && featuredItems.length > 0 && (
           <LinkSection
             id="featured"
@@ -283,8 +381,19 @@ export default function HomePage() {
           />
         )}
 
+        {/* Home Sections from commit b56fc1f */}
+        {filter === 'all' && !searchQuery && (
+          <>
+            <ConnectSection />
+            <FocusSection />
+            <AboutSection />
+            <LearningHub />
+          </>
+        )}
+
         <StripedBox />
 
+        {/* Personal Network Section */}
         {show('socials') && (
           <LinkSection
             id="personal-network"
@@ -299,6 +408,7 @@ export default function HomePage() {
 
         <StripedBox />
 
+        {/* Community Network Section */}
         {show('communities') && (
           <LinkSection
             id="community-network"
@@ -313,10 +423,11 @@ export default function HomePage() {
 
         <StripedBox />
 
+        {/* Resources Section */}
         {show('resources') && (
           <LinkSection
             id="resources"
-            label="Resources"
+            label="Resources & Docs"
             items={filteredData.resources}
             trackClick={trackClick}
             isFavorite={isFavorite}

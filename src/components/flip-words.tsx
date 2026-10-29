@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { cn } from '@/lib/utils'
 
 /**
  * Cycling word animation ported from the reference portfolio:
@@ -28,7 +29,10 @@ export function FlipWords({
 
   return (
     <span
-      className="relative inline-block min-w-[16ch] align-baseline sm:min-w-[20ch]"
+      className={cn(
+        'relative inline-block min-w-[16ch] align-baseline sm:min-w-[20ch]',
+        className
+      )}
       aria-live="polite"
     >
       <AnimatePresence mode="wait">
