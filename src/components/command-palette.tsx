@@ -1,9 +1,10 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowUpRight, Search, Terminal, QrCode, Activity } from 'lucide-react'
+import { ArrowUpRight, Search, Terminal, QrCode, Activity, FileDown, Download, Copy, Contact } from 'lucide-react'
 import { data } from '@/constants'
-import { getAllLinks, getCategoryLabel } from '@/lib/links'
+import { getAllLinks, getCategoryLabel, downloadVCard } from '@/lib/links'
+import { exportLinksMarkdown, exportLinksJSON, copyAllLinks } from '@/lib/export-links'
 import { cn } from '@/lib/utils'
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
 import { triggerModal } from '@/hooks/use-modals'
@@ -50,6 +51,40 @@ export function CommandPalette() {
         categoryLabel: 'DevOps',
         icon: Activity,
         action: () => triggerModal('telemetry')
+      },
+      {
+        id: 'action-vcard',
+        title: 'Save Contact to Phone (vCard)',
+        description: 'Download .vcf contact card for mobile and desktop contacts',
+        categoryLabel: 'Networking',
+        icon: Contact,
+        action: () => downloadVCard()
+      },
+      {
+        id: 'action-export-md',
+        title: 'Export Links as Markdown',
+        description: 'Download all portfolio links in formatted markdown',
+        categoryLabel: 'Export',
+        icon: FileDown,
+        action: () => exportLinksMarkdown()
+      },
+      {
+        id: 'action-export-json',
+        title: 'Export Links as JSON',
+        description: 'Download complete links catalog in machine-readable JSON',
+        categoryLabel: 'Export',
+        icon: Download,
+        action: () => exportLinksJSON()
+      },
+      {
+        id: 'action-copy-all',
+        title: 'Copy All Links to Clipboard',
+        description: 'Copy every link title and URL directly to clipboard',
+        categoryLabel: 'Export',
+        icon: Copy,
+        action: () => {
+          copyAllLinks()
+        }
       }
     ],
     []

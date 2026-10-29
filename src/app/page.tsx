@@ -1,7 +1,17 @@
 'use client'
 
 import { useMemo, useState, useEffect } from 'react'
-import { ArrowUpRight, FileDown } from 'lucide-react'
+import {
+  ArrowDownAZ,
+  ArrowUpRight,
+  Download,
+  FileDown,
+  LayoutGrid,
+  LayoutList,
+  Sparkles,
+  TrendingUp,
+  Copy
+} from 'lucide-react'
 import { ButtonLink } from '@/components/button-link'
 import { CardLink } from '@/components/card-link'
 import { SearchBar } from '@/components/search-bar'
@@ -21,13 +31,17 @@ import { AboutSection } from '@/components/home/about-section'
 import { FocusSection } from '@/components/home/focus-section'
 import { ConnectSection } from '@/components/home/connect-section'
 import { LearningHub } from '@/components/home/learning-hub'
+import { GitHubActivity } from '@/components/github-activity'
 import { getAllLinks, getFeaturedLinks } from '@/lib/links'
+import { exportLinksMarkdown, exportLinksJSON, copyAllLinks } from '@/lib/export-links'
 import { data } from '@/constants'
 import { IMPACT_STATS, SPECIALTIES } from '@/data/personal'
 import { cn } from '@/lib/utils'
 import type { Links } from '@/types'
 
 type FilterId = 'all' | 'socials' | 'communities' | 'resources'
+type SortMode = 'default' | 'popular' | 'alpha'
+type ViewMode = 'list' | 'grid'
 
 const roles = [
   'Platform Engineer',
@@ -43,9 +57,13 @@ const filters: Array<{ id: FilterId; label: string }> = [
   { id: 'resources', label: 'Resources' }
 ]
 
+const QUICK_TAGS = ['AI', 'DevOps', 'Kubernetes', 'Cloud', 'Blueprints', 'Tools']
+
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [filter, setFilter] = useState<FilterId>('all')
+  const [sortMode, setSortMode] = useState<SortMode>('default')
+  const [viewMode, setViewMode] = useState<ViewMode>('list')
   const [globalCounts, setGlobalCounts] = useState<Record<string, number>>({})
   const { trackClick, recentVisits, visits } = useLinkTracker()
   const { favorites, toggleFavorite, isFavorite } = useFavorites()
@@ -68,8 +86,7 @@ export default function HomePage() {
     }
   }, [])
 
-  // Global counts win when present (they include everyone); local counts are
-  // the fallback so the site still shows useful numbers without analytics KV.
+  // Global counts win when present; local counts are fallback
   const visitCounts = useMemo(() => {
     const merged: Record<string, number> = { ...globalCounts }
     for (const visit of visits) {
@@ -304,36 +321,168 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Search & Filter Bar */}
+              {/* Search, Filter, Sort & View Toolbar */}
               <div className="space-y-4 border-t border-border p-5 sm:p-7">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                   <SearchBar onSearch={setSearchQuery} />
-                  <p className="font-mono text-[11px] text-muted-foreground tabular-nums">
-                    {totalVisible} links · {favorites.length} saved
-                  </p>
-                </div>
-                <div
-                  className="flex flex-wrap gap-1.5"
-                  role="tablist"
-                  aria-label="Filter sections"
-                >
-                  {filters.map((item) => (
+                  <div className="flex items-center gap-2">
+                    <p className="font-mono text-[11px] text-muted-foreground tabular-nums">
+                      {totalVisible} links · {favorites.length} saved
+                    </p>
+                    {/* Quick export links button */}
                     <button
-                      key={item.id}
                       type="button"
-                      role="tab"
-                      aria-selected={filter === item.id}
-                      onClick={() => setFilter(item.id)}
+                      onClick={() => exportLinksMarkdown()}
+                      title="Export all links as Markdown"
+                      className="border border-border px-2 py-1 font-mono text-[10px] text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground inline-flex items-center gap-1"
+                    >
+                      <Download className="size-3" />
+                      Export
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => copyAllLinks()}
+                      title="Copy all links to clipboard"
+                      className="border border-border px-2 py-1 font-mono text-[10px] text-muted-foreground transition-colors hover:border-foreground/40 hover:text-foreground inline-flex items-center gap-1"
+                    >
+                      <Copy className="size-3" />
+                      Copy all
+                    </button>
+                  </div>
+                </div>
+
+                {/* Quick Tag Pills */}
+                <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                  <span className="font-mono text-[10px] uppercase text-muted-foreground/60 mr-1 flex items-center gap-1">
+                    <Sparkles className="size-2.5 text-signal" /> Quick tags:
+                  </span>
+                  {QUICK_TAGS.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => setSearchQuery(searchQuery === tag ? '' : tag)}
                       className={cn(
-                        'border px-3 py-1.5 text-xs font-medium tracking-wide uppercase transition-colors',
-                        filter === item.id
-                          ? 'border-foreground bg-foreground text-background'
-                          : 'border-border text-muted-foreground hover:text-foreground hover:border-foreground/40'
+                        'border px-2 py-0.5 font-mono text-[10px] uppercase transition-colors',
+                        searchQuery.toLowerCase() === tag.toLowerCase()
+                          ? 'border-signal bg-signal/10 text-signal font-semibold'
+                          : 'border-border/80 text-muted-foreground hover:border-foreground/40 hover:text-foreground'
                       )}
                     >
-                      {item.label}
+                      {tag}
                     </button>
                   ))}
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery('')}
+                      className="font-mono text-[10px] text-muted-foreground/70 underline hover:text-foreground ml-1"
+                    >
+                      clear
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-t border-border/60 pt-3">
+                  {/* Category Filter Pills */}
+                  <div
+                    className="flex flex-wrap gap-1.5"
+                    role="tablist"
+                    aria-label="Filter sections"
+                  >
+                    {filters.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={filter === item.id}
+                        onClick={() => setFilter(item.id)}
+                        className={cn(
+                          'border px-3 py-1 text-xs font-medium tracking-wide uppercase transition-colors',
+                          filter === item.id
+                            ? 'border-foreground bg-foreground text-background'
+                            : 'border-border text-muted-foreground hover:text-foreground hover:border-foreground/40'
+                        )}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Sort Mode & View Mode Controls */}
+                  <div className="flex items-center gap-2">
+                    {/* Sort Selector */}
+                    <div className="flex items-center border border-border">
+                      <button
+                        type="button"
+                        onClick={() => setSortMode('default')}
+                        title="Default order"
+                        className={cn(
+                          'px-2 py-1 font-mono text-[10px] uppercase transition-colors',
+                          sortMode === 'default'
+                            ? 'bg-muted text-foreground font-semibold'
+                            : 'text-muted-foreground hover:text-foreground'
+                        )}
+                      >
+                        Default
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSortMode('popular')}
+                        title="Sort by Most Visited"
+                        className={cn(
+                          'border-l border-border px-2 py-1 font-mono text-[10px] uppercase transition-colors inline-flex items-center gap-1',
+                          sortMode === 'popular'
+                            ? 'bg-muted text-foreground font-semibold'
+                            : 'text-muted-foreground hover:text-foreground'
+                        )}
+                      >
+                        <TrendingUp className="size-2.5" />
+                        Popular
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSortMode('alpha')}
+                        title="Sort Alphabetically (A-Z)"
+                        className={cn(
+                          'border-l border-border px-2 py-1 font-mono text-[10px] uppercase transition-colors inline-flex items-center gap-1',
+                          sortMode === 'alpha'
+                            ? 'bg-muted text-foreground font-semibold'
+                            : 'text-muted-foreground hover:text-foreground'
+                        )}
+                      >
+                        <ArrowDownAZ className="size-2.5" />
+                        A-Z
+                      </button>
+                    </div>
+
+                    {/* View Mode Toggle */}
+                    <div className="flex items-center border border-border">
+                      <button
+                        type="button"
+                        onClick={() => setViewMode('list')}
+                        aria-label="List view"
+                        title="List view"
+                        className={cn(
+                          'p-1 text-muted-foreground transition-colors hover:text-foreground',
+                          viewMode === 'list' && 'bg-muted text-foreground'
+                        )}
+                      >
+                        <LayoutList className="size-3.5" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setViewMode('grid')}
+                        aria-label="Grid view"
+                        title="Grid view"
+                        className={cn(
+                          'border-l border-border p-1 text-muted-foreground transition-colors hover:text-foreground',
+                          viewMode === 'grid' && 'bg-muted text-foreground'
+                        )}
+                      >
+                        <LayoutGrid className="size-3.5" />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </FrameBody>
@@ -352,6 +501,8 @@ export default function HomePage() {
             isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
             visitCounts={visitCounts}
+            sortMode={sortMode}
+            viewMode={viewMode}
           />
         )}
 
@@ -365,6 +516,8 @@ export default function HomePage() {
             isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
             visitCounts={visitCounts}
+            sortMode={sortMode}
+            viewMode={viewMode}
           />
         )}
 
@@ -378,14 +531,17 @@ export default function HomePage() {
             isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
             visitCounts={visitCounts}
+            sortMode={sortMode}
+            viewMode={viewMode}
           />
         )}
 
-        {/* Home Sections from commit b56fc1f */}
+        {/* Home Sections */}
         {filter === 'all' && !searchQuery && (
           <>
             <ConnectSection />
             <FocusSection />
+            <GitHubActivity />
             <AboutSection />
             <LearningHub />
           </>
@@ -403,6 +559,8 @@ export default function HomePage() {
             isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
             visitCounts={visitCounts}
+            sortMode={sortMode}
+            viewMode={viewMode}
           />
         )}
 
@@ -418,6 +576,8 @@ export default function HomePage() {
             isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
             visitCounts={visitCounts}
+            sortMode={sortMode}
+            viewMode={viewMode}
           />
         )}
 
@@ -433,6 +593,8 @@ export default function HomePage() {
             isFavorite={isFavorite}
             onToggleFavorite={toggleFavorite}
             visitCounts={visitCounts}
+            sortMode={sortMode}
+            viewMode={viewMode}
           />
         )}
       </div>
@@ -447,7 +609,9 @@ function LinkSection({
   trackClick,
   isFavorite,
   onToggleFavorite,
-  visitCounts
+  visitCounts,
+  sortMode = 'default',
+  viewMode = 'list'
 }: {
   id: string
   label: string
@@ -456,28 +620,61 @@ function LinkSection({
   isFavorite: (url: string) => boolean
   onToggleFavorite: (url: string) => void
   visitCounts: Record<string, number>
+  sortMode?: SortMode
+  viewMode?: ViewMode
 }) {
+  const sortedItems = useMemo(() => {
+    const list = [...items]
+    if (sortMode === 'popular') {
+      return list.sort((a, b) => (visitCounts[b.url] || 0) - (visitCounts[a.url] || 0))
+    }
+    if (sortMode === 'alpha') {
+      return list.sort((a, b) => a.title.localeCompare(b.title))
+    }
+    return list
+  }, [items, sortMode, visitCounts])
+
   return (
     <Reveal className="w-full">
       <Frame id={id} className="scroll-mt-28 overflow-visible">
         <FrameHeader label={label}>
-          <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
-            {items.length}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-[11px] text-muted-foreground tabular-nums">
+              {items.length}
+            </span>
+          </div>
         </FrameHeader>
-        {items.length === 0 ? (
+        {sortedItems.length === 0 ? (
           <FrameBody>
             <p className="text-sm text-muted-foreground">
               No links match your search.
             </p>
           </FrameBody>
+        ) : viewMode === 'grid' ? (
+          <div className="grid gap-px bg-border sm:grid-cols-2">
+            {sortedItems.map((item) => (
+              <div key={`${id}-${item.url}`} className="bg-background">
+                <CardLink
+                  {...item}
+                  isLast={true}
+                  className="border-b-0 h-full"
+                  isFavorite={isFavorite(item.url)}
+                  onToggleFavorite={() => onToggleFavorite(item.url)}
+                  visits={visitCounts[item.url]}
+                  onTrackClick={() => {
+                    trackClick(item.url, item.title)
+                  }}
+                />
+              </div>
+            ))}
+          </div>
         ) : (
           <ul>
-            {items.map((item, index) => (
+            {sortedItems.map((item, index) => (
               <CardLink
                 key={`${id}-${item.url}`}
                 {...item}
-                isLast={index === items.length - 1}
+                isLast={index === sortedItems.length - 1}
                 isFavorite={isFavorite(item.url)}
                 onToggleFavorite={() => onToggleFavorite(item.url)}
                 visits={visitCounts[item.url]}
