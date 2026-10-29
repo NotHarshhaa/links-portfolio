@@ -14,7 +14,6 @@ import { KeyboardHelp } from '@/components/keyboard-help'
 import { QrModal } from '@/components/qr-modal'
 import { TelemetryModal } from '@/components/telemetry-modal'
 import { TerminalModal } from '@/components/terminal-modal'
-import { ScrollProgress } from '@/components/scroll-progress'
 import { cn } from '@/lib/utils'
 import './globals.css'
 
@@ -55,7 +54,6 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <TooltipProvider>
-              <ScrollProgress />
               <Header />
               <main id="main-content" className="flex-grow" tabIndex={-1}>
                 {children}
